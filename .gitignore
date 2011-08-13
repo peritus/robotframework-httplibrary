@@ -6,4 +6,4 @@ log.html
 output.xml
 parts/
 report.html
-src/robotframework_httplib.egg-info/
+src/robotframework_httplibrary.egg-info/
