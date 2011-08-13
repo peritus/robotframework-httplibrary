@@ -1,0 +1,94 @@
+*** Setting ***
+
+Library  robotframework_httplib.HTTP
+
+*** Test Cases ***
+
+Error if GET before connect
+    ${msg}=             Run Keyword And Expect Error  *  GET   /
+    Should Start With   ${msg}    Not connected to any HTTP Host
+
+Test Should Work
+    [Setup]  Connect  httpstat.us
+    GET      /
+
+GET 200
+    [Setup]  Connect  httpstat.us
+    GET      /200
+    Response Status Code Should Equal   200
+
+GET 302
+    [Setup]  Connect  httpstat.us
+    GET      /302
+    Response Status Code Should Equal   302
+
+GET 302 with follow
+    [Setup]  Connect  httpstat.us
+    GET      /302
+    Follow Response
+    Response Status Code Should Equal   200
+
+GET 418
+    [Setup]  Connect  httpstat.us
+    GET      /418
+    Response Status Code Should Equal   418 Unknown Error
+
+Response Should Succeed OK
+    [Setup]  Connect  httpstat.us
+    GET      /200
+    Response Should Succeed
+
+Response Should Succeed FAIL
+    [Setup]  Connect  httpstat.us
+    GET      /404
+    Run Keyword And Expect Error  *  Response Should Succeed
+    
+Response Should Not Succeed OK
+    [Setup]  Connect  httpstat.us
+    GET      /503
+    Response Should Not Succeed
+
+Response Should Not Succeed FAIL
+    [Setup]  Connect  httpstat.us
+    GET      /201
+    Run Keyword And Expect Error  *  Response Should Not Succeed
+
+Response Should Have Header OK
+    [Setup]  Connect  httpstat.us
+    GET      /302
+    Response Should Have Header  Location
+
+Response Should Have Header FAIL
+    [Setup]  Connect  httpstat.us
+    GET      /200
+    Run Keyword And Expect Error  *  Response Should Have Header  Krytzmyk
+
+Response Should Not Have Header OK
+    [Setup]  Connect  httpstat.us
+    GET      /404
+    Response Should Not Have Header  Location
+
+Response Should Not Have Header FAIL
+    [Setup]  Connect  httpstat.us
+    GET      /302
+    Run Keyword And Expect Error  *  Response Should Not Have Header  Location
+
+Response Header Should Equal OK
+    [Setup]  Connect  httpstat.us
+    GET      /302
+    Response Header Should Equal   Location  http://httpstat.us
+
+Response Header Should Equal FAIL
+    [Setup]  Connect  httpstat.us
+    GET      /302
+    Run Keyword And Expect Error  *  Response Header Should Equal   Location  http://some.other.host/
+
+Response Header Should Not Equal OK
+    [Setup]  Connect  httpstat.us
+    GET     /302
+    Response Header Should Not Equal   Location  http://and.another.host/
+
+Response Header Should Not Equal FAIL
+    [Setup]  Connect  httpstat.us
+    GET     /302
+    Run Keyword And Expect Error  *  Response Header Should Not Equal   Location  http://httpstat.us

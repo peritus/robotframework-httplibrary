@@ -1,0 +1,4 @@
+*** Setting ***
+
+Library  robotframework_httplib.HTTP
+
