@@ -17,6 +17,11 @@ GET 200
     GET      /200
     Response Status Code Should Equal   200
 
+GET 200, Port 80
+    [Setup]  Connect  httpstat.us:80
+    GET      /200
+    Response Status Code Should Equal   200
+
 GET 302
     [Setup]  Connect  httpstat.us
     GET      /302
