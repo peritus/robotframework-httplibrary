@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import BaseHTTPServer
+from sys import exit
 
 class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     def do_GET(self):
@@ -16,6 +17,18 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_response(418, "I'm a teapot")
         elif self.path == '/503':
             self.send_response(503, "Some error")
+        else:
+            self.send_error(500)
+
+    def do_POST(self, *args, **kwargs):
+        if self.path == '/echo':
+            self.send_response(200, "OK")
+            self.wfile.write(self.rfile.read)
+        elif self.path == '/kill':
+            global server
+            self.send_response(201, "Killing myself")
+            server.socket.close()
+            exit(0)
         else:
             self.send_error(500)
 

@@ -3,7 +3,8 @@
 Library  robotframework_httplib.HTTP
 Library  OperatingSystem
 
-Suite Setup  Start Mockserver
+Suite Setup     Start Mockserver
+Suite Teardown  Stop Mockserver
 
 *** Variables ***
 
@@ -100,9 +101,19 @@ Response Header Should Not Equal FAIL
     GET      /302
     Run Keyword And Expect Error  *  Response Header Should Not Equal   Location  /200
 
+POST should work
+    [Setup]  Connect  ${HOST}
+    POST      /echo
+    Response Should Succeed
+
 
 *** Keywords ***
 
 Start Mockserver
     Start Process  tests/mockserver.py
     Sleep  0.2
+
+Stop Mockserver
+    Connect  ${HOST}
+    POST     /kill
+
