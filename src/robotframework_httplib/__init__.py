@@ -76,6 +76,13 @@ class HTTP:
                'Response header "%s" should have been "%s" but was "%s"' % (
                     header_name, expected, actual)
 
+    def response_header_should_not_equal(self, header_name, not_expected):
+        self.response_should_have_header(header_name)
+        actual = self.response.headers[header_name]
+        assert actual != not_expected,\
+               'Response header "%s" was "%s" but should not have been.' % (
+                    header_name, actual)
+
     # debug
 
     def show_response_in_browser(self, url):
