@@ -1,0 +1,9 @@
+.installed.cfg
+bin/buildout
+bin/robotframework
+develop-eggs/
+log.html
+output.xml
+parts/
+report.html
+src/robotframework_httplib.egg-info/
