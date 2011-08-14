@@ -11,6 +11,13 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_response(302, "Redirect")
             self.send_header('Location', '/200')
             self.end_headers()
+        elif self.path == '/304':
+            if 'If-Modified-Since' in self.headers:
+                self.send_response(304, "Not Modified")
+            else:
+                self.send_response(200, "Modified")
+            self.send_header('Last-Modified', 'February')
+            self.end_headers()
         elif self.path == '/404':
             self.send_response(404, "Not Found")
         elif self.path == '/418':

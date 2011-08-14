@@ -107,6 +107,12 @@ Simple POST request
     Response Should Succeed
 
 
+Set Request Header
+    [Setup]  Connect                    ${HOST}
+    Set Request Header                  If-Modified-Since  February
+    GET                                 /304
+    Response Status Code Should Equal   304
+
 *** Keywords ***
 
 Start Mockserver
