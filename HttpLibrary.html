@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>robotframework_httplibrary.HTTP</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style media="all" type="text/css">
+body {
+  background: white;
+  color: black;
+  font-size: small;
+  font-family: sans-serif;
+  padding: 0.1em 0.5em;
+}
+.libdoc {
+  white-space: pre-wrap;
+}
+a.name, span.name {
+  font-style: italic;
+}
+a, a:link, a:visited {
+  color: #c30;
+}
+a:hover, a:active {
+  text-decoration: underline;
+  color: black;
+}
+div.shortcuts {
+  margin: 1em 0em;
+  font-size: 0.9em;
+}
+div.shortcuts a {
+  text-decoration: none;
+  color: black;
+}
+div.shortcuts a:hover {
+  text-decoration: underline;
+}
+table.keywords {
+  border: 2px solid black;
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 0.3em 0em;
+  width: 100%;
+}
+table.keywords th, table.keywords td {
+  border: 2px solid black;
+  padding: 0.2em;
+  vertical-align: top;
+}
+table.keywords th {
+  background: #bbb;
+  color: black;
+}
+table.keywords td.kw {
+  width: 150px;
+  font-weight: bold;
+}
+table.keywords td.arg {
+  width: 300px;
+  font-style: italic;
+}
+table.doc {
+  border: 1px solid black;
+  background: transparent;
+  border-collapse: collapse;
+  empty-cells: show;
+  font-size: 0.85em;
+}
+table.doc td {
+  border: 1px solid black;
+  padding: 0.1em 0.3em;
+  height: 1.2em;
+
+}
+#footer {
+  font-size: 0.9em;
+}
+</style>
+<style media="print" type="text/css">
+body {
+  margin: 0px 1px;
+  padding: 0px;
+  font-size: 10px;
+}
+a {
+  text-decoration: none;
+}
+</style>
+</head>
+<body>
+<h1>robotframework_httplibrary.HTTP</h1>
+<b>Scope:</b> test case<br>
+<b>Named arguments: </b>
+supported
+
+<h2 id="introduction">Introduction</h2>
+<div class="libdoc">Documentation for test library <span class="name">robotframework_httplibrary.HTTP</span>.</div>
+
+
+<h2>Shortcuts</h2>
+<div class='shortcuts'>
+<a href="#Connect" title="Sets the HTTP server for future requests. You must invoke this before">Connect</a>
+&nbsp;&middot;&nbsp;
+<a href="#Follow Response" title="Follows a HTTP redirect if the previous response status code was a 301 or 302.">Follow&nbsp;Response</a>
+&nbsp;&middot;&nbsp;
+<a href="#GET" title="Issues a HTTP GET request.">GET</a>
+&nbsp;&middot;&nbsp;
+<a href="#Get Response Header" title="Get the response header with the name 'header_name'">Get&nbsp;Response&nbsp;Header</a>
+&nbsp;&middot;&nbsp;
+<a href="#POST" title="">POST</a>
+&nbsp;&middot;&nbsp;
+<a href="#Response Header Should Equal" title="Fails if the value of response header 'header_name' does not equal 'expected'">Response&nbsp;Header&nbsp;Should&nbsp;Equal</a>
+&nbsp;&middot;&nbsp;
+<a href="#Response Header Should Not Equal" title="Fails if the value of response header 'header_name' equals 'expected'">Response&nbsp;Header&nbsp;Should&nbsp;Not&nbsp;Equal</a>
+&nbsp;&middot;&nbsp;
+<a href="#Response Should Have Header" title="Fails if the response does not have a header named 'header_name'">Response&nbsp;Should&nbsp;Have&nbsp;Header</a>
+&nbsp;&middot;&nbsp;
+<a href="#Response Should Not Have Header" title="Fails if the response does has a header named 'header_name'">Response&nbsp;Should&nbsp;Not&nbsp;Have&nbsp;Header</a>
+&nbsp;&middot;&nbsp;
+<a href="#Response Should Not Succeed" title="Fails if the response status code of the previous request was &lt; 400">Response&nbsp;Should&nbsp;Not&nbsp;Succeed</a>
+&nbsp;&middot;&nbsp;
+<a href="#Response Should Succeed" title="Fails if the response status code of the previous request was &gt;= 400">Response&nbsp;Should&nbsp;Succeed</a>
+&nbsp;&middot;&nbsp;
+<a href="#Response Status Code Should Equal" title="Fails if the response status code was not the specified one.">Response&nbsp;Status&nbsp;Code&nbsp;Should&nbsp;Equal</a>
+&nbsp;&middot;&nbsp;
+<a href="#Response Status Code Should Not Equal" title="Fails if the response status code is equal to the one specified.">Response&nbsp;Status&nbsp;Code&nbsp;Should&nbsp;Not&nbsp;Equal</a>
+&nbsp;&middot;&nbsp;
+<a href="#Set Request Header" title="Sets a request header for the next request.">Set&nbsp;Request&nbsp;Header</a>
+&nbsp;&middot;&nbsp;
+<a href="#Show Response Body In Browser" title="Opens your default web browser with the last request's response body.">Show&nbsp;Response&nbsp;Body&nbsp;In&nbsp;Browser</a>
+</div>
+
+<h2>Keywords</h2>
+<table border="1" class="keywords libdoc">
+<tr>
+  <th class="kw">Keyword</th>
+  <th class="arg">Arguments</th>
+  <th class="doc">Documentation</th>
+</tr>
+<tr>
+  <td class="kw"><a name="Connect"></a>Connect</td>
+  <td class="arg">host</td>
+  <td class="doc">Sets the HTTP server for future requests. You must invoke this before issuing any HTTP requests.
+
+'host' is the name of the host, optionally with port (e.g. 'google.com' or 'localhost:5984')</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Follow Response"></a>Follow Response</td>
+  <td class="arg"></td>
+  <td class="doc">Follows a HTTP redirect if the previous response status code was a 301 or 302.</td>
+</tr>
+<tr>
+  <td class="kw"><a name="GET"></a>GET</td>
+  <td class="arg">url</td>
+  <td class="doc">Issues a HTTP GET request.
+
+'url' is the URL relative to the server root, e.g. '/_utils/config.html'</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Get Response Header"></a>Get Response Header</td>
+  <td class="arg">header_name</td>
+  <td class="doc">Get the response header with the name 'header_name'</td>
+</tr>
+<tr>
+  <td class="kw"><a name="POST"></a>POST</td>
+  <td class="arg">url</td>
+  <td class="doc"></td>
+</tr>
+<tr>
+  <td class="kw"><a name="Response Header Should Equal"></a>Response Header Should Equal</td>
+  <td class="arg">header_name, expected</td>
+  <td class="doc">Fails if the value of response header 'header_name' does not equal 'expected'</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Response Header Should Not Equal"></a>Response Header Should Not Equal</td>
+  <td class="arg">header_name, not_expected</td>
+  <td class="doc">Fails if the value of response header 'header_name' equals 'expected'</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Response Should Have Header"></a>Response Should Have Header</td>
+  <td class="arg">header_name</td>
+  <td class="doc">Fails if the response does not have a header named 'header_name'</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Response Should Not Have Header"></a>Response Should Not Have Header</td>
+  <td class="arg">header_name</td>
+  <td class="doc">Fails if the response does has a header named 'header_name'</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Response Should Not Succeed"></a>Response Should Not Succeed</td>
+  <td class="arg"></td>
+  <td class="doc">Fails if the response status code of the previous request was &lt; 400</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Response Should Succeed"></a>Response Should Succeed</td>
+  <td class="arg"></td>
+  <td class="doc">Fails if the response status code of the previous request was &gt;= 400</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Response Status Code Should Equal"></a>Response Status Code Should Equal</td>
+  <td class="arg">status_code</td>
+  <td class="doc">Fails if the response status code was not the specified one.
+
+'status_code' the status code to compare against.</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Response Status Code Should Not Equal"></a>Response Status Code Should Not Equal</td>
+  <td class="arg">status_code</td>
+  <td class="doc">Fails if the response status code is equal to the one specified.
+
+'status_code' the status code to compare against.</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Set Request Header"></a>Set Request Header</td>
+  <td class="arg">header_name, header_value</td>
+  <td class="doc">Sets a request header for the next request.
+
+'header_name' is the name of the header, e.g. 'User-Agent' 'header_value' is the key of the header, e.g. 'RobotFramework HttpLibrary (Mozilla/4.0)'</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Show Response Body In Browser"></a>Show Response Body In Browser</td>
+  <td class="arg"></td>
+  <td class="doc">Opens your default web browser with the last request's response body.
+
+This is meant for debugging response body's with complex media types.</td>
+</tr>
+</table>
+<p id="footer">
+Altogether 15 keywords.<br />
+Generated by <a href="http://code.google.com/p/robotframework/wiki/LibraryDocumentationTool">libdoc.py</a>
+on 2011-08-14 12:35:47.
+</p>
+</body>
+</html>
