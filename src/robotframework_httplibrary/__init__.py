@@ -7,6 +7,7 @@ class HTTP:
     def __init__(self):
         self._app = None
         self._response = None
+        self._request_headers = {}
 
     @property
     def app(self):
@@ -29,10 +30,12 @@ class HTTP:
     # request
 
     def GET(self, url):
-        self._response = self.app.get(url)
+        self._response = self.app.get(url, {}, self._request_headers)
+        self._request_headers = {}
 
     def POST(self, url):
-        self._response = self.app.post(url)
+        self._response = self.app.post(url, {}, self._request_headers)
+        self._request_headers = {}
 
     def follow_response(self):
         self._response = self.response.follow()
@@ -55,7 +58,7 @@ class HTTP:
         assert not self.response.status.startswith(code), \
                '"%s" does start with "%s", but should not' % (self.response.status, code)
 
-    # headers
+    # response headers
 
     def response_should_have_header(self, header_name):
         assert header_name in self.response.headers,\
@@ -82,6 +85,11 @@ class HTTP:
         assert actual != not_expected,\
                'Response header "%s" was "%s" but should not have been.' % (
                     header_name, actual)
+
+    # request headers
+
+    def set_request_header(self, header_name, header_value):
+        self._request_headers[header_name] = header_value
 
     # debug
 
