@@ -23,4 +23,3 @@ setup(
   install_requires = ['robotframework', 'livetest'],
   packages         = ['robotframework_httplibrary']
 )
-

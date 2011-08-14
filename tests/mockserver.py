@@ -39,7 +39,7 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         else:
             self.send_error(500)
 
-server = BaseHTTPServer.HTTPServer(('localhost', 36503), WebRequestHandler)    
+server = BaseHTTPServer.HTTPServer(('localhost', 36503), WebRequestHandler)
 server.serve_forever()
 
 print 'Listening on http://localhost:36503/'
