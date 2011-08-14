@@ -16,9 +16,9 @@ Error if GET before connect
     ${msg}=             Run Keyword And Expect Error  *  GET   /
     Should Start With   ${msg}    Not connected to any HTTP Host
 
-Test Should Work
+Simple GET
     [Setup]  Connect  ${HOST}
-    GET      /
+    GET      /200
 
 GET 200
     [Setup]  Connect  ${HOST}
@@ -101,7 +101,7 @@ Response Header Should Not Equal FAIL
     GET      /302
     Run Keyword And Expect Error  *  Response Header Should Not Equal   Location  /200
 
-POST should work
+Simple POST request
     [Setup]  Connect  ${HOST}
     POST      /echo
     Response Should Succeed
