@@ -1,4 +1,5 @@
 import livetest
+from robot.output import LOGGER
 
 class HTTP:
 
@@ -172,6 +173,10 @@ class HTTP:
                'Response header "%s" was "%s" but should not have been.' % (
                     header_name, actual)
 
+    def log_response_headers(self, log_level='INFO'):
+        for name, value in self.response.headers.items():
+            LOGGER.write("%s: %s" % (name, value), log_level)
+
     # request headers
 
     def set_request_header(self, header_name, header_value):
@@ -194,6 +199,9 @@ class HTTP:
     def response_body_should_contain(self, should_contain):
         assert should_contain in self.response.body,\
                '"%s" should have contained "%s", but did not.' % (self.response.body, should_contain)
+
+    def log_response_body(self, log_level='INFO'):
+        LOGGER.write(self.response.body, log_level)
 
     # debug
 

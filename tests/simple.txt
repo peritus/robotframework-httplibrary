@@ -111,6 +111,7 @@ Simple HEAD request
     HEAD     /head
     Response Should Not Succeed
     Response Status Code Should Equal   407
+    Log Response Headers                WARN
 
 Simple DELETE request
     [Setup]  Connect  ${HOST}
@@ -143,6 +144,13 @@ Get Response Body
     POST                          /echo
     ${body}=                      Get Response Body
     Should Contain    ${body}     1234567890
+
+Log Response Body
+    [Setup]  Connect              ${HOST}
+    Set Request Body              Log me! Please!
+    Set Request Header            Content-Type    text/plain
+    POST                          /echo
+    Log Response Body             WARN
 
 Set Request Header
     [Setup]  Connect                    ${HOST}
