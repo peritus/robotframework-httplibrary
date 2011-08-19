@@ -52,6 +52,9 @@ class HTTP:
 
         'url' is the URL relative to the server root, e.g. '/_utils/config.html'
         """
+        kwargs = {}
+        if 'Content-Type' in self._request_headers:
+            kwargs['content_type'] = self._request_headers['Content-Type']
         self._response = self.app.post(url, self._request_body or {}, self._request_headers, **kwargs)
         self._reset()
 
