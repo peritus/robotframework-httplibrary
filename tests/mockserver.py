@@ -7,6 +7,9 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/200':
             self.send_response(200, "OK")
+            self.end_headers()
+            self.wfile.write("Everything is ok!")
+            self.finish()
         elif self.path == '/302':
             self.send_response(302, "Redirect")
             self.send_header('Location', '/200')
@@ -29,8 +32,19 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
     def do_POST(self, *args, **kwargs):
         if self.path == '/echo':
+            data = self.rfile.read(int(self.headers['Content-Length']))
+            self.rfile.close()
+            self.send_response(200, "OK")
+            self.send_header('Content-Type', 'text/plain; charset=utf-8')
+            self.end_headers()
+            self.wfile.write(data)
+            self.finish()
+        elif self.path == '/content_type':
             self.send_response(200, "OK")
             self.wfile.write(self.rfile.read)
+            self.end_headers()
+            self.wfile.write(self.headers['Content-Type'])
+            self.finish()
         elif self.path == '/kill':
             global server
             self.send_response(201, "Killing myself")

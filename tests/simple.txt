@@ -25,6 +25,11 @@ GET 200
     GET      /200
     Response Status Code Should Equal   200
 
+GET Body
+    [Setup]  Connect  ${HOST}
+    GET      /200
+    Response Body Should Contain  Everything is ok
+
 GET 302
     [Setup]  Connect  ${HOST}
     GET      /302
@@ -106,12 +111,40 @@ Simple POST request
     POST      /echo
     Response Should Succeed
 
+POST with one word request body
+    [Setup]  Connect              ${HOST}
+    Set Request Body              Tooot
+    Set Request Header            Content-Type    text/plain
+    POST                          /echo
+    Response Body Should Contain  Tooot
+
+POST with two word request body
+    [Setup]  Connect              ${HOST}
+    Set Request Body              Tooot Tooooot
+    Set Request Header            Content-Type    text/plain
+    POST                          /echo
+    Response Body Should Contain  Tooot Tooooot
+
+Get Response Body
+    [Setup]  Connect              ${HOST}
+    Set Request Body              1234567890
+    Set Request Header            Content-Type    text/plain
+    POST                          /echo
+    ${body}=                      Get Response Body
+    Should Contain    ${body}     1234567890
 
 Set Request Header
     [Setup]  Connect                    ${HOST}
     Set Request Header                  If-Modified-Since  February
     GET                                 /304
     Response Status Code Should Equal   304
+
+Set Content-Type Request Header
+    [Setup]  Connect                    ${HOST}
+    Set Request Header                  Content-Type  image/gif
+    POST                                /content_type
+    Response Status Code Should Equal   200
+    Response Body Should Contain        image/gif
 
 *** Keywords ***
 

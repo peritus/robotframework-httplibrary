@@ -11,6 +11,7 @@ class HTTP:
 
     def _reset(self):
         self._request_headers = {}
+        self._request_body = None
 
     @property
     def app(self):
@@ -151,6 +152,18 @@ class HTTP:
         'header_value' is the key of the header, e.g. 'RobotFramework HttpLibrary (Mozilla/4.0)'
         """
         self._request_headers[header_name] = header_value
+
+    # payload
+
+    def set_request_body(self, body):
+        self._request_body = body.encode("utf-8")
+
+    def get_response_body(self):
+        return self.response.body
+
+    def response_body_should_contain(self, should_contain):
+        assert should_contain in self.response.body,\
+               '"%s" should have contained "%s", but did not.' % (self.response.body, should_contain)
 
     # debug
 
