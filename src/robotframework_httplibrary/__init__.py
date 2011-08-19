@@ -7,6 +7,9 @@ class HTTP:
     def __init__(self):
         self._app = None
         self._response = None
+        self._reset()
+
+    def _reset(self):
         self._request_headers = {}
 
     @property
@@ -41,16 +44,16 @@ class HTTP:
         'url' is the URL relative to the server root, e.g. '/_utils/config.html'
         """
         self._response = self.app.get(url, {}, self._request_headers)
-        self._request_headers = {}
+        self._reset()
 
     def POST(self, url):
-        self._response = self.app.post(url, {}, self._request_headers)
-        self._request_headers = {}
         """
         Issues a HTTP POST request.
 
         'url' is the URL relative to the server root, e.g. '/_utils/config.html'
         """
+        self._response = self.app.post(url, self._request_body or {}, self._request_headers, **kwargs)
+        self._reset()
 
     def follow_response(self):
         """
