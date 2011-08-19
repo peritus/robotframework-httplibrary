@@ -21,5 +21,5 @@ setup(
   classifiers      = CLASSIFIERS.splitlines(),
   package_dir      = {'' : 'src'},
   install_requires = ['robotframework', 'livetest'],
-  packages         = ['robotframework_httplibrary']
+  packages         = ['HttpLibrary']
 )

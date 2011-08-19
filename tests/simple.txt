@@ -1,6 +1,6 @@
 *** Setting ***
 
-Library  robotframework_httplibrary.HTTP
+Library  HttpLibrary.HTTP
 Library  OperatingSystem
 
 Suite Setup     Start Mockserver
