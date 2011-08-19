@@ -106,6 +106,17 @@ Response Header Should Not Equal FAIL
     GET      /302
     Run Keyword And Expect Error  *  Response Header Should Not Equal   Location  /200
 
+Simple HEAD request
+    [Setup]  Connect  ${HOST}
+    HEAD     /head
+    Response Should Not Succeed
+    Response Status Code Should Equal   407
+
+Simple DELETE request
+    [Setup]  Connect  ${HOST}
+    DELETE    /method
+    Response Should Succeed
+
 Simple POST request
     [Setup]  Connect  ${HOST}
     POST      /echo
@@ -118,11 +129,11 @@ POST with one word request body
     POST                          /echo
     Response Body Should Contain  Tooot
 
-POST with two word request body
+PUT with two word request body
     [Setup]  Connect              ${HOST}
     Set Request Body              Tooot Tooooot
     Set Request Header            Content-Type    text/plain
-    POST                          /echo
+    PUT                           /echo
     Response Body Should Contain  Tooot Tooooot
 
 Get Response Body

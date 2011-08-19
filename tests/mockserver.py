@@ -4,6 +4,17 @@ import BaseHTTPServer
 from sys import exit
 
 class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+
+    def do_HEAD(self):
+        self.send_response(407, "Payment required")
+        self.end_headers()
+
+    def do_DELETE(self):
+        self.send_response(200, "OK")
+        self.end_headers()
+        self.wfile.write(self.requestline)
+        self.finish()
+
     def do_GET(self):
         if self.path == '/200':
             self.send_response(200, "OK")
@@ -52,6 +63,8 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             exit(0)
         else:
             self.send_error(500)
+
+    do_PUT = do_POST
 
 server = BaseHTTPServer.HTTPServer(('localhost', 36503), WebRequestHandler)
 server.serve_forever()

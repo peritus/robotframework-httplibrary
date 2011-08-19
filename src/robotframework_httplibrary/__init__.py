@@ -38,6 +38,15 @@ class HTTP:
 
     # request
 
+    def HEAD(self, url):
+        """
+        Issues a HTTP HEAD request.
+
+        'url' is the URL relative to the server root, e.g. '/_utils/config.html'
+        """
+        self._response = self.app.head(url, {}, self._request_headers)
+        self._reset()
+
     def GET(self, url):
         """
         Issues a HTTP GET request.
@@ -57,6 +66,27 @@ class HTTP:
         if 'Content-Type' in self._request_headers:
             kwargs['content_type'] = self._request_headers['Content-Type']
         self._response = self.app.post(url, self._request_body or {}, self._request_headers, **kwargs)
+        self._reset()
+
+    def PUT(self, url):
+        """
+        Issues a HTTP PUT request.
+
+        'url' is the URL relative to the server root, e.g. '/_utils/config.html'
+        """
+        kwargs = {}
+        if 'Content-Type' in self._request_headers:
+            kwargs['content_type'] = self._request_headers['Content-Type']
+        self._response = self.app.put(url, self._request_body or {}, self._request_headers, **kwargs)
+        self._reset()
+
+    def DELETE(self, url):
+        """
+        Issues a HTTP DELETE request.
+
+        'url' is the URL relative to the server root, e.g. '/_utils/config.html'
+        """
+        self._response = self.app.delete(url, {}, self._request_headers)
         self._reset()
 
     def follow_response(self):
