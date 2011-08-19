@@ -72,7 +72,7 @@ class HTTP:
         Fails if the response status code of the previous request was >= 400
         """
         assert int(self.response.status[0:3]) < 400, \
-               'Response should have been success, but was "%s"' % self.response.status
+               'Response should have succeeded, but was "%s"' % self.response.status
 
     def response_should_not_succeed(self):
         """
