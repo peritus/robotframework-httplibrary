@@ -76,7 +76,7 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
     do_PUT = do_POST
 
+print 'Starting server on http://localhost:36503/'
+
 server = BaseHTTPServer.HTTPServer(('localhost', 36503), WebRequestHandler)
 server.serve_forever()
-
-print 'Listening on http://localhost:36503/'
