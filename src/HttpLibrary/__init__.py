@@ -1,4 +1,7 @@
 import livetest
+
+from base64 import b64encode
+
 from robot.output import LOGGER
 
 class HTTP:
@@ -187,6 +190,17 @@ class HTTP:
         'header_value' is the key of the header, e.g. 'RobotFramework HttpLibrary (Mozilla/4.0)'
         """
         self._request_headers[header_name] = header_value
+
+    def set_basic_auth(self, username, password):
+        """
+        Set HTTP Basic Auth for next request.
+
+        See <a href="http://en.wikipedia.org/wiki/Basic_access_authentication">Wikipedia on "Basic access authentication"</a>.
+
+        'username' is the username to authenticate with, e.g. 'Aladdin'
+        'password' is the password to use, e.g. 'open sesame'
+        """
+        self.set_request_header("Authorization", "Basic %s" % b64encode("%s:%s" % (username, password)))
 
     # payload
 

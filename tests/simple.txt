@@ -165,6 +165,16 @@ Set Content-Type Request Header
     Response Status Code Should Equal   200
     Response Body Should Contain        image/gif
 
+Set Basic Auth
+    [Setup]  Connect                    ${HOST}
+    GET                                 /sesame
+    Response Should Not Succeed
+
+    Set Basic Auth                      Aladdin        open sesame
+    GET                                 /sesame
+    Response Status Code Should Equal   200
+    Response Body Should Contain        sesame street
+
 *** Keywords ***
 
 Start Mockserver

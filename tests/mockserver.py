@@ -38,6 +38,16 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_response(418, "I'm a teapot")
         elif self.path == '/503':
             self.send_response(503, "Some error")
+        elif self.path == '/sesame':
+            if 'Authorization' in self.headers and self.headers['Authorization'] == 'Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==':
+                self.send_response(200, "Sesame open!")
+                self.end_headers()
+                self.wfile.write("Welcome to sesame street!")
+                self.finish()
+            else:
+                self.send_response(401, "Sesame closed!")
+                self.send_header('WWW-Authenticate', 'Basic realm="Secure Area"')
+                self.end_headers()
         else:
             self.send_error(500)
 
