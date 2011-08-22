@@ -14,7 +14,7 @@ setup(
   long_description = "Robot Framework wrapper for livetest",
   author           = 'Filip Noetzel',
   author_email     = 'filip+rfhttplibrary@j03.de',
-  url              = 'http://code.google.com/p/robotframework-seleniumlibrary',
+  url              = 'https://github.com/peritus/robotframework-httplibrary',
   license          = 'Beerware',
   keywords         = 'robotframework testing testautomation web http livetest webtest',
   platforms        = 'any',
