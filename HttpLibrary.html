@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>robotframework_httplibrary.HTTP</title>
+<title>HttpLibrary.HTTP</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <style media="all" type="text/css">
 body {
@@ -88,26 +88,40 @@ a {
 </style>
 </head>
 <body>
-<h1>robotframework_httplibrary.HTTP</h1>
+<h1>HttpLibrary.HTTP</h1>
 <b>Scope:</b> test case<br>
 <b>Named arguments: </b>
 supported
 
 <h2 id="introduction">Introduction</h2>
-<div class="libdoc">Documentation for test library <span class="name">robotframework_httplibrary.HTTP</span>.</div>
+<div class="libdoc">Documentation for test library <span class="name">HttpLibrary.HTTP</span>.</div>
 
 
 <h2>Shortcuts</h2>
 <div class='shortcuts'>
 <a href="#Connect" title="Sets the HTTP server for future requests. You must invoke this before">Connect</a>
 &nbsp;&middot;&nbsp;
+<a href="#DELETE" title="Issues a HTTP DELETE request.">DELETE</a>
+&nbsp;&middot;&nbsp;
 <a href="#Follow Response" title="Follows a HTTP redirect if the previous response status code was a 301 or 302.">Follow&nbsp;Response</a>
 &nbsp;&middot;&nbsp;
 <a href="#GET" title="Issues a HTTP GET request.">GET</a>
 &nbsp;&middot;&nbsp;
+<a href="#Get Response Body" title="">Get&nbsp;Response&nbsp;Body</a>
+&nbsp;&middot;&nbsp;
 <a href="#Get Response Header" title="Get the response header with the name 'header_name'">Get&nbsp;Response&nbsp;Header</a>
 &nbsp;&middot;&nbsp;
-<a href="#POST" title="">POST</a>
+<a href="#HEAD" title="Issues a HTTP HEAD request.">HEAD</a>
+&nbsp;&middot;&nbsp;
+<a href="#Log Response Body" title="">Log&nbsp;Response&nbsp;Body</a>
+&nbsp;&middot;&nbsp;
+<a href="#Log Response Headers" title="">Log&nbsp;Response&nbsp;Headers</a>
+&nbsp;&middot;&nbsp;
+<a href="#POST" title="Issues a HTTP POST request.">POST</a>
+&nbsp;&middot;&nbsp;
+<a href="#PUT" title="Issues a HTTP PUT request.">PUT</a>
+&nbsp;&middot;&nbsp;
+<a href="#Response Body Should Contain" title="">Response&nbsp;Body&nbsp;Should&nbsp;Contain</a>
 &nbsp;&middot;&nbsp;
 <a href="#Response Header Should Equal" title="Fails if the value of response header 'header_name' does not equal 'expected'">Response&nbsp;Header&nbsp;Should&nbsp;Equal</a>
 &nbsp;&middot;&nbsp;
@@ -124,6 +138,10 @@ supported
 <a href="#Response Status Code Should Equal" title="Fails if the response status code was not the specified one.">Response&nbsp;Status&nbsp;Code&nbsp;Should&nbsp;Equal</a>
 &nbsp;&middot;&nbsp;
 <a href="#Response Status Code Should Not Equal" title="Fails if the response status code is equal to the one specified.">Response&nbsp;Status&nbsp;Code&nbsp;Should&nbsp;Not&nbsp;Equal</a>
+&nbsp;&middot;&nbsp;
+<a href="#Set Basic Auth" title="Set HTTP Basic Auth for next request.">Set&nbsp;Basic&nbsp;Auth</a>
+&nbsp;&middot;&nbsp;
+<a href="#Set Request Body" title="">Set&nbsp;Request&nbsp;Body</a>
 &nbsp;&middot;&nbsp;
 <a href="#Set Request Header" title="Sets a request header for the next request.">Set&nbsp;Request&nbsp;Header</a>
 &nbsp;&middot;&nbsp;
@@ -145,6 +163,13 @@ supported
 'host' is the name of the host, optionally with port (e.g. 'google.com' or 'localhost:5984')</td>
 </tr>
 <tr>
+  <td class="kw"><a name="DELETE"></a>DELETE</td>
+  <td class="arg">url</td>
+  <td class="doc">Issues a HTTP DELETE request.
+
+'url' is the URL relative to the server root, e.g. '/_utils/config.html'</td>
+</tr>
+<tr>
   <td class="kw"><a name="Follow Response"></a>Follow Response</td>
   <td class="arg"></td>
   <td class="doc">Follows a HTTP redirect if the previous response status code was a 301 or 302.</td>
@@ -157,13 +182,49 @@ supported
 'url' is the URL relative to the server root, e.g. '/_utils/config.html'</td>
 </tr>
 <tr>
+  <td class="kw"><a name="Get Response Body"></a>Get Response Body</td>
+  <td class="arg"></td>
+  <td class="doc"></td>
+</tr>
+<tr>
   <td class="kw"><a name="Get Response Header"></a>Get Response Header</td>
   <td class="arg">header_name</td>
   <td class="doc">Get the response header with the name 'header_name'</td>
 </tr>
 <tr>
+  <td class="kw"><a name="HEAD"></a>HEAD</td>
+  <td class="arg">url</td>
+  <td class="doc">Issues a HTTP HEAD request.
+
+'url' is the URL relative to the server root, e.g. '/_utils/config.html'</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Log Response Body"></a>Log Response Body</td>
+  <td class="arg">log_level=INFO</td>
+  <td class="doc"></td>
+</tr>
+<tr>
+  <td class="kw"><a name="Log Response Headers"></a>Log Response Headers</td>
+  <td class="arg">log_level=INFO</td>
+  <td class="doc"></td>
+</tr>
+<tr>
   <td class="kw"><a name="POST"></a>POST</td>
   <td class="arg">url</td>
+  <td class="doc">Issues a HTTP POST request.
+
+'url' is the URL relative to the server root, e.g. '/_utils/config.html'</td>
+</tr>
+<tr>
+  <td class="kw"><a name="PUT"></a>PUT</td>
+  <td class="arg">url</td>
+  <td class="doc">Issues a HTTP PUT request.
+
+'url' is the URL relative to the server root, e.g. '/_utils/config.html'</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Response Body Should Contain"></a>Response Body Should Contain</td>
+  <td class="arg">should_contain</td>
   <td class="doc"></td>
 </tr>
 <tr>
@@ -211,6 +272,20 @@ supported
 'status_code' the status code to compare against.</td>
 </tr>
 <tr>
+  <td class="kw"><a name="Set Basic Auth"></a>Set Basic Auth</td>
+  <td class="arg">username, password</td>
+  <td class="doc">Set HTTP Basic Auth for next request.
+
+See &lt;a href="http://en.wikipedia.org/wiki/Basic_access_authentication"&gt;Wikipedia on "Basic access authentication"&lt;/a&gt;.
+
+'username' is the username to authenticate with, e.g. 'Aladdin' 'password' is the password to use, e.g. 'open sesame'</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Set Request Body"></a>Set Request Body</td>
+  <td class="arg">body</td>
+  <td class="doc"></td>
+</tr>
+<tr>
   <td class="kw"><a name="Set Request Header"></a>Set Request Header</td>
   <td class="arg">header_name, header_value</td>
   <td class="doc">Sets a request header for the next request.
@@ -226,9 +301,9 @@ This is meant for debugging response body's with complex media types.</td>
 </tr>
 </table>
 <p id="footer">
-Altogether 15 keywords.<br />
+Altogether 24 keywords.<br />
 Generated by <a href="http://code.google.com/p/robotframework/wiki/LibraryDocumentationTool">libdoc.py</a>
-on 2011-08-14 12:35:47.
+on 2011-08-23 01:17:54.
 </p>
 </body>
 </html>
