@@ -13,7 +13,9 @@ ${HOST}  localhost:36503
 *** Test Cases ***
 
 Error if GET before connect
-    ${msg}=             Run Keyword And Expect Error  *  GET   /
+    ${msg}=             Run Keyword And Expect Error
+    ...                 Not connected to any HTTP Host. Use "Connect" keyword first.
+    ...                 GET   /
     Should Start With   ${msg}    Not connected to any HTTP Host
 
 Simple GET
@@ -54,8 +56,10 @@ Response Should Succeed OK
 Response Should Succeed FAIL
     [Setup]  Connect  ${HOST}
     GET      /404
-    Run Keyword And Expect Error  *  Response Should Succeed
-    
+    Run Keyword And Expect Error
+    ...  Response should have succeeded, but was "404 Not Found".
+    ...  Response Should Succeed
+
 Response Should Not Succeed OK
     [Setup]  Connect  ${HOST}
     GET      /503
@@ -64,7 +68,9 @@ Response Should Not Succeed OK
 Response Should Not Succeed FAIL
     [Setup]  Connect  ${HOST}
     GET      /200
-    Run Keyword And Expect Error  *  Response Should Not Succeed
+    Run Keyword And Expect Error
+    ...  Response should not have succeeded, but was "200 OK".
+    ...  Response Should Not Succeed
 
 Response Should Have Header OK
     [Setup]  Connect  ${HOST}
@@ -74,7 +80,9 @@ Response Should Have Header OK
 Response Should Have Header FAIL
     [Setup]  Connect  ${HOST}
     GET      /200
-    Run Keyword And Expect Error  *  Response Should Have Header  Krytzmyk
+    Run Keyword And Expect Error
+    ...  Response did not have "Krytzmyk" header, but should have.
+    ...  Response Should Have Header  Krytzmyk
 
 Response Should Not Have Header OK
     [Setup]  Connect  ${HOST}
@@ -84,7 +92,9 @@ Response Should Not Have Header OK
 Response Should Not Have Header FAIL
     [Setup]  Connect  ${HOST}
     GET      /302
-    Run Keyword And Expect Error  *  Response Should Not Have Header  Location
+    Run Keyword And Expect Error
+    ...  Response did have "Location" header, but should not have.
+    ...  Response Should Not Have Header  Location
 
 Response Header Should Equal OK
     [Setup]  Connect  ${HOST}
@@ -94,7 +104,9 @@ Response Header Should Equal OK
 Response Header Should Equal FAIL
     [Setup]  Connect  ${HOST}
     GET      /302
-    Run Keyword And Expect Error  *  Response Header Should Equal   Location  http://some.other.host/
+    Run Keyword And Expect Error
+    ...  Response header "Location" should have been "http://some.other.host/" but was "/200".
+    ...  Response Header Should Equal   Location  http://some.other.host/
 
 Response Header Should Not Equal OK
     [Setup]  Connect  ${HOST}
@@ -104,7 +116,9 @@ Response Header Should Not Equal OK
 Response Header Should Not Equal FAIL
     [Setup]  Connect  ${HOST}
     GET      /302
-    Run Keyword And Expect Error  *  Response Header Should Not Equal   Location  /200
+    Run Keyword And Expect Error
+    ...  Response header "Location" was "/200" but should not have been.
+    ...  Response Header Should Not Equal   Location  /200
 
 Simple HEAD request
     [Setup]  Connect  ${HOST}

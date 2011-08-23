@@ -106,14 +106,14 @@ class HTTP:
         Fails if the response status code of the previous request was >= 400
         """
         assert int(self.response.status[0:3]) < 400, \
-               'Response should have succeeded, but was "%s"' % self.response.status
+               'Response should have succeeded, but was "%s".' % self.response.status
 
     def response_should_not_succeed(self):
         """
         Fails if the response status code of the previous request was < 400
         """
         assert int(self.response.status[0:3]) > 399, \
-               'Response should have been success, but was "%s"' % self.response.status
+               'Response should not have succeeded, but was "%s".' % self.response.status
 
     def response_status_code_should_equal(self, status_code):
         """
@@ -140,14 +140,14 @@ class HTTP:
         Fails if the response does not have a header named 'header_name'
         """
         assert header_name in self.response.headers,\
-               'Response did not have "%s" header, but should have' % header_name
+               'Response did not have "%s" header, but should have.' % header_name
 
     def response_should_not_have_header(self, header_name):
         """
         Fails if the response does has a header named 'header_name'
         """
         assert not header_name in self.response.headers,\
-               'Response did have "%s" header, but should not have' % header_name
+               'Response did have "%s" header, but should not have.' % header_name
 
     def get_response_header(self, header_name):
         """
@@ -163,7 +163,7 @@ class HTTP:
         self.response_should_have_header(header_name)
         actual = self.response.headers[header_name]
         assert actual == expected,\
-               'Response header "%s" should have been "%s" but was "%s"' % (
+               'Response header "%s" should have been "%s" but was "%s".' % (
                     header_name, expected, actual)
 
     def response_header_should_not_equal(self, header_name, not_expected):
