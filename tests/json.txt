@@ -1,0 +1,23 @@
+*** Setting ***
+
+Library  HttpLibrary.JSON
+
+*** Test Cases ***
+
+Is Valid Json OK
+    Is Valid JSON  {"foo": "bar"}
+
+Is Valid Json FAIL
+    Run Keyword And Expect Error
+    ...  ValueError: No JSON object could be decoded
+    ...  Is Valid JSON  -oh 748903
+
+Get Json Value
+    Set Test Variable  ${obj}          {"foo":{"another prop":{"baz":"A string"}}}
+    ${result}=         Get Json Value  ${obj}       /foo/another%20prop/baz
+    Should Be Equal    ${result}       "A string"
+
+Set Json Value
+    Set Test Variable  ${obj}          {"foo":"bar"}
+    ${result}=         Set Json Value  ${obj}          /baz   9
+    Should Be Equal    ${result}       {"foo": "bar", "baz": "9"}

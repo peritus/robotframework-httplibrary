@@ -1,8 +1,35 @@
-import livetest
+from robot.output import LOGGER
 
 from base64 import b64encode
+from functools import wraps
 
-from robot.output import LOGGER
+import livetest
+import json
+import jsonpointer
+
+def _with_json(f):
+    @wraps(f)
+    def wrapper(self, string, *args, **kwargs):
+        return json.dumps(
+          f(self, json.loads(string), *args, **kwargs))
+    return wrapper
+
+class JSON:
+
+    def __init__(self):
+        pass
+
+    def is_valid_json(self, string):
+        return json.loads(string)
+
+    @_with_json
+    def get_json_value(self, string, pointer):
+        return jsonpointer.resolve_pointer(string, pointer)
+
+    @_with_json
+    def set_json_value(self, string, pointer, value):
+        p = jsonpointer.set_pointer(string, pointer, value)
+        return string
 
 class HTTP:
 

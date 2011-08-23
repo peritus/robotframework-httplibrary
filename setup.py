@@ -20,6 +20,6 @@ setup(
   platforms        = 'any',
   classifiers      = CLASSIFIERS.splitlines(),
   package_dir      = {'' : 'src'},
-  install_requires = ['robotframework', 'livetest'],
+  install_requires = ['robotframework', 'livetest', 'jsonpointer'],
   packages         = ['HttpLibrary']
 )
