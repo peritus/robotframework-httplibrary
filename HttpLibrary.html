@@ -103,8 +103,6 @@ The JSON related keywords use JSON Pointer. To learn more about JSON Pointer, go
 
 <h2>Shortcuts</h2>
 <div class='shortcuts'>
-<a href="#Connect" title="Sets the HTTP server for future requests. You must invoke this before">Connect</a>
-&nbsp;&middot;&nbsp;
 <a href="#DELETE" title="Issues a HTTP DELETE request.">DELETE</a>
 &nbsp;&middot;&nbsp;
 <a href="#Follow Response" title="Follows a HTTP redirect if the previous response status code was a 301 or 302.">Follow&nbsp;Response</a>
@@ -113,31 +111,33 @@ The JSON related keywords use JSON Pointer. To learn more about JSON Pointer, go
 &nbsp;&middot;&nbsp;
 <a href="#Get Json Value" title="Get the target node of the JSON document `json_string` specified by `json_pointer`.">Get&nbsp;Json&nbsp;Value</a>
 &nbsp;&middot;&nbsp;
-<a href="#Get Response Body" title="">Get&nbsp;Response&nbsp;Body</a>
+<a href="#Get Response Body" title="Get the response body.">Get&nbsp;Response&nbsp;Body</a>
 &nbsp;&middot;&nbsp;
-<a href="#Get Response Header" title="Get the response header with the name 'header_name'">Get&nbsp;Response&nbsp;Header</a>
+<a href="#Get Response Header" title="Get the response header with the name `header_name`">Get&nbsp;Response&nbsp;Header</a>
 &nbsp;&middot;&nbsp;
 <a href="#HEAD" title="Issues a HTTP HEAD request.">HEAD</a>
 &nbsp;&middot;&nbsp;
-<a href="#Is Valid Json" title="Attempts to parse `json_string` as JSON. Fails, if `json_string` is invalid JSON.">Is&nbsp;Valid&nbsp;Json</a>
+<a href="#Json Value Should Equal" title="Fails if the value of the target node of the JSON document">Json&nbsp;Value&nbsp;Should&nbsp;Equal</a>
 &nbsp;&middot;&nbsp;
-<a href="#Log Response Body" title="">Log&nbsp;Response&nbsp;Body</a>
+<a href="#Log Json" title="Logs a pretty printed version of the JSON document `json_string`.">Log&nbsp;Json</a>
 &nbsp;&middot;&nbsp;
-<a href="#Log Response Headers" title="">Log&nbsp;Response&nbsp;Headers</a>
+<a href="#Log Response Body" title="Logs the response body.">Log&nbsp;Response&nbsp;Body</a>
+&nbsp;&middot;&nbsp;
+<a href="#Log Response Headers" title="Logs the response headers, line by line.">Log&nbsp;Response&nbsp;Headers</a>
 &nbsp;&middot;&nbsp;
 <a href="#POST" title="Issues a HTTP POST request.">POST</a>
 &nbsp;&middot;&nbsp;
 <a href="#PUT" title="Issues a HTTP PUT request.">PUT</a>
 &nbsp;&middot;&nbsp;
-<a href="#Response Body Should Contain" title="">Response&nbsp;Body&nbsp;Should&nbsp;Contain</a>
+<a href="#Response Body Should Contain" title="Fails if the response body does not contain `should_contain`">Response&nbsp;Body&nbsp;Should&nbsp;Contain</a>
 &nbsp;&middot;&nbsp;
-<a href="#Response Header Should Equal" title="Fails if the value of response header 'header_name' does not equal 'expected'">Response&nbsp;Header&nbsp;Should&nbsp;Equal</a>
+<a href="#Response Header Should Equal" title="Fails if the value of response header `header_name` does not equal `expected`">Response&nbsp;Header&nbsp;Should&nbsp;Equal</a>
 &nbsp;&middot;&nbsp;
 <a href="#Response Header Should Not Equal" title="Fails if the value of response header 'header_name' equals 'expected'">Response&nbsp;Header&nbsp;Should&nbsp;Not&nbsp;Equal</a>
 &nbsp;&middot;&nbsp;
-<a href="#Response Should Have Header" title="Fails if the response does not have a header named 'header_name'">Response&nbsp;Should&nbsp;Have&nbsp;Header</a>
+<a href="#Response Should Have Header" title="Fails if the response does not have a header named `header_name`">Response&nbsp;Should&nbsp;Have&nbsp;Header</a>
 &nbsp;&middot;&nbsp;
-<a href="#Response Should Not Have Header" title="Fails if the response does has a header named 'header_name'">Response&nbsp;Should&nbsp;Not&nbsp;Have&nbsp;Header</a>
+<a href="#Response Should Not Have Header" title="Fails if the response does has a header named `header_name`">Response&nbsp;Should&nbsp;Not&nbsp;Have&nbsp;Header</a>
 &nbsp;&middot;&nbsp;
 <a href="#Response Should Not Succeed" title="Fails if the response status code of the previous request was &lt; 400">Response&nbsp;Should&nbsp;Not&nbsp;Succeed</a>
 &nbsp;&middot;&nbsp;
@@ -149,11 +149,15 @@ The JSON related keywords use JSON Pointer. To learn more about JSON Pointer, go
 &nbsp;&middot;&nbsp;
 <a href="#Set Basic Auth" title="Set HTTP Basic Auth for next request.">Set&nbsp;Basic&nbsp;Auth</a>
 &nbsp;&middot;&nbsp;
+<a href="#Set Http Host" title="Sets the HTTP host to use for future requests. You must call this">Set&nbsp;Http&nbsp;Host</a>
+&nbsp;&middot;&nbsp;
 <a href="#Set Json Value" title="Set the target node of the JSON document `json_string` specified by">Set&nbsp;Json&nbsp;Value</a>
 &nbsp;&middot;&nbsp;
-<a href="#Set Request Body" title="">Set&nbsp;Request&nbsp;Body</a>
+<a href="#Set Request Body" title="Set the request body for the next HTTP request.">Set&nbsp;Request&nbsp;Body</a>
 &nbsp;&middot;&nbsp;
 <a href="#Set Request Header" title="Sets a request header for the next request.">Set&nbsp;Request&nbsp;Header</a>
+&nbsp;&middot;&nbsp;
+<a href="#Should Be Valid Json" title="Attempts to parse `json_string` as JSON. Fails, if `json_string` is invalid JSON.">Should&nbsp;Be&nbsp;Valid&nbsp;Json</a>
 &nbsp;&middot;&nbsp;
 <a href="#Show Response Body In Browser" title="Opens your default web browser with the last request's response body.">Show&nbsp;Response&nbsp;Body&nbsp;In&nbsp;Browser</a>
 </div>
@@ -166,18 +170,11 @@ The JSON related keywords use JSON Pointer. To learn more about JSON Pointer, go
   <th class="doc">Documentation</th>
 </tr>
 <tr>
-  <td class="kw"><a name="Connect"></a>Connect</td>
-  <td class="arg">host</td>
-  <td class="doc">Sets the HTTP server for future requests. You must invoke this before issuing any HTTP requests.
-
-'host' is the name of the host, optionally with port (e.g. 'google.com' or 'localhost:5984')</td>
-</tr>
-<tr>
   <td class="kw"><a name="DELETE"></a>DELETE</td>
   <td class="arg">url</td>
   <td class="doc">Issues a HTTP DELETE request.
 
-'url' is the URL relative to the server root, e.g. '/_utils/config.html'</td>
+<span class="name">url</span> is the URL relative to the server root, e.g. '/_utils/config.html'</td>
 </tr>
 <tr>
   <td class="kw"><a name="Follow Response"></a>Follow Response</td>
@@ -189,7 +186,7 @@ The JSON related keywords use JSON Pointer. To learn more about JSON Pointer, go
   <td class="arg">url</td>
   <td class="doc">Issues a HTTP GET request.
 
-'url' is the URL relative to the server root, e.g. '/_utils/config.html'</td>
+<span class="name">url</span> is the URL relative to the server root, e.g. '/_utils/config.html'</td>
 </tr>
 <tr>
   <td class="kw"><a name="Get Json Value"></a>Get Json Value</td>
@@ -215,66 +212,118 @@ Example:
 <tr>
   <td class="kw"><a name="Get Response Body"></a>Get Response Body</td>
   <td class="arg"></td>
-  <td class="doc"></td>
+  <td class="doc">Get the response body.
+
+Example:
+<table border="1" class="doc">
+<tr>
+<td>GET</td>
+<td>/foo.xml</td>
+<td></td>
+</tr>
+<tr>
+<td>${body}=</td>
+<td>Get Response Body</td>
+<td></td>
+</tr>
+<tr>
+<td>Should Start With</td>
+<td>${body}</td>
+<td>&lt;?xml version="1.0" encoding="UTF-8"</td>
+</tr>
+</table></td>
 </tr>
 <tr>
   <td class="kw"><a name="Get Response Header"></a>Get Response Header</td>
   <td class="arg">header_name</td>
-  <td class="doc">Get the response header with the name 'header_name'</td>
+  <td class="doc">Get the response header with the name <span class="name">header_name</span></td>
 </tr>
 <tr>
   <td class="kw"><a name="HEAD"></a>HEAD</td>
   <td class="arg">url</td>
   <td class="doc">Issues a HTTP HEAD request.
 
-'url' is the URL relative to the server root, e.g. '/_utils/config.html'</td>
+<span class="name">url</span> is the URL relative to the server root, e.g. '/_utils/config.html'</td>
 </tr>
 <tr>
-  <td class="kw"><a name="Is Valid Json"></a>Is Valid Json</td>
-  <td class="arg">json_string</td>
-  <td class="doc">Attempts to parse <span class="name">json_string</span> as JSON. Fails, if <span class="name">json_string</span> is invalid JSON.
+  <td class="kw"><a name="Json Value Should Equal"></a>Json Value Should Equal</td>
+  <td class="arg">json_string, json_pointer, expected_value</td>
+  <td class="doc">Fails if the value of the target node of the JSON document <span class="name">json_string</span> specified by JSON Pointer <span class="name">json_pointer</span> is not <span class="name">expected_value</span>.
 
 Example:
 <table border="1" class="doc">
 <tr>
-<td>Is Valid Json</td>
-<td>{"foo": "bar"}</td>
+<td>Set Test Variable</td>
+<td>${doc}</td>
+<td>{"foo": {"bar": [1,2,3]}}</td>
+<td></td>
+</tr>
+<tr>
+<td>Json Value Should Equal</td>
+<td>${doc}</td>
+<td>/foo/bar</td>
+<td>"[1, 2, 3]"</td>
 </tr>
 </table></td>
 </tr>
 <tr>
+  <td class="kw"><a name="Log Json"></a>Log Json</td>
+  <td class="arg">json_string, *args</td>
+  <td class="doc">Logs a pretty printed version of the JSON document <span class="name">json_string</span>.</td>
+</tr>
+<tr>
   <td class="kw"><a name="Log Response Body"></a>Log Response Body</td>
   <td class="arg">log_level=INFO</td>
-  <td class="doc"></td>
+  <td class="doc">Logs the response body.
+
+Specify <span class="name">log_level</span> (default: "INFO") to set the log level.</td>
 </tr>
 <tr>
   <td class="kw"><a name="Log Response Headers"></a>Log Response Headers</td>
   <td class="arg">log_level=INFO</td>
-  <td class="doc"></td>
+  <td class="doc">Logs the response headers, line by line.
+
+Specify <span class="name">log_level</span> (default: "INFO") to set the log level.</td>
 </tr>
 <tr>
   <td class="kw"><a name="POST"></a>POST</td>
   <td class="arg">url</td>
   <td class="doc">Issues a HTTP POST request.
 
-'url' is the URL relative to the server root, e.g. '/_utils/config.html'</td>
+<span class="name">url</span> is the URL relative to the server root, e.g. '/_utils/config.html'</td>
 </tr>
 <tr>
   <td class="kw"><a name="PUT"></a>PUT</td>
   <td class="arg">url</td>
   <td class="doc">Issues a HTTP PUT request.
 
-'url' is the URL relative to the server root, e.g. '/_utils/config.html'</td>
+<span class="name">url</span> is the URL relative to the server root, e.g. '/_utils/config.html'</td>
 </tr>
 <tr>
   <td class="kw"><a name="Response Body Should Contain"></a>Response Body Should Contain</td>
   <td class="arg">should_contain</td>
-  <td class="doc"></td>
+  <td class="doc">Fails if the response body does not contain <span class="name">should_contain</span>
+
+Example:
+<table border="1" class="doc">
+<tr>
+<td>GET</td>
+<td>/foo.xml</td>
+</tr>
+<tr>
+<td>Response Body Should Contain</td>
+<td>version="1.0"</td>
+</tr>
+<tr>
+<td>Response Body Should Contain</td>
+<td>encoding="UTF-8"</td>
+</tr>
+</table></td>
 </tr>
 <tr>
   <td class="kw"><a name="Response Header Should Equal"></a>Response Header Should Equal</td>
   <td class="arg">header_name, expected</td>
-  <td class="doc">Fails if the value of response header 'header_name' does not equal 'expected'</td>
+  <td class="doc">Fails if the value of response header <span class="name">header_name</span> does not equal <span class="name">expected</span></td>
 </tr>
 <tr>
   <td class="kw"><a name="Response Header Should Not Equal"></a>Response Header Should Not Equal</td>
@@ -284,12 +333,12 @@ Example:
 <tr>
   <td class="kw"><a name="Response Should Have Header"></a>Response Should Have Header</td>
   <td class="arg">header_name</td>
-  <td class="doc">Fails if the response does not have a header named 'header_name'</td>
+  <td class="doc">Fails if the response does not have a header named <span class="name">header_name</span></td>
 </tr>
 <tr>
   <td class="kw"><a name="Response Should Not Have Header"></a>Response Should Not Have Header</td>
   <td class="arg">header_name</td>
-  <td class="doc">Fails if the response does has a header named 'header_name'</td>
+  <td class="doc">Fails if the response does has a header named <span class="name">header_name</span></td>
 </tr>
 <tr>
   <td class="kw"><a name="Response Should Not Succeed"></a>Response Should Not Succeed</td>
@@ -306,14 +355,14 @@ Example:
   <td class="arg">status_code</td>
   <td class="doc">Fails if the response status code was not the specified one.
 
-'status_code' the status code to compare against.</td>
+<span class="name">status_code</span> the status code to compare against.</td>
 </tr>
 <tr>
   <td class="kw"><a name="Response Status Code Should Not Equal"></a>Response Status Code Should Not Equal</td>
   <td class="arg">status_code</td>
   <td class="doc">Fails if the response status code is equal to the one specified.
 
-'status_code' the status code to compare against.</td>
+<span class="name">status_code</span> the status code to compare against.</td>
 </tr>
 <tr>
   <td class="kw"><a name="Set Basic Auth"></a>Set Basic Auth</td>
@@ -322,7 +371,16 @@ Example:
 
 See <a href="http://en.wikipedia.org/wiki/Basic_access_authentication">http://en.wikipedia.org/wiki/Basic_access_authentication</a>
 
-'username' is the username to authenticate with, e.g. 'Aladdin' 'password' is the password to use, e.g. 'open sesame'</td>
+<span class="name">username</span> is the username to authenticate with, e.g. 'Aladdin'
+
+<span class="name">password</span> is the password to use, e.g. 'open sesame'</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Set Http Host"></a>Set Http Host</td>
+  <td class="arg">host</td>
+  <td class="doc">Sets the HTTP host to use for future requests. You must call this before issuing any HTTP requests.
+
+<span class="name">host</span> is the name of the host, optionally with port (e.g. 'google.com' or 'localhost:5984')</td>
 </tr>
 <tr>
   <td class="kw"><a name="Set Json Value"></a>Set Json Value</td>
@@ -350,14 +408,43 @@ Example:
 <tr>
   <td class="kw"><a name="Set Request Body"></a>Set Request Body</td>
   <td class="arg">body</td>
-  <td class="doc"></td>
+  <td class="doc">Set the request body for the next HTTP request.
+
+Example:
+<table border="1" class="doc">
+<tr>
+<td>Set Request Body</td>
+<td>user=Aladdin&amp;password=open%20sesame</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/login</td>
+</tr>
+<tr>
+<td><a href="#Response Should Succeed" class="name">Response Should Succeed</a></td>
+<td></td>
+</tr>
+</table></td>
 </tr>
 <tr>
   <td class="kw"><a name="Set Request Header"></a>Set Request Header</td>
   <td class="arg">header_name, header_value</td>
   <td class="doc">Sets a request header for the next request.
 
-'header_name' is the name of the header, e.g. 'User-Agent' 'header_value' is the key of the header, e.g. 'RobotFramework HttpLibrary (Mozilla/4.0)'</td>
+<span class="name">header_name</span> is the name of the header, e.g. <span class="name">User-Agent</span> <span class="name">header_value</span> is the key of the header, e.g. <span class="name">RobotFramework HttpLibrary (Mozilla/4.0)</span></td>
+</tr>
+<tr>
+  <td class="kw"><a name="Should Be Valid Json"></a>Should Be Valid Json</td>
+  <td class="arg">json_string</td>
+  <td class="doc">Attempts to parse <span class="name">json_string</span> as JSON. Fails, if <span class="name">json_string</span> is invalid JSON.
+
+Example:
+<table border="1" class="doc">
+<tr>
+<td>Should Be Valid Json</td>
+<td>{"foo": "bar"}</td>
+</tr>
+</table></td>
 </tr>
 <tr>
   <td class="kw"><a name="Show Response Body In Browser"></a>Show Response Body In Browser</td>
@@ -368,9 +455,9 @@ This is meant for debugging response body's with complex media types.</td>
 </tr>
 </table>
 <p id="footer">
-Altogether 27 keywords.<br />
+Altogether 29 keywords.<br />
 Generated by <a href="http://code.google.com/p/robotframework/wiki/LibraryDocumentationTool">libdoc.py</a>
-on 2011-08-24 01:57:59.
+on 2011-08-24 07:17:48.
 </p>
 </body>
 </html>
