@@ -64,3 +64,19 @@ Create Large JSON Document
     ${result}=       Get Json Value  ${document}  /repository/type
     Should Be Equal  ${result}       "git"
 
+Json Value Should Be OK
+    Set Test Variable        ${doc}  {"foo": {"bar": [1,2,3]}}
+    Json Value Should Equal  ${doc}  /foo/bar                   [1, 2, 3]
+
+Json Value Should Be Fail
+    Set Test Variable        ${doc}  {"foo": {"bar": [4,5,6]}}
+    Run Keyword And Expect Error
+    ...  JSON value "[4, 5, 6]" does not equal "[1, 2, 3]", but should have.
+    ...  Json Value Should Equal  ${doc}  /foo/bar  [1, 2, 3]
+
+Json Value Should Be Fail Invalid Pointer
+    Set Test Variable        ${doc}  {"foo": {"bar": [4,5,6]}}
+    Run Keyword And Expect Error
+    ...  JsonPointerException: 'baz' not found in {u'foo': {u'bar': [4, 5, 6]}}
+    ...  Json Value Should Equal  ${doc}  /baz  [7,8,9]
+
