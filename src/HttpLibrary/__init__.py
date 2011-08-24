@@ -222,7 +222,7 @@ class HTTP:
         """
         Set HTTP Basic Auth for next request.
 
-        See <a href="http://en.wikipedia.org/wiki/Basic_access_authentication">Wikipedia on "Basic access authentication"</a>.
+        See http://en.wikipedia.org/wiki/Basic_access_authentication
 
         'username' is the username to authenticate with, e.g. 'Aladdin'
         'password' is the password to use, e.g. 'open sesame'
