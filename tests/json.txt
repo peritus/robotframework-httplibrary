@@ -20,4 +20,4 @@ Get Json Value
 Set Json Value
     Set Test Variable  ${obj}          {"foo":"bar"}
     ${result}=         Set Json Value  ${obj}          /baz   9
-    Should Be Equal    ${result}       {"foo": "bar", "baz": "9"}
+    Should Be Equal    ${result}       {"foo": "bar", "baz": 9}
