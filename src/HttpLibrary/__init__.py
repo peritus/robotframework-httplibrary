@@ -37,7 +37,7 @@ class HTTP:
     @property
     def app(self):
         if not self._app:
-            raise Exception('Not connected to any HTTP Host. Use "Connect" keyword first.')
+            raise Exception('Not connected to any HTTP Host. Use "Set HTTP Host" keyword first.')
         return self._app
 
     @property
@@ -48,10 +48,10 @@ class HTTP:
 
     # setup
 
-    def connect(self, host):
+    def set_http_host(self, host):
         """
-        Sets the HTTP server for future requests. You must invoke this before
-        issuing any HTTP requests.
+        Sets the HTTP host to use for future requests. You must invoke this
+        before issuing any HTTP requests.
 
         'host' is the name of the host, optionally with port (e.g. 'google.com' or 'localhost:5984')
         """
