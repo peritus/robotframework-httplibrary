@@ -17,7 +17,15 @@ Get Json Value
     ${result}=         Get Json Value  ${obj}       /foo/another%20prop/baz
     Should Be Equal    ${result}       "A string"
 
+Get Json Value Documentation
+    ${result}=       Get Json Value  {"foo": {"bar": [1,2,3]}}  /foo/bar
+    Should Be Equal  ${result}       [1, 2, 3]
+
 Set Json Value
     Set Test Variable  ${obj}          {"foo":"bar"}
     ${result}=         Set Json Value  ${obj}          /baz   9
     Should Be Equal    ${result}       {"foo": "bar", "baz": 9}
+
+Set Json Value Documentation
+    ${result}=       Set Json Value  {"foo": {"bar": [1,2,3]}}  /foo  12
+    Should Be Equal  ${result}       {"foo": 12}

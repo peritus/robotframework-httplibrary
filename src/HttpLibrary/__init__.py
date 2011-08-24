@@ -15,8 +15,13 @@ def _with_json(f):
     return wrapper
 
 class HTTP:
+    """
+    HttpLibrary for Robot Framework
 
+    *JSON*
 
+    The JSON related keywords use JSON Pointer. To learn more about JSON Pointer, go to http://tools.ietf.org/html/draft-pbryan-zyp-json-pointer-00.
+    """
 
     # internal
 
@@ -232,14 +237,35 @@ class HTTP:
     # json
 
     def is_valid_json(self, json_string):
+        """
+        Attempts to parse `json_string` as JSON. Fails, if `json_string` is invalid JSON.
+
+        Example:
+        | Is Valid Json | {"foo": "bar"} |
+        """
         json.loads(json_string)
 
     @_with_json
     def get_json_value(self, json_string, json_pointer):
+        """
+        Get the target node of the JSON document `json_string` specified by `json_pointer`.
+
+        Example:
+        | ${result}=       | Get Json Value   | {"foo": {"bar": [1,2,3]}} | /foo/bar |
+        | Should Be Equal  | ${result}        | [1, 2, 3]                 |          |
+        """
         return jsonpointer.resolve_pointer(json_string, json_pointer)
 
     @_with_json
     def set_json_value(self, json_string, json_pointer, json_value):
+        """
+        Set the target node of the JSON document `json_string` specified by
+        JSON Pointer `json_pointer` to `json_value`.
+
+        Example:
+        | ${result}=       | Set Json Value | {"foo": {"bar": [1,2,3]}} | /foo | 12 |
+        | Should Be Equal  | ${result}      | {"foo": 12}               |      |    |
+        """
         value = json.loads(json_value)
         p = jsonpointer.set_pointer(json_string, json_pointer, value)
         return json_string
