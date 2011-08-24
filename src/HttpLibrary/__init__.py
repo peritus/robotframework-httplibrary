@@ -9,9 +9,9 @@ import jsonpointer
 
 def _with_json(f):
     @wraps(f)
-    def wrapper(self, string, *args, **kwargs):
+    def wrapper(self, json_string, *args, **kwargs):
         return json.dumps(
-          f(self, json.loads(string), *args, **kwargs))
+          f(self, json.loads(json_string), *args, **kwargs))
     return wrapper
 
 class HTTP:
