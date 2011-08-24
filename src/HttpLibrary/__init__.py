@@ -14,24 +14,9 @@ def _with_json(f):
           f(self, json.loads(string), *args, **kwargs))
     return wrapper
 
-class JSON:
-
-    def __init__(self):
-        pass
-
-    def is_valid_json(self, string):
-        return json.loads(string)
-
-    @_with_json
-    def get_json_value(self, string, pointer):
-        return jsonpointer.resolve_pointer(string, pointer)
-
-    @_with_json
-    def set_json_value(self, string, pointer, value):
-        p = jsonpointer.set_pointer(string, pointer, value)
-        return string
-
 class HTTP:
+
+
 
     # internal
 
@@ -243,6 +228,21 @@ class HTTP:
 
     def log_response_body(self, log_level='INFO'):
         LOGGER.write(self.response.body, log_level)
+
+    # json
+
+    def is_valid_json(self, json_string):
+        json.loads(json_string)
+
+    @_with_json
+    def get_json_value(self, json_string, json_pointer):
+        return jsonpointer.resolve_pointer(json_string, json_pointer)
+
+    @_with_json
+    def set_json_value(self, json_string, json_pointer, json_value):
+        value = json.loads(json_value)
+        p = jsonpointer.set_pointer(json_string, json_pointer, value)
+        return json_string
 
     # debug
 

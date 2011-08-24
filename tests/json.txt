@@ -1,6 +1,6 @@
 *** Setting ***
 
-Library  HttpLibrary.JSON
+Library  HttpLibrary.HTTP
 
 *** Test Cases ***
 
