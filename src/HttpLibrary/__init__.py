@@ -270,6 +270,14 @@ class HTTP:
         p = jsonpointer.set_pointer(json_string, json_pointer, value)
         return json_string
 
+    @_with_json
+    def log_json(self, json_string, log_level='INFO'):
+        """
+        Logs a pretty printed version of the JSON document `json_string`.
+        """
+        for line in json.dumps(json_string, indent=2).split('\n'):
+            LOGGER.write(line, log_level)
+
     # debug
 
     def show_response_body_in_browser(self):
