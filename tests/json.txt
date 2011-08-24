@@ -12,10 +12,16 @@ Should Be Valid Json FAIL
     ...  ValueError: No JSON object could be decoded
     ...  Should Be Valid JSON  -oh 748903
 
-Get Json Value
+Get Json Value OK
     Set Test Variable  ${obj}          {"foo":{"another prop":{"baz":"A string"}}}
     ${result}=         Get Json Value  ${obj}       /foo/another%20prop/baz
     Should Be Equal    ${result}       "A string"
+
+Get Json Value Fail
+    Set Test Variable  ${obj}          {"foo":{"another prop":{"baz":"A string"}}}
+    Run Keyword And Expect Error
+    ...  JsonPointerException: 'bar' not found in {u'baz': u'A string'}
+    ...  Get Json Value  ${obj}       /foo/another%20prop/bar
 
 Get Json Value Documentation
     ${result}=       Get Json Value  {"foo": {"bar": [1,2,3]}}  /foo/bar
