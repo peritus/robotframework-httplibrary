@@ -20,7 +20,8 @@ class HTTP:
 
     *JSON*
 
-    The JSON related keywords use JSON Pointer. To learn more about JSON Pointer, go to http://tools.ietf.org/html/draft-pbryan-zyp-json-pointer-00.
+    The JSON related keywords use JSON Pointer. To learn more about JSON
+    Pointer, go to http://tools.ietf.org/html/draft-pbryan-zyp-json-pointer-00.
     """
 
     # internal
@@ -50,10 +51,10 @@ class HTTP:
 
     def set_http_host(self, host):
         """
-        Sets the HTTP host to use for future requests. You must invoke this
+        Sets the HTTP host to use for future requests. You must call this
         before issuing any HTTP requests.
 
-        'host' is the name of the host, optionally with port (e.g. 'google.com' or 'localhost:5984')
+        `host` is the name of the host, optionally with port (e.g. 'google.com' or 'localhost:5984')
         """
         self._app = livetest.TestApp(host)
 
@@ -63,7 +64,7 @@ class HTTP:
         """
         Issues a HTTP HEAD request.
 
-        'url' is the URL relative to the server root, e.g. '/_utils/config.html'
+        `url` is the URL relative to the server root, e.g. '/_utils/config.html'
         """
         self._response = self.app.head(url, {}, self._request_headers)
         self._reset()
@@ -72,7 +73,7 @@ class HTTP:
         """
         Issues a HTTP GET request.
 
-        'url' is the URL relative to the server root, e.g. '/_utils/config.html'
+        `url` is the URL relative to the server root, e.g. '/_utils/config.html'
         """
         self._response = self.app.get(url, {}, self._request_headers)
         self._reset()
@@ -81,7 +82,7 @@ class HTTP:
         """
         Issues a HTTP POST request.
 
-        'url' is the URL relative to the server root, e.g. '/_utils/config.html'
+        `url` is the URL relative to the server root, e.g. '/_utils/config.html'
         """
         kwargs = {}
         if 'Content-Type' in self._request_headers:
@@ -93,7 +94,7 @@ class HTTP:
         """
         Issues a HTTP PUT request.
 
-        'url' is the URL relative to the server root, e.g. '/_utils/config.html'
+        `url` is the URL relative to the server root, e.g. '/_utils/config.html'
         """
         kwargs = {}
         if 'Content-Type' in self._request_headers:
@@ -105,7 +106,7 @@ class HTTP:
         """
         Issues a HTTP DELETE request.
 
-        'url' is the URL relative to the server root, e.g. '/_utils/config.html'
+        `url` is the URL relative to the server root, e.g. '/_utils/config.html'
         """
         self._response = self.app.delete(url, {}, self._request_headers)
         self._reset()
@@ -136,7 +137,7 @@ class HTTP:
         """
         Fails if the response status code was not the specified one.
 
-        'status_code' the status code to compare against.
+        `status_code` the status code to compare against.
         """
         assert self.response.status.startswith(status_code), \
                '"%s" does not start with "%s", but should have.' % (self.response.status, status_code)
@@ -145,7 +146,7 @@ class HTTP:
         """
         Fails if the response status code is equal to the one specified.
 
-        'status_code' the status code to compare against.
+        `status_code` the status code to compare against.
         """
         assert not self.response.status.startswith(status_code), \
                '"%s" starts with "%s", but should not.' % (self.response.status, status_code)
@@ -154,28 +155,28 @@ class HTTP:
 
     def response_should_have_header(self, header_name):
         """
-        Fails if the response does not have a header named 'header_name'
+        Fails if the response does not have a header named `header_name`
         """
         assert header_name in self.response.headers,\
                'Response did not have "%s" header, but should have.' % header_name
 
     def response_should_not_have_header(self, header_name):
         """
-        Fails if the response does has a header named 'header_name'
+        Fails if the response does has a header named `header_name`
         """
         assert not header_name in self.response.headers,\
                'Response did have "%s" header, but should not have.' % header_name
 
     def get_response_header(self, header_name):
         """
-        Get the response header with the name 'header_name'
+        Get the response header with the name `header_name`
         """
         self.response_should_have_header(header_name)
         return self.response.headers[header_name]
 
     def response_header_should_equal(self, header_name, expected):
         """
-        Fails if the value of response header 'header_name' does not equal 'expected'
+        Fails if the value of response header `header_name` does not equal `expected`
         """
         self.response_should_have_header(header_name)
         actual = self.response.headers[header_name]
@@ -194,6 +195,11 @@ class HTTP:
                     header_name, actual)
 
     def log_response_headers(self, log_level='INFO'):
+        """
+        Logs the response headers, line by line.
+
+        Specify `log_level` (default: "INFO") to set the log level.
+        """
         for name, value in self.response.headers.items():
             LOGGER.write("%s: %s" % (name, value), log_level)
 
@@ -203,8 +209,8 @@ class HTTP:
         """
         Sets a request header for the next request.
 
-        'header_name' is the name of the header, e.g. 'User-Agent'
-        'header_value' is the key of the header, e.g. 'RobotFramework HttpLibrary (Mozilla/4.0)'
+        `header_name` is the name of the header, e.g. `User-Agent`
+        `header_value` is the key of the header, e.g. `RobotFramework HttpLibrary (Mozilla/4.0)`
         """
         self._request_headers[header_name] = header_value
 
@@ -214,24 +220,54 @@ class HTTP:
 
         See http://en.wikipedia.org/wiki/Basic_access_authentication
 
-        'username' is the username to authenticate with, e.g. 'Aladdin'
-        'password' is the password to use, e.g. 'open sesame'
+        `username` is the username to authenticate with, e.g. 'Aladdin'
+
+        `password` is the password to use, e.g. 'open sesame'
         """
         self.set_request_header("Authorization", "Basic %s" % b64encode("%s:%s" % (username, password)))
 
     # payload
 
     def set_request_body(self, body):
+        """
+        Set the request body for the next HTTP request.
+
+        Example:
+        | Set Request Body           | user=Aladdin&password=open%20sesame |
+        | POST                       | /login                              |
+        | `Response Should Succeed`  |                                     |
+        """
         self._request_body = body.encode("utf-8")
 
     def get_response_body(self):
+        """
+        Get the response body.
+
+        Example:
+        | GET                 | /foo.xml          |                                      |
+        | ${body}=            | Get Response Body |                                      |
+        | Should Start With   | ${body}           | <?xml version="1.0" encoding="UTF-8" |
+        """
         return self.response.body
 
     def response_body_should_contain(self, should_contain):
+        """
+        Fails if the response body does not contain `should_contain`
+
+        Example:
+        | GET                          | /foo.xml         |
+        | Response Body Should Contain | version="1.0"    |
+        | Response Body Should Contain | encoding="UTF-8" |
+        """
         assert should_contain in self.response.body,\
                '"%s" should have contained "%s", but did not.' % (self.response.body, should_contain)
 
     def log_response_body(self, log_level='INFO'):
+        """
+        Logs the response body.
+
+        Specify `log_level` (default: "INFO") to set the log level.
+        """
         LOGGER.write(self.response.body, log_level)
 
     # json
