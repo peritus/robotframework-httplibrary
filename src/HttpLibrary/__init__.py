@@ -236,12 +236,12 @@ class HTTP:
 
     # json
 
-    def is_valid_json(self, json_string):
+    def should_be_valid_json(self, json_string):
         """
         Attempts to parse `json_string` as JSON. Fails, if `json_string` is invalid JSON.
 
         Example:
-        | Is Valid Json | {"foo": "bar"} |
+        | Should Be Valid Json | {"foo": "bar"} |
         """
         json.loads(json_string)
 

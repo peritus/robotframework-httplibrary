@@ -4,13 +4,13 @@ Library  HttpLibrary.HTTP
 
 *** Test Cases ***
 
-Is Valid Json OK
-    Is Valid JSON  {"foo": "bar"}
+Should Be Valid Json OK
+    Should Be Valid JSON  {"foo": "bar"}
 
-Is Valid Json FAIL
+Should Be Valid Json FAIL
     Run Keyword And Expect Error
     ...  ValueError: No JSON object could be decoded
-    ...  Is Valid JSON  -oh 748903
+    ...  Should Be Valid JSON  -oh 748903
 
 Get Json Value
     Set Test Variable  ${obj}          {"foo":{"another prop":{"baz":"A string"}}}
@@ -54,7 +54,7 @@ Create Large JSON Document
     ...  "main" : "./jsonpointer",
     ...  "scripts" : { "test" : "node test.js" }
     ...  }
-    Is Valid JSON    ${document}
+    Should Be Valid JSON    ${document}
     ${result}=       Get Json Value  ${document}  /repository/type
     Should Be Equal  ${result}       "git"
 
