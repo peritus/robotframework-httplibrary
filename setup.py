@@ -18,6 +18,7 @@ setup(
   license          = 'Beerware',
   keywords         = 'robotframework testing testautomation web http livetest webtest',
   platforms        = 'any',
+  zip_safe         = False,
   classifiers      = CLASSIFIERS.splitlines(),
   package_dir      = {'' : 'src'},
   install_requires = ['robotframework', 'livetest', 'jsonpointer'],
