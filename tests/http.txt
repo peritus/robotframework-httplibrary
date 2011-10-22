@@ -64,6 +64,11 @@ Response Should Not Succeed OK
     GET      /503
     Response Should Not Succeed
 
+HTTP Request with custom HTTP verb should work
+    [Setup]       Set HTTP Host  ${HOST}
+    HTTP Request  PATCH  /patch
+    Response Body Should Contain  Got a patch request
+
 Response Should Not Succeed FAIL
     [Setup]  Set HTTP Host  ${HOST}
     GET      /200

@@ -15,6 +15,12 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.wfile.write(self.requestline)
         self.finish()
 
+    def do_PATCH(self):
+        self.send_response(200, "Patch request ok")
+        self.end_headers()
+        self.wfile.write("Got a patch request")
+        self.finish()
+
     def do_GET(self):
         if self.path == '/200':
             self.send_response(200, "OK")

@@ -60,6 +60,17 @@ class HTTP:
 
     # request
 
+    def http_request(self, verb, url):
+        """
+        Issues a HTTP request with an uncommon HTTP Verb.
+
+        `verb` is the HTTP Verb to use, e.g. "PROPFIND", "PATCH", "OPTIONS"
+        `url` is the URL relative to the server root, e.g. '/_utils/config.html'
+        """
+        self._response = self._app.request(url, {}, self._request_headers,
+                method=verb.upper(),)
+        self._reset()
+
     def HEAD(self, url):
         """
         Issues a HTTP HEAD request.
