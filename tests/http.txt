@@ -1,3 +1,7 @@
+*** Variables ***
+
+${HOST}  localhost:36503
+
 *** Setting ***
 
 Library  HttpLibrary.HTTP
@@ -6,157 +10,131 @@ Library  OperatingSystem
 Suite Setup     Start Mockserver
 Suite Teardown  Stop Mockserver
 
-*** Variables ***
-
-${HOST}  localhost:36503
+Test Setup      Set HTTP Host  ${HOST}
 
 *** Test Cases ***
 
 Error if GET before connect
+    [Setup]  No Operation
     Run Keyword And Expect Error
     ...  Not connected to any HTTP Host. Use "Set HTTP Host" keyword first.
     ...  GET   /
 
 Simple GET
-    [Setup]  Set HTTP Host  ${HOST}
     GET      /200
 
 GET 200
-    [Setup]  Set HTTP Host  ${HOST}
     GET      /200
     Response Status Code Should Equal   200
 
 GET Body
-    [Setup]  Set HTTP Host  ${HOST}
     GET      /200
     Response Body Should Contain  Everything is ok
 
 GET 302
-    [Setup]  Set HTTP Host  ${HOST}
     GET      /302
     Response Status Code Should Equal   302
 
 GET 302 with follow
-    [Setup]  Set HTTP Host  ${HOST}
     GET      /302
     Follow Response
     Response Status Code Should Equal   200
 
 GET 418
-    [Setup]  Set HTTP Host  ${HOST}
     GET      /418
     Response Status Code Should Equal   418 I'm a teapot
 
 Response Should Succeed OK
-    [Setup]  Set HTTP Host  ${HOST}
     GET      /200
     Response Should Succeed
 
 Response Should Succeed FAIL
-    [Setup]  Set HTTP Host  ${HOST}
     GET      /404
     Run Keyword And Expect Error
     ...  Response should have succeeded, but was "404 Not Found".
     ...  Response Should Succeed
 
 Response Should Not Succeed OK
-    [Setup]  Set HTTP Host  ${HOST}
     GET      /503
     Response Should Not Succeed
 
 HTTP Request with custom HTTP verb should work
-    [Setup]       Set HTTP Host  ${HOST}
     HTTP Request  PATCH  /patch
     Response Body Should Contain  Got a patch request
 
 Response Should Not Succeed FAIL
-    [Setup]  Set HTTP Host  ${HOST}
     GET      /200
     Run Keyword And Expect Error
     ...  Response should not have succeeded, but was "200 OK".
     ...  Response Should Not Succeed
 
 Response Should Have Header OK
-    [Setup]  Set HTTP Host  ${HOST}
     GET      /302
     Response Should Have Header  Location
 
 Response Should Have Header FAIL
-    [Setup]  Set HTTP Host  ${HOST}
     GET      /200
     Run Keyword And Expect Error
     ...  Response did not have "Krytzmyk" header, but should have.
     ...  Response Should Have Header  Krytzmyk
 
 Response Should Not Have Header OK
-    [Setup]  Set HTTP Host  ${HOST}
     GET      /404
     Response Should Not Have Header  Location
 
 Response Should Not Have Header FAIL
-    [Setup]  Set HTTP Host  ${HOST}
     GET      /302
     Run Keyword And Expect Error
     ...  Response did have "Location" header, but should not have.
     ...  Response Should Not Have Header  Location
 
 Response Header Should Equal OK
-    [Setup]  Set HTTP Host  ${HOST}
     GET      /302
     Response Header Should Equal   Location  /200
 
 Response Header Should Equal FAIL
-    [Setup]  Set HTTP Host  ${HOST}
     GET      /302
     Run Keyword And Expect Error
     ...  Response header "Location" should have been "http://some.other.host/" but was "/200".
     ...  Response Header Should Equal   Location  http://some.other.host/
 
 Response Header Should Not Equal OK
-    [Setup]  Set HTTP Host  ${HOST}
     GET      /302
     Response Header Should Not Equal   Location  http://and.another.host/
 
 Response Header Should Not Equal FAIL
-    [Setup]  Set HTTP Host  ${HOST}
     GET      /302
     Run Keyword And Expect Error
     ...  Response header "Location" was "/200" but should not have been.
     ...  Response Header Should Not Equal   Location  /200
 
 Simple HEAD request
-    [Setup]  Set HTTP Host  ${HOST}
     HEAD     /head
     Response Should Not Succeed
     Response Status Code Should Equal   407
     Log Response Headers                WARN
 
 Simple DELETE request
-    [Setup]  Set HTTP Host  ${HOST}
     DELETE   /method
     Response Should Succeed
 
 Simple POST request
-    [Setup]   Set HTTP Host  ${HOST}
     POST      /echo
     Response Should Succeed
 
 POST with one word request body
-    [Setup]  Set HTTP Host        ${HOST}
     Set Request Body              Tooot
     Set Request Header            Content-Type    text/plain
     POST                          /echo
     Response Body Should Contain  Tooot
 
 PUT with two word request body
-    [Setup]  Set HTTP Host        ${HOST}
     Set Request Body              Tooot Tooooot
     Set Request Header            Content-Type    text/plain
     PUT                           /echo
     Response Body Should Contain  Tooot Tooooot
 
 Get Response Body
-    [Setup]  Set HTTP Host        ${HOST}
     Set Request Body              1234567890
     Set Request Header            Content-Type    text/plain
     POST                          /echo
@@ -164,27 +142,23 @@ Get Response Body
     Should Contain    ${body}     1234567890
 
 Log Response Body
-    [Setup]  Set HTTP Host        ${HOST}
     Set Request Body              Log me! Please!
     Set Request Header            Content-Type    text/plain
     POST                          /echo
     Log Response Body             WARN
 
 Set Request Header
-    [Setup]  Set HTTP Host              ${HOST}
     Set Request Header                  If-Modified-Since  February
     GET                                 /304
     Response Status Code Should Equal   304
 
 Set Content-Type Request Header
-    [Setup]  Set HTTP Host              ${HOST}
     Set Request Header                  Content-Type  image/gif
     POST                                /content_type
     Response Status Code Should Equal   200
     Response Body Should Contain        image/gif
 
 Set Basic Auth
-    [Setup]  Set HTTP Host              ${HOST}
     GET                                 /sesame
     Response Should Not Succeed
 
