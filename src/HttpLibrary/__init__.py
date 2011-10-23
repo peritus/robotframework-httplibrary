@@ -2,6 +2,7 @@ from robot.output import LOGGER
 
 from base64 import b64encode
 from functools import wraps
+from urlparse import urlparse
 
 import livetest
 import json
@@ -47,6 +48,19 @@ class HTTP:
             raise Exception('No request available, use e.g. GET to create one.')
         return self._response
 
+    def _path_from_url_or_path(self, url_or_path):
+
+        if url_or_path.startswith("/"):
+            return url_or_path
+
+        elif url_or_path.startswith("http"):
+            parsed_url = urlparse(url_or_path)
+            self.set_http_host(parsed_url.netloc)
+            return parsed_url.path
+
+        raise Exception('"%s" needs to be in form of "/path" or "http://host/path"'
+                % url_or_path)
+
     # setup
 
     def set_http_host(self, host):
@@ -67,7 +81,9 @@ class HTTP:
         `verb` is the HTTP Verb to use, e.g. "PROPFIND", "PATCH", "OPTIONS"
         `url` is the URL relative to the server root, e.g. '/_utils/config.html'
         """
-        self._response = self._app.request(url, {}, self._request_headers,
+        path = self._path_from_url_or_path(url)
+
+        self._response = self._app.request(path, {}, self._request_headers,
                 method=verb.upper(),)
         self._reset()
 
@@ -77,7 +93,8 @@ class HTTP:
 
         `url` is the URL relative to the server root, e.g. '/_utils/config.html'
         """
-        self._response = self.app.head(url, {}, self._request_headers)
+        path = self._path_from_url_or_path(url)
+        self._response = self.app.head(path, {}, self._request_headers)
         self._reset()
 
     def GET(self, url):
@@ -86,7 +103,8 @@ class HTTP:
 
         `url` is the URL relative to the server root, e.g. '/_utils/config.html'
         """
-        self._response = self.app.get(url, {}, self._request_headers)
+        path = self._path_from_url_or_path(url)
+        self._response = self.app.get(path, {}, self._request_headers)
         self._reset()
 
     def POST(self, url):
@@ -95,10 +113,11 @@ class HTTP:
 
         `url` is the URL relative to the server root, e.g. '/_utils/config.html'
         """
+        path = self._path_from_url_or_path(url)
         kwargs = {}
         if 'Content-Type' in self._request_headers:
             kwargs['content_type'] = self._request_headers['Content-Type']
-        self._response = self.app.post(url, self._request_body or {}, self._request_headers, **kwargs)
+        self._response = self.app.post(path, self._request_body or {}, self._request_headers, **kwargs)
         self._reset()
 
     def PUT(self, url):
@@ -107,10 +126,11 @@ class HTTP:
 
         `url` is the URL relative to the server root, e.g. '/_utils/config.html'
         """
+        path = self._path_from_url_or_path(url)
         kwargs = {}
         if 'Content-Type' in self._request_headers:
             kwargs['content_type'] = self._request_headers['Content-Type']
-        self._response = self.app.put(url, self._request_body or {}, self._request_headers, **kwargs)
+        self._response = self.app.put(path, self._request_body or {}, self._request_headers, **kwargs)
         self._reset()
 
     def DELETE(self, url):
@@ -119,7 +139,8 @@ class HTTP:
 
         `url` is the URL relative to the server root, e.g. '/_utils/config.html'
         """
-        self._response = self.app.delete(url, {}, self._request_headers)
+        path = self._path_from_url_or_path(url)
+        self._response = self.app.delete(path, {}, self._request_headers)
         self._reset()
 
     def follow_response(self):
