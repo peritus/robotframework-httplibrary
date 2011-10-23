@@ -246,7 +246,7 @@ class HTTP:
         Example:
         | Set Request Body           | user=Aladdin&password=open%20sesame |
         | POST                       | /login                              |
-        | `Response Should Succeed`  |                                     |
+        | Response Should Succeed  |                                     |
         """
         self._request_body = body.encode("utf-8")
 
