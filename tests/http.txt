@@ -20,8 +20,18 @@ Error if GET before connect
     ...  Not connected to any HTTP Host. Use "Set HTTP Host" keyword first.
     ...  GET   /
 
+Error if invalid URL
+    [Setup]  No Operation
+    Run Keyword And Expect Error
+    ...  "NEITHER_URL_NOR_PATH" needs to be in form of "/path" or "http://host/path"
+    ...  GET   NEITHER_URL_NOR_PATH
+
 Simple GET
     GET      /200
+
+Simple GET with complete host
+    [Setup]  No Operation
+    GET      http://${HOST}/200
 
 GET 200
     GET      /200
