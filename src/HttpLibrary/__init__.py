@@ -8,11 +8,17 @@ import livetest
 import json
 import jsonpointer
 
+def load_json(json_string):
+    try:
+        return json.loads(json_string)
+    except ValueError, e:
+        raise ValueError("Could not parse '%s' as JSON: %s" % (json_string, e))
+
 def _with_json(f):
     @wraps(f)
     def wrapper(self, json_string, *args, **kwargs):
         return json.dumps(
-          f(self, json.loads(json_string), *args, **kwargs))
+          f(self, load_json(json_string), *args, **kwargs))
     return wrapper
 
 class HTTP:
@@ -315,7 +321,7 @@ class HTTP:
         Example:
         | Should Be Valid Json | {"foo": "bar"} |
         """
-        json.loads(json_string)
+        load_json(json_string)
 
     @_with_json
     def get_json_value(self, json_string, json_pointer):
@@ -370,7 +376,7 @@ class HTTP:
         | ${result}=       | Set Json Value | {"foo": {"bar": [1,2,3]}} | /foo | 12 |
         | Should Be Equal  | ${result}      | {"foo": 12}               |      |    |
         """
-        value = json.loads(json_value)
+        value = load_json(json_value)
         p = jsonpointer.set_pointer(json_string, json_pointer, value)
         return json_string
 

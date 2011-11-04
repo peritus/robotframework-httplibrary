@@ -9,7 +9,7 @@ Should Be Valid Json OK
 
 Should Be Valid Json FAIL
     Run Keyword And Expect Error
-    ...  ValueError: No JSON object could be decoded
+    ...  ValueError: Could not parse '-oh 748903' as JSON: No JSON object could be decoded
     ...  Should Be Valid JSON  -oh 748903
 
 Get Json Value OK
