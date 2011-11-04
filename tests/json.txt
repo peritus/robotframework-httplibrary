@@ -68,6 +68,10 @@ Json Value Should Be OK
     Set Test Variable        ${doc}  {"foo": {"bar": [1,2,3]}}
     Json Value Should Equal  ${doc}  /foo/bar                   [1, 2, 3]
 
+Json Value Should Not Be OK
+    Set Test Variable            ${doc}  {"foo": {"bar": [1,2,3]}}
+    Json Value Should Not Equal  ${doc}  /foo/bar                   [4, 9, 18]
+
 Json Value Should Be Fail
     Set Test Variable        ${doc}  {"foo": {"bar": [4,5,6]}}
     Run Keyword And Expect Error

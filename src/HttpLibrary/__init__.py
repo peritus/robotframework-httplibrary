@@ -343,6 +343,23 @@ class HTTP:
         assert got == expected_value, \
                'JSON value "%s" does not equal "%s", but should have.' % (got, expected_value)
 
+
+    def json_value_should_not_equal(self, json_string, json_pointer, expected_value):
+        """
+        Fails if the value of the target node of the JSON document
+        `json_string` specified by JSON Pointer `json_pointer` is `expected_value`.
+
+        Example:
+        | Set Test Variable           | ${doc}  | {"foo": {"bar": [1,2,3]}} |             |
+        | Json Value Should Not Equal | ${doc}  | /foo/bar                  | "[1, 2, 3]" |
+        """
+
+        got = self.get_json_value(json_string, json_pointer)
+
+        assert got != expected_value, \
+               'JSON value "%s" does not equal "%s", but should have.' % (got, expected_value)
+
+
     @_with_json
     def set_json_value(self, json_string, json_pointer, json_value):
         """
