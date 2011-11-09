@@ -34,11 +34,42 @@ class HTTP:
     # internal
 
     def __init__(self):
-        self._app = None
-        self._response = None
-        self._reset()
 
-    def _reset(self):
+        # the livetest http context
+        self._app = None
+
+        # the last request
+        self._response = None
+
+        # requirements for the next request
+        # None -> no requirements
+        # True -> request should succeed
+        # False -> request should not succeed
+        # string -> response status code should startwith(string)
+        self._next_request_should = None
+
+        # setup new http context
+        self._post_process_request()
+
+    def _post_process_request(self):
+
+        # check flag set by "Next Request Should Succeed"
+        if self._next_request_should == True:
+            assert int(self.response.status[0:3]) < 400, \
+               'Request should have succeeded, but was "%s".' % \
+               self.response.status
+
+        # check flag set by "Next Request Should Not Succeed"
+        elif self._next_request_should == False:
+            assert int(self.response.status[0:3]) >= 400, \
+               'Request should not have succeeded, but was "%s".' % \
+               self.response.status
+
+        elif self._next_request_should:
+            self.response_status_code_should_equal(self._next_request_should)
+
+        # prepare next request context
+        self._next_request_should = True
         self._request_headers = {}
         self._request_body = None
 
@@ -91,7 +122,7 @@ class HTTP:
 
         self._response = self._app.request(path, {}, self._request_headers,
                 method=verb.upper(),)
-        self._reset()
+        self._post_process_request()
 
     def HEAD(self, url):
         """
@@ -101,7 +132,7 @@ class HTTP:
         """
         path = self._path_from_url_or_path(url)
         self._response = self.app.head(path, {}, self._request_headers)
-        self._reset()
+        self._post_process_request()
 
     def GET(self, url):
         """
@@ -111,7 +142,7 @@ class HTTP:
         """
         path = self._path_from_url_or_path(url)
         self._response = self.app.get(path, {}, self._request_headers)
-        self._reset()
+        self._post_process_request()
 
     def POST(self, url):
         """
@@ -124,7 +155,7 @@ class HTTP:
         if 'Content-Type' in self._request_headers:
             kwargs['content_type'] = self._request_headers['Content-Type']
         self._response = self.app.post(path, self._request_body or {}, self._request_headers, **kwargs)
-        self._reset()
+        self._post_process_request()
 
     def PUT(self, url):
         """
@@ -137,7 +168,7 @@ class HTTP:
         if 'Content-Type' in self._request_headers:
             kwargs['content_type'] = self._request_headers['Content-Type']
         self._response = self.app.put(path, self._request_body or {}, self._request_headers, **kwargs)
-        self._reset()
+        self._post_process_request()
 
     def DELETE(self, url):
         """
@@ -147,7 +178,7 @@ class HTTP:
         """
         path = self._path_from_url_or_path(url)
         self._response = self.app.delete(path, {}, self._request_headers)
-        self._reset()
+        self._post_process_request()
 
     def follow_response(self):
         """
@@ -155,10 +186,38 @@ class HTTP:
         """
         self._response = self.response.follow()
 
+
+    def next_request_may_not_succeed(self, status_code=None):
+        """
+        Don't fail the next request if it's status code is >= 400
+        """
+        self._next_request_should = None
+
+    def next_request_should_succeed(self, status_code=None):
+        """
+        Fails the next request if it's status code is >= 400. This is the
+        standard behaviour (only use this keyword if you specified `Next
+        Request Should Not Succeed` earlier.
+        """
+        self._next_request_should = True
+
+    def next_request_should_not_succeed(self):
+        """
+        Fails the next request if it's status code is < 400
+        """
+        self._next_request_should = False
+
+    def next_request_should_have_status_code(self, status_code=None):
+        """
+        Fails the next request if it's status code is different from `status_code`.
+        """
+        self._next_request_should = status_code
+
     # status code
 
     def response_should_succeed(self):
         """
+        *DEPRECATED*
         Fails if the response status code of the previous request was >= 400
         """
         assert int(self.response.status[0:3]) < 400, \
@@ -166,6 +225,7 @@ class HTTP:
 
     def response_should_not_succeed(self):
         """
+        *DEPRECATED*
         Fails if the response status code of the previous request was < 400
         """
         assert int(self.response.status[0:3]) > 399, \
@@ -173,7 +233,8 @@ class HTTP:
 
     def response_status_code_should_equal(self, status_code):
         """
-        Fails if the response status code was not the specified one.
+        Fails if the response status code of the previous request was not the
+        specified one.
 
         `status_code` the status code to compare against.
         """
@@ -182,7 +243,8 @@ class HTTP:
 
     def response_status_code_should_not_equal(self, status_code):
         """
-        Fails if the response status code is equal to the one specified.
+        Fails if the response status code of the previous request is equal to
+        the one specified.
 
         `status_code` the status code to compare against.
         """

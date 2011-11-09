@@ -6,7 +6,7 @@ from sys import exit
 class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
     def do_HEAD(self):
-        self.send_response(407, "Payment required")
+        self.send_response(200, "No payment required")
         self.end_headers()
 
     def do_DELETE(self):
