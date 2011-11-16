@@ -27,6 +27,18 @@ Get Json Value Documentation
     ${result}=       Get Json Value  {"foo": {"bar": [1,2,3]}}  /foo/bar
     Should Be Equal  ${result}       [1, 2, 3]
 
+Parse Json True
+    ${result}=       Parse Json      true
+    Should Be True   ${result}
+
+Parse Json Null
+    ${result}=                  Parse Json      null
+    Should Be Equal As Strings  ${result}       None
+
+Parse Json Array
+    ${result}=        Parse Json      [1,2,3,4,5,6,7,8,9,10]
+    Length Should Be  ${result}       10
+
 Set Json Value
     Set Test Variable  ${obj}          {"foo":"bar"}
     ${result}=         Set Json Value  ${obj}          /baz   9

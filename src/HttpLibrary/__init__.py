@@ -383,7 +383,17 @@ class HTTP:
         Example:
         | Should Be Valid Json | {"foo": "bar"} |
         """
-        load_json(json_string)
+        self.parse_json(json_string)
+
+    def parse_json(self, json_string):
+        """
+        Parses the JSON document `json_string` and returns a Python datastructure.
+
+        Example:
+        | ${result}=       | Parse Json  | [1, 2, 3] |
+        | Length Should Be | ${result}   | 3         |
+        """
+        return load_json(json_string)
 
     @_with_json
     def get_json_value(self, json_string, json_pointer):
