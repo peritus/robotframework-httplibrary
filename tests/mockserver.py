@@ -7,6 +7,7 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
     def do_HEAD(self):
         self.send_response(200, "No payment required")
+        self.send_header('x-powered-by', 'PHP')
         self.end_headers()
 
     def do_DELETE(self):

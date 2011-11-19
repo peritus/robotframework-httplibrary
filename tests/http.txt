@@ -158,7 +158,13 @@ Response Header Should Not Equal FAIL
 
 Simple HEAD request
     HEAD     /head
-    Log Response Headers                WARN
+
+Log Response Headers
+    [Documentation]
+    ...  LOG 2:1   REGEXP: ^date: .+
+    ...  LOG 2:2   x-powered-by: PHP
+    HEAD     /head
+    Log Response Headers
 
 Simple DELETE request
     DELETE   /method
@@ -186,10 +192,12 @@ Get Response Body
     Should Contain    ${body}     1234567890
 
 Log Response Body
-    Set Request Body              Log me! Please!
+    [Documentation]
+    ...                 LOG 4:1   Hallo!
+    Set Request Body              Hallo!
     Set Request Header            Content-Type    text/plain
     POST                          /echo
-    Log Response Body             WARN
+    Log Response Body
 
 Set Request Header
     Set Request Header                  If-Modified-Since  February
