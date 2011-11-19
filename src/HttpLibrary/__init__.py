@@ -276,7 +276,9 @@ class HTTP:
 
     def response_header_should_equal(self, header_name, expected):
         """
-        Fails if the value of response header `header_name` does not equal `expected`
+        Fails if the value of response header `header_name` does not equal
+        `expected`. Also fails if the last response does not have a
+        `header_name` header.
         """
         self.response_should_have_header(header_name)
         actual = self.response.headers[header_name]
@@ -286,7 +288,8 @@ class HTTP:
 
     def response_header_should_not_equal(self, header_name, not_expected):
         """
-        Fails if the value of response header 'header_name' equals 'expected'
+        Fails if the value of response header `header_name` equals `expected`
+        Also fails if the last response does not have a `header_name` header.
         """
         self.response_should_have_header(header_name)
         actual = self.response.headers[header_name]
