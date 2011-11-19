@@ -1,4 +1,4 @@
-from robot.output import LOGGER
+from robot.api import logger
 
 from base64 import b64encode
 from functools import wraps
@@ -301,7 +301,7 @@ class HTTP:
         Specify `log_level` (default: "INFO") to set the log level.
         """
         for name, value in self.response.headers.items():
-            LOGGER.write("%s: %s" % (name, value), log_level)
+            logger.write("%s: %s" % (name, value), log_level)
 
     # request headers
 
@@ -312,7 +312,7 @@ class HTTP:
         `header_name` is the name of the header, e.g. `User-Agent`
         `header_value` is the key of the header, e.g. `RobotFramework HttpLibrary (Mozilla/4.0)`
         """
-        LOGGER.write('Set request header "%s" to "%s"' % (header_name, header_value), 'INFO')
+        logger.info('Set request header "%s" to "%s"' % (header_name, header_value))
         self._request_headers[header_name] = header_value
 
     def set_basic_auth(self, username, password):
@@ -326,7 +326,7 @@ class HTTP:
         `password` is the password to use, e.g. 'open sesame'
         """
         credentials = "%s:%s" % (username, password)
-        LOGGER.write('Set basic auth to "%s"' % credentials, 'INFO')
+        logger.info('Set basic auth to "%s"' % credentials)
         self.set_request_header("Authorization", "Basic %s" % b64encode(credentials))
 
     # payload
@@ -340,7 +340,7 @@ class HTTP:
         | POST                       | /login                              |
         | Response Should Succeed  |                                     |
         """
-        LOGGER.write('Request body set to "%s".' % body, 'INFO')
+        logger.info('Request body set to "%s".' % body)
         self._request_body = body.encode("utf-8")
 
     def get_response_body(self):
@@ -372,7 +372,7 @@ class HTTP:
 
         Specify `log_level` (default: "INFO") to set the log level.
         """
-        LOGGER.write(self.response.body, log_level)
+        logger.write(self.response.body, log_level)
 
     # json
 
@@ -458,7 +458,7 @@ class HTTP:
         Logs a pretty printed version of the JSON document `json_string`.
         """
         for line in json.dumps(json_string, indent=2).split('\n'):
-            LOGGER.write(line, log_level)
+            logger.write(line, log_level)
 
     # debug
 
