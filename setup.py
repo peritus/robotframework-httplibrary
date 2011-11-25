@@ -16,11 +16,11 @@ setup(
   author_email     = 'filip+rfhttplibrary@j03.de',
   url              = 'https://github.com/peritus/robotframework-httplibrary',
   license          = 'Beerware',
-  keywords         = 'robotframework testing testautomation web http livetest webtest',
+  keywords         = 'robotframework testing testautomation web http webtest',
   platforms        = 'any',
   zip_safe         = False,
   classifiers      = CLASSIFIERS.splitlines(),
   package_dir      = {'' : 'src'},
-  install_requires = ['robotframework', 'livetest', 'jsonpointer'],
+  install_requires = ['robotframework', 'webtest', 'jsonpointer'],
   packages         = ['HttpLibrary']
 )

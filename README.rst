@@ -10,13 +10,6 @@ underneath.)
 Installation
 ------------
 
-**Note**: Due to a problem in livetest's package metadata (reported here:
-(`https://github.com/storborg/livetest/pull/6
-<https://github.com/storborg/livetest/pull/6>`_) you need to install webtest
-first:
-
-``pip install webtest``
-
 Then, install robotframework-httplibrary
 
 ``pip install --upgrade robotframework-httplibrary``
