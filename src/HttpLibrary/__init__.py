@@ -51,7 +51,26 @@ class HTTP:
         # setup new http context
         self._post_process_request()
 
+    def _pre_process_request(self):
+
+        if len(self._request_headers.items()) > 0:
+            logger.debug("Request headers:")
+            for name, value in self._request_headers.items():
+                logger.debug("%s: %s" % (name, value))
+        else:
+            logger.debug("No request headers set")
+
+        if self._request_body is None:
+            logger.debug("No request body set")
+        else:
+            logger.debug("Request body:")
+            logger.debug(self._request_body)
+
     def _post_process_request(self):
+
+        if self._response != None:
+            self.log_response_headers('DEBUG')
+            self.log_response_body('DEBUG')
 
         # check flag set by "Next Request Should Succeed"
         if self._next_request_should == True:
@@ -120,6 +139,7 @@ class HTTP:
         """
         path = self._path_from_url_or_path(url)
 
+        self._pre_process_request()
         self._response = self._app.request(path, {}, self._request_headers,
                 method=verb.upper(),)
         self._post_process_request()
@@ -131,6 +151,7 @@ class HTTP:
         `url` is the URL relative to the server root, e.g. '/_utils/config.html'
         """
         path = self._path_from_url_or_path(url)
+        self._pre_process_request()
         self._response = self.app.head(path, {}, self._request_headers)
         self._post_process_request()
 
@@ -141,6 +162,7 @@ class HTTP:
         `url` is the URL relative to the server root, e.g. '/_utils/config.html'
         """
         path = self._path_from_url_or_path(url)
+        self._pre_process_request()
         self._response = self.app.get(path, {}, self._request_headers)
         self._post_process_request()
 
@@ -154,6 +176,7 @@ class HTTP:
         kwargs = {}
         if 'Content-Type' in self._request_headers:
             kwargs['content_type'] = self._request_headers['Content-Type']
+        self._pre_process_request()
         self._response = self.app.post(path, self._request_body or {}, self._request_headers, **kwargs)
         self._post_process_request()
 
@@ -167,6 +190,7 @@ class HTTP:
         kwargs = {}
         if 'Content-Type' in self._request_headers:
             kwargs['content_type'] = self._request_headers['Content-Type']
+        self._pre_process_request()
         self._response = self.app.put(path, self._request_body or {}, self._request_headers, **kwargs)
         self._post_process_request()
 
@@ -177,6 +201,7 @@ class HTTP:
         `url` is the URL relative to the server root, e.g. '/_utils/config.html'
         """
         path = self._path_from_url_or_path(url)
+        self._pre_process_request()
         self._response = self.app.delete(path, {}, self._request_headers)
         self._post_process_request()
 
@@ -303,6 +328,7 @@ class HTTP:
 
         Specify `log_level` (default: "INFO") to set the log level.
         """
+        logger.write("Response headers:", log_level)
         for name, value in self.response.headers.items():
             logger.write("%s: %s" % (name, value), log_level)
 
@@ -375,7 +401,11 @@ class HTTP:
 
         Specify `log_level` (default: "INFO") to set the log level.
         """
-        logger.write(self.response.body, log_level)
+        if self.response.body:
+            logger.write("Response body:", log_level)
+            logger.write(self.response.body, log_level)
+        else:
+            logger.debug("No response body received", log_level)
 
     # json
 

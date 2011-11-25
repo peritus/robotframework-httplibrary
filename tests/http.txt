@@ -161,8 +161,9 @@ Simple HEAD request
 
 Log Response Headers
     [Documentation]
-    ...  LOG 2:1   REGEXP: ^date: .+
-    ...  LOG 2:2   x-powered-by: PHP
+    ...  LOG 2:1   Response headers:
+    ...  LOG 2:2   REGEXP: ^date: .+
+    ...  LOG 2:3   x-powered-by: PHP
     HEAD     /head
     Log Response Headers
 
@@ -193,7 +194,8 @@ Get Response Body
 
 Log Response Body
     [Documentation]
-    ...                 LOG 4:1   Hallo!
+    ...                 LOG 4:1   Response body:
+    ...                 LOG 4:2   Hallo!
     Set Request Body              Hallo!
     Set Request Header            Content-Type    text/plain
     POST                          /echo
