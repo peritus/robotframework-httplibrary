@@ -1,11 +1,10 @@
 rvm:
    - 1.9.3
 before_script:
-  - sudo pip install webtest
   - sudo python bootstrap.py --distribute
   - sudo ./bin/buildout
 script:
-  - ./bin/robotframework tests/
+  - ./bin/robotframework --monitorwidth 65 tests/
 env:
   - SKIP_COVERAGE=1 SKIP_INSTALL=1
 
