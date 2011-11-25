@@ -126,6 +126,7 @@ class HTTP:
 
         `host` is the name of the host, optionally with port (e.g. 'google.com' or 'localhost:5984')
         """
+        logger.info("Host for next HTTP request set to '%s'" % host)
         self._app = livetest.TestApp(host)
 
     # request
@@ -467,8 +468,11 @@ class HTTP:
 
         got = self.get_json_value(json_string, json_pointer)
 
-        assert got != expected_value, \
-               'JSON value "%s" does not equal "%s", but should have.' % (got, expected_value)
+        message = 'JSON value "%s" does not equal "%s"' % (got, expected_value)
+
+        assert got != expected_value, "%s, but should have." % message
+
+        logger.debug("%s." % message)
 
 
     @_with_json
