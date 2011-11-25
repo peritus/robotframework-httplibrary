@@ -9,7 +9,7 @@ Topic :: Software Development :: Testing
 
 setup(
   name             = 'robotframework-httplibrary',
-  version          = "0.1.1",
+  version          = "0.1.2",
   description      = 'Robot Framework wrapper for livetest',
   long_description = "Robot Framework wrapper for livetest",
   author           = 'Filip Noetzel',
