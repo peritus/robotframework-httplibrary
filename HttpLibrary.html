@@ -117,7 +117,11 @@ The JSON related keywords use JSON Pointer. To learn more about JSON Pointer, go
 &nbsp;&middot;&nbsp;
 <a href="#HEAD" title="Issues a HTTP HEAD request.">HEAD</a>
 &nbsp;&middot;&nbsp;
+<a href="#Http Request" title="Issues a HTTP request with an uncommon HTTP Verb.">Http&nbsp;Request</a>
+&nbsp;&middot;&nbsp;
 <a href="#Json Value Should Equal" title="Fails if the value of the target node of the JSON document">Json&nbsp;Value&nbsp;Should&nbsp;Equal</a>
+&nbsp;&middot;&nbsp;
+<a href="#Json Value Should Not Equal" title="Fails if the value of the target node of the JSON document">Json&nbsp;Value&nbsp;Should&nbsp;Not&nbsp;Equal</a>
 &nbsp;&middot;&nbsp;
 <a href="#Log Json" title="Logs a pretty printed version of the JSON document `json_string`.">Log&nbsp;Json</a>
 &nbsp;&middot;&nbsp;
@@ -125,27 +129,37 @@ The JSON related keywords use JSON Pointer. To learn more about JSON Pointer, go
 &nbsp;&middot;&nbsp;
 <a href="#Log Response Headers" title="Logs the response headers, line by line.">Log&nbsp;Response&nbsp;Headers</a>
 &nbsp;&middot;&nbsp;
+<a href="#Next Request May Not Succeed" title="Don't fail the next request if it's status code is &gt;= 400">Next&nbsp;Request&nbsp;May&nbsp;Not&nbsp;Succeed</a>
+&nbsp;&middot;&nbsp;
+<a href="#Next Request Should Have Status Code" title="Fails the next request if it's status code is different from `status_code`.">Next&nbsp;Request&nbsp;Should&nbsp;Have&nbsp;Status&nbsp;Code</a>
+&nbsp;&middot;&nbsp;
+<a href="#Next Request Should Not Succeed" title="Fails the next request if it's status code is &lt; 400">Next&nbsp;Request&nbsp;Should&nbsp;Not&nbsp;Succeed</a>
+&nbsp;&middot;&nbsp;
+<a href="#Next Request Should Succeed" title="Fails the next request if it's status code is &gt;= 400. This is the">Next&nbsp;Request&nbsp;Should&nbsp;Succeed</a>
+&nbsp;&middot;&nbsp;
+<a href="#Parse Json" title="Parses the JSON document `json_string` and returns a Python datastructure.">Parse&nbsp;Json</a>
+&nbsp;&middot;&nbsp;
 <a href="#POST" title="Issues a HTTP POST request.">POST</a>
 &nbsp;&middot;&nbsp;
 <a href="#PUT" title="Issues a HTTP PUT request.">PUT</a>
 &nbsp;&middot;&nbsp;
 <a href="#Response Body Should Contain" title="Fails if the response body does not contain `should_contain`">Response&nbsp;Body&nbsp;Should&nbsp;Contain</a>
 &nbsp;&middot;&nbsp;
-<a href="#Response Header Should Equal" title="Fails if the value of response header `header_name` does not equal `expected`">Response&nbsp;Header&nbsp;Should&nbsp;Equal</a>
+<a href="#Response Header Should Equal" title="Fails if the value of response header `header_name` does not equal">Response&nbsp;Header&nbsp;Should&nbsp;Equal</a>
 &nbsp;&middot;&nbsp;
-<a href="#Response Header Should Not Equal" title="Fails if the value of response header 'header_name' equals 'expected'">Response&nbsp;Header&nbsp;Should&nbsp;Not&nbsp;Equal</a>
+<a href="#Response Header Should Not Equal" title="Fails if the value of response header `header_name` equals `expected`">Response&nbsp;Header&nbsp;Should&nbsp;Not&nbsp;Equal</a>
 &nbsp;&middot;&nbsp;
 <a href="#Response Should Have Header" title="Fails if the response does not have a header named `header_name`">Response&nbsp;Should&nbsp;Have&nbsp;Header</a>
 &nbsp;&middot;&nbsp;
 <a href="#Response Should Not Have Header" title="Fails if the response does has a header named `header_name`">Response&nbsp;Should&nbsp;Not&nbsp;Have&nbsp;Header</a>
 &nbsp;&middot;&nbsp;
-<a href="#Response Should Not Succeed" title="Fails if the response status code of the previous request was &lt; 400">Response&nbsp;Should&nbsp;Not&nbsp;Succeed</a>
+<a href="#Response Should Not Succeed" title="*DEPRECATED*">Response&nbsp;Should&nbsp;Not&nbsp;Succeed</a>
 &nbsp;&middot;&nbsp;
-<a href="#Response Should Succeed" title="Fails if the response status code of the previous request was &gt;= 400">Response&nbsp;Should&nbsp;Succeed</a>
+<a href="#Response Should Succeed" title="*DEPRECATED*">Response&nbsp;Should&nbsp;Succeed</a>
 &nbsp;&middot;&nbsp;
-<a href="#Response Status Code Should Equal" title="Fails if the response status code was not the specified one.">Response&nbsp;Status&nbsp;Code&nbsp;Should&nbsp;Equal</a>
+<a href="#Response Status Code Should Equal" title="Fails if the response status code of the previous request was not the">Response&nbsp;Status&nbsp;Code&nbsp;Should&nbsp;Equal</a>
 &nbsp;&middot;&nbsp;
-<a href="#Response Status Code Should Not Equal" title="Fails if the response status code is equal to the one specified.">Response&nbsp;Status&nbsp;Code&nbsp;Should&nbsp;Not&nbsp;Equal</a>
+<a href="#Response Status Code Should Not Equal" title="Fails if the response status code of the previous request is equal to">Response&nbsp;Status&nbsp;Code&nbsp;Should&nbsp;Not&nbsp;Equal</a>
 &nbsp;&middot;&nbsp;
 <a href="#Set Basic Auth" title="Set HTTP Basic Auth for next request.">Set&nbsp;Basic&nbsp;Auth</a>
 &nbsp;&middot;&nbsp;
@@ -246,6 +260,13 @@ Example:
 <span class="name">url</span> is the URL relative to the server root, e.g. '/_utils/config.html'</td>
 </tr>
 <tr>
+  <td class="kw"><a name="Http Request"></a>Http Request</td>
+  <td class="arg">verb, url</td>
+  <td class="doc">Issues a HTTP request with an uncommon HTTP Verb.
+
+<span class="name">verb</span> is the HTTP Verb to use, e.g. "PROPFIND", "PATCH", "OPTIONS" <span class="name">url</span> is the URL relative to the server root, e.g. '/_utils/config.html'</td>
+</tr>
+<tr>
   <td class="kw"><a name="Json Value Should Equal"></a>Json Value Should Equal</td>
   <td class="arg">json_string, json_pointer, expected_value</td>
   <td class="doc">Fails if the value of the target node of the JSON document <span class="name">json_string</span> specified by JSON Pointer <span class="name">json_pointer</span> is not <span class="name">expected_value</span>.
@@ -260,6 +281,27 @@ Example:
 </tr>
 <tr>
 <td>Json Value Should Equal</td>
+<td>${doc}</td>
+<td>/foo/bar</td>
+<td>"[1, 2, 3]"</td>
+</tr>
+</table></td>
+</tr>
+<tr>
+  <td class="kw"><a name="Json Value Should Not Equal"></a>Json Value Should Not Equal</td>
+  <td class="arg">json_string, json_pointer, expected_value</td>
+  <td class="doc">Fails if the value of the target node of the JSON document <span class="name">json_string</span> specified by JSON Pointer <span class="name">json_pointer</span> is <span class="name">expected_value</span>.
+
+Example:
+<table border="1" class="doc">
+<tr>
+<td>Set Test Variable</td>
+<td>${doc}</td>
+<td>{"foo": {"bar": [1,2,3]}}</td>
+<td></td>
+</tr>
+<tr>
+<td>Json Value Should Not Equal</td>
 <td>${doc}</td>
 <td>/foo/bar</td>
 <td>"[1, 2, 3]"</td>
@@ -284,6 +326,45 @@ Specify <span class="name">log_level</span> (default: "INFO") to set the log lev
   <td class="doc">Logs the response headers, line by line.
 
 Specify <span class="name">log_level</span> (default: "INFO") to set the log level.</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Next Request May Not Succeed"></a>Next Request May Not Succeed</td>
+  <td class="arg">status_code=None</td>
+  <td class="doc">Don't fail the next request if it's status code is &gt;= 400</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Next Request Should Have Status Code"></a>Next Request Should Have Status Code</td>
+  <td class="arg">status_code=None</td>
+  <td class="doc">Fails the next request if it's status code is different from <span class="name">status_code</span>.</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Next Request Should Not Succeed"></a>Next Request Should Not Succeed</td>
+  <td class="arg"></td>
+  <td class="doc">Fails the next request if it's status code is &lt; 400</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Next Request Should Succeed"></a>Next Request Should Succeed</td>
+  <td class="arg">status_code=None</td>
+  <td class="doc">Fails the next request if it's status code is &gt;= 400. This is the standard behaviour (only use this keyword if you specified <a href="#Next Request Should Not Succeed" class="name">Next Request Should Not Succeed</a> earlier.</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Parse Json"></a>Parse Json</td>
+  <td class="arg">json_string</td>
+  <td class="doc">Parses the JSON document <span class="name">json_string</span> and returns a Python datastructure.
+
+Example:
+<table border="1" class="doc">
+<tr>
+<td>${result}=</td>
+<td>Parse Json</td>
+<td>[1, 2, 3]</td>
+</tr>
+<tr>
+<td>Length Should Be</td>
+<td>${result}</td>
+<td>3</td>
+</tr>
+</table></td>
 </tr>
 <tr>
   <td class="kw"><a name="POST"></a>POST</td>
@@ -323,12 +404,12 @@ Example:
 <tr>
   <td class="kw"><a name="Response Header Should Equal"></a>Response Header Should Equal</td>
   <td class="arg">header_name, expected</td>
-  <td class="doc">Fails if the value of response header <span class="name">header_name</span> does not equal <span class="name">expected</span></td>
+  <td class="doc">Fails if the value of response header <span class="name">header_name</span> does not equal <span class="name">expected</span>. Also fails if the last response does not have a <span class="name">header_name</span> header.</td>
 </tr>
 <tr>
   <td class="kw"><a name="Response Header Should Not Equal"></a>Response Header Should Not Equal</td>
   <td class="arg">header_name, not_expected</td>
-  <td class="doc">Fails if the value of response header 'header_name' equals 'expected'</td>
+  <td class="doc">Fails if the value of response header <span class="name">header_name</span> equals <span class="name">expected</span> Also fails if the last response does not have a <span class="name">header_name</span> header.</td>
 </tr>
 <tr>
   <td class="kw"><a name="Response Should Have Header"></a>Response Should Have Header</td>
@@ -343,24 +424,24 @@ Example:
 <tr>
   <td class="kw"><a name="Response Should Not Succeed"></a>Response Should Not Succeed</td>
   <td class="arg"></td>
-  <td class="doc">Fails if the response status code of the previous request was &lt; 400</td>
+  <td class="doc"><b>DEPRECATED</b> Fails if the response status code of the previous request was &lt; 400</td>
 </tr>
 <tr>
   <td class="kw"><a name="Response Should Succeed"></a>Response Should Succeed</td>
   <td class="arg"></td>
-  <td class="doc">Fails if the response status code of the previous request was &gt;= 400</td>
+  <td class="doc"><b>DEPRECATED</b> Fails if the response status code of the previous request was &gt;= 400</td>
 </tr>
 <tr>
   <td class="kw"><a name="Response Status Code Should Equal"></a>Response Status Code Should Equal</td>
   <td class="arg">status_code</td>
-  <td class="doc">Fails if the response status code was not the specified one.
+  <td class="doc">Fails if the response status code of the previous request was not the specified one.
 
 <span class="name">status_code</span> the status code to compare against.</td>
 </tr>
 <tr>
   <td class="kw"><a name="Response Status Code Should Not Equal"></a>Response Status Code Should Not Equal</td>
   <td class="arg">status_code</td>
-  <td class="doc">Fails if the response status code is equal to the one specified.
+  <td class="doc">Fails if the response status code of the previous request is equal to the one specified.
 
 <span class="name">status_code</span> the status code to compare against.</td>
 </tr>
@@ -421,7 +502,7 @@ Example:
 <td>/login</td>
 </tr>
 <tr>
-<td><a href="#Response Should Succeed" class="name">Response Should Succeed</a></td>
+<td>Response Should Succeed</td>
 <td></td>
 </tr>
 </table></td>
@@ -455,9 +536,9 @@ This is meant for debugging response body's with complex media types.</td>
 </tr>
 </table>
 <p id="footer">
-Altogether 29 keywords.<br />
+Altogether 36 keywords.<br />
 Generated by <a href="http://code.google.com/p/robotframework/wiki/LibraryDocumentationTool">libdoc.py</a>
-on 2011-08-24 07:17:48.
+on 2011-11-25 17:04:23.
 </p>
 </body>
 </html>
