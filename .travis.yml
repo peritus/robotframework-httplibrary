@@ -1,0 +1,10 @@
+rvm:
+   - 1.9.3
+before_script:
+  - sudo python bootstrap.py --distribute
+  - sudo ./bin/buildout
+script:
+  - ./bin/robotframework tests/
+env:
+  - SKIP_COVERAGE=1 SKIP_INSTALL=1
+
