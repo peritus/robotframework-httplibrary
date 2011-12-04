@@ -37,11 +37,13 @@ Library       HttpLibrary.HTTP
 ============  =================================  ===================================
  Test Case    Action                             Argument
 ============  =================================  ===================================
-Example       [Documentation]                    Follows A Redirect
-\             Connect                            `httpstat.us <http://httpstat.us>`_
+Example
+\             [Documentation]                    Follows a Redirect
+\             Set HTTP Host                      `httpstat.us <http://httpstat.us>`_
 \             GET                                /302
+\             Response Status Code Should Equal  302
 \             Follow Response
-\             Response Status Code Should Equal  200
+\             Response Body Should Contain       generating different HTTP codes
 ============  =================================  ===================================
 
 Compatibility
