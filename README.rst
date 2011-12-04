@@ -46,6 +46,11 @@ Example
 \             Response Body Should Contain       generating different HTTP codes
 ============  =================================  ===================================
 
+You can view a `report <http://peritus.github.com/robotframework-httplibrary/report.html>`_ and a `log <http://peritus.github.com/robotframework-httplibrary/log.html>`_ of this test executed that looks like this:
+
+.. image:: http://peritus.github.com/robotframework-httplibrary/rfhttplib_example_test_execution.png
+  :target: http://peritus.github.com/robotframework-httplibrary/log.html
+
 Compatibility
 -------------
 This library is only tested on CPython. It might work on Jython, not sure.
