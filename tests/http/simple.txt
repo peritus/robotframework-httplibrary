@@ -42,6 +42,20 @@ GET 302 with follow
     Follow Response
     Response Status Code Should Equal   200
 
+GET 200 with follow
+    GET      /200_with_location_header
+
+    Run Keyword And Expect Error
+    ...  You can only follow redirect responses (not 200 OK)
+    ...  Follow Response
+
+Follow redirect response without location header
+    GET      /301_no_location_header
+
+    Run Keyword And Expect Error
+    ...  Can not follow a response without a location header.
+    ...  Follow Response
+
 GET 418
     Next Request Should Not Succeed
     GET      /418

@@ -28,6 +28,13 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write("Everything is ok!")
             self.finish()
+        elif self.path == '/200_with_location_header':
+            self.send_response(200, "OK")
+            self.send_header('Location', '/200')
+            self.end_headers()
+        elif self.path == '/301_no_location_header':
+            self.send_response(301, "Redirect with no location header, hehe")
+            self.end_headers()
         elif self.path == '/302':
             self.send_response(302, "Redirect")
             self.send_header('Location', '/200')

@@ -222,6 +222,14 @@ class HTTP:
         """
         Follows a HTTP redirect if the previous response status code was a 301 or 302.
         """
+        location = self.response.headers.get('location')
+
+        if location is None:
+            self.log_response_headers('INFO')
+            raise Exception("Can not follow a response without a location header.")
+
+        logger.debug("Following response, last response's Location header was %s" % location)
+
         self._response = self.response.follow()
 
 
