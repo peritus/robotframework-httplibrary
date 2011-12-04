@@ -1,3 +1,7 @@
+
+.. image:: https://secure.travis-ci.org/peritus/robotframework-httplibrary.png
+  :target: http://travis-ci.org/peritus/robotframework-httplibrary
+
 robotframework-httplibrary
 --------------------------
 
