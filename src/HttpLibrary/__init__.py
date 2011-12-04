@@ -31,6 +31,8 @@ class HTTP:
     Pointer, go to http://tools.ietf.org/html/draft-pbryan-zyp-json-pointer-00.
     """
 
+    ROBOT_LIBRARY_SCOPE = 'TEST SUITE'
+
     # internal
 
     def __init__(self):
