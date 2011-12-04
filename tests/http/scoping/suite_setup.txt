@@ -1,0 +1,11 @@
+*** Settings ***
+
+Resource        ../../variables.txt
+Library         HttpLibrary.HTTP
+Suite Setup     Set HTTP Host     ${HOST}
+
+*** Test Cases ***
+
+Execute Request
+    GET           /200
+
