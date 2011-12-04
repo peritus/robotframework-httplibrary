@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generated="20111204 14:25:58.269" generator="Robot 2.6.3 (Python 2.7.1 on darwin)">
+<suite source="/Users/filip/workspace/robotframework-httplib/README.rst" name="README">
+<doc></doc>
+<metadata>
+</metadata>
+<test name="Example" timeout="">
+<doc>Follows a Redirect</doc>
+<kw type="kw" name="HttpLibrary.HTTP.Set Http Host" timeout="">
+<doc>Sets the HTTP host to use for future requests. You must call this</doc>
+<arguments>
+<arg>httpstat.us</arg>
+</arguments>
+<msg timestamp="20111204 14:25:58.325" level="INFO">Host for next HTTP request set to 'httpstat.us'</msg>
+<status status="PASS" endtime="20111204 14:25:58.325" starttime="20111204 14:25:58.325"></status>
+</kw>
+<kw type="kw" name="HttpLibrary.HTTP.GET" timeout="">
+<doc>Issues a HTTP GET request.</doc>
+<arguments>
+<arg>/302</arg>
+</arguments>
+<msg timestamp="20111204 14:25:58.326" level="DEBUG">No request headers set</msg>
+<msg timestamp="20111204 14:25:58.326" level="DEBUG">No request body set</msg>
+<msg timestamp="20111204 14:25:58.326" level="DEBUG">Performing GET request on http://httpstat.us/302</msg>
+<msg timestamp="20111204 14:25:58.722" level="DEBUG">Response status line: 302 Moved Temporarily</msg>
+<msg timestamp="20111204 14:25:58.722" level="DEBUG">Response headers:</msg>
+<msg timestamp="20111204 14:25:58.722" level="DEBUG">content-length: 41</msg>
+<msg timestamp="20111204 14:25:58.722" level="DEBUG">x-varnish: 2131953944</msg>
+<msg timestamp="20111204 14:25:58.723" level="DEBUG">age: 0</msg>
+<msg timestamp="20111204 14:25:58.723" level="DEBUG">server: nginx/0.7.67</msg>
+<msg timestamp="20111204 14:25:58.723" level="DEBUG">connection: keep-alive</msg>
+<msg timestamp="20111204 14:25:58.723" level="DEBUG">via: 1.1 varnish</msg>
+<msg timestamp="20111204 14:25:58.723" level="DEBUG">location: http://httpstat.us</msg>
+<msg timestamp="20111204 14:25:58.723" level="DEBUG">date: Sun, 04 Dec 2011 13:25:58 GMT</msg>
+<msg timestamp="20111204 14:25:58.723" level="DEBUG">access-control-allow-origin: *</msg>
+<msg timestamp="20111204 14:25:58.723" level="DEBUG">content-type: text/plain</msg>
+<msg timestamp="20111204 14:25:58.723" level="DEBUG">Response body:</msg>
+<msg timestamp="20111204 14:25:58.724" level="DEBUG">302 Found
+
+Location: http://httpstat.us</msg>
+<status status="PASS" endtime="20111204 14:25:58.724" starttime="20111204 14:25:58.326"></status>
+</kw>
+<kw type="kw" name="HttpLibrary.HTTP.Response Status Code Should Equal" timeout="">
+<doc>Fails if the response status code of the previous request was not the</doc>
+<arguments>
+<arg>302</arg>
+</arguments>
+<status status="PASS" endtime="20111204 14:25:58.724" starttime="20111204 14:25:58.724"></status>
+</kw>
+<kw type="kw" name="HttpLibrary.HTTP.Follow Response" timeout="">
+<doc>Follows a HTTP redirect if the previous response status code was a 301 or 302.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20111204 14:25:58.725" level="DEBUG">Following response, last response's Location header was http://httpstat.us</msg>
+<status status="PASS" endtime="20111204 14:25:59.208" starttime="20111204 14:25:58.725"></status>
+</kw>
+<kw type="kw" name="HttpLibrary.HTTP.Response Body Should Contain" timeout="">
+<doc>Fails if the response body does not contain `should_contain`</doc>
+<arguments>
+<arg>generating different HTTP codes</arg>
+</arguments>
+<status status="PASS" endtime="20111204 14:25:59.209" starttime="20111204 14:25:59.209"></status>
+</kw>
+<tags>
+</tags>
+<status status="PASS" endtime="20111204 14:25:59.209" critical="yes" starttime="20111204 14:25:58.324"></status>
+</test>
+<status status="PASS" endtime="20111204 14:25:59.210" starttime="20111204 14:25:58.269"></status>
+</suite>
+<statistics>
+<total>
+<stat fail="0" pass="1">Critical Tests</stat>
+<stat fail="0" pass="1">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat fail="0" name="README" idx="s1" pass="1">README</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
