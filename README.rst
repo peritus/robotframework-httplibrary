@@ -9,14 +9,15 @@ robotframework-httplibrary
 <http://code.google.com/p/robotframework/>`_ test library for all your HTTP
 needs. It uses `livetest <http://pypi.python.org/pypi/livetest>`_ (which, in
 turn uses the famous `webtest <http://webtest.pythonpaste.org/>`_ library
-underneath.)
+underneath).
 
 Installation
 ------------
 
-Then, install robotframework-httplibrary
+You can install robotframework-httplibrary via `pip
+<http://www.pip-installer.org/>`_::
 
-``pip install --upgrade robotframework-httplibrary``
+  pip install --upgrade robotframework-httplibrary
 
 Usage
 -----
