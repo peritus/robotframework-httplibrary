@@ -7,11 +7,14 @@ Programming Language :: Python
 Topic :: Software Development :: Testing
 """[1:-1]
 
+from os.path import join, dirname
+long_description=open(join(dirname(__file__), 'README.rst',)).read()
+
 setup(
   name             = 'robotframework-httplibrary',
   version          = "0.1.3",
-  description      = 'Robot Framework wrapper for livetest',
-  long_description = "Robot Framework wrapper for livetest",
+  description      = 'Robot Framework keywords for HTTP requests',
+  long_description = long_description,
   author           = 'Filip Noetzel',
   author_email     = 'filip+rfhttplibrary@j03.de',
   url              = 'https://github.com/peritus/robotframework-httplibrary',
