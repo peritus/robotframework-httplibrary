@@ -261,22 +261,6 @@ class HTTP:
 
     # status code
 
-    def response_should_succeed(self):
-        """
-        *DEPRECATED*
-        Fails if the response status code of the previous request was >= 400
-        """
-        assert int(self.response.status[0:3]) < 400, \
-               'Response should have succeeded, but was "%s".' % self.response.status
-
-    def response_should_not_succeed(self):
-        """
-        *DEPRECATED*
-        Fails if the response status code of the previous request was < 400
-        """
-        assert int(self.response.status[0:3]) > 399, \
-               'Response should not have succeeded, but was "%s".' % self.response.status
-
     def response_status_code_should_equal(self, status_code):
         """
         Fails if the response status code of the previous request was not the

@@ -96,31 +96,9 @@ Next Request Should Have Status Code w/ Status Line FAIL
     ...  "418 I'm a teapot" does not start with "418 I'm a teaCUP", but should have.
     ...  GET      /418
 
-Response Should Succeed OK
-    GET      /200
-    Response Should Succeed
-
-Response Should Succeed FAIL
-    Next Request Should Not Succeed
-    GET      /404
-    Run Keyword And Expect Error
-    ...  Response should have succeeded, but was "404 Not Found".
-    ...  Response Should Succeed
-
-Response Should Not Succeed OK
-    Next Request May Not Succeed
-    GET      /503
-    Response Should Not Succeed
-
 HTTP Request with custom HTTP verb should work
     HTTP Request  PATCH  /patch
     Response Body Should Contain  Got a patch request
-
-Response Should Not Succeed FAIL
-    GET      /200
-    Run Keyword And Expect Error
-    ...  Response should not have succeeded, but was "200 OK".
-    ...  Response Should Not Succeed
 
 Response Should Have Header OK
     GET      /302
