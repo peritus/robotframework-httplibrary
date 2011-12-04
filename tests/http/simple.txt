@@ -1,16 +1,8 @@
-*** Variables ***
+*** Settings ***
 
-${HOST}  localhost:36503
-
-*** Setting ***
-
-Library  HttpLibrary.HTTP
-Library  OperatingSystem
-
-Suite Setup     Start Mockserver
-Suite Teardown  Stop Mockserver
-
-Test Setup      Set HTTP Host  ${HOST}
+Resource        ../variables.txt
+Library         HttpLibrary.HTTP
+Test Setup      Set HTTP Host     ${HOST}
 
 *** Test Cases ***
 
@@ -220,14 +212,3 @@ Set Basic Auth
     GET                                 /sesame
     Response Status Code Should Equal   200
     Response Body Should Contain        sesame street
-
-*** Keywords ***
-
-Start Mockserver
-    Start Process  tests/mockserver.py
-    Sleep  0.2
-
-Stop Mockserver
-    Set HTTP Host  ${HOST}
-    POST           /kill
-

@@ -1,0 +1,20 @@
+*** Settings ***
+
+Library         HttpLibrary.HTTP
+Library         OperatingSystem
+
+Resource        ../variables.txt
+
+Suite Setup     Start Mockserver
+Suite Teardown  Stop Mockserver
+
+*** Keywords ***
+
+Start Mockserver
+    Start Process  tests/http/mockserver.py
+    Sleep  0.2
+
+Stop Mockserver
+    Set HTTP Host  ${HOST}
+    POST           /kill
+
