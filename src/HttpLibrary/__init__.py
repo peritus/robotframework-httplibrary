@@ -413,6 +413,15 @@ class HTTP:
         else:
             logger.debug("No response body received", log_level)
 
+    def log_response_status(self, log_level='INFO'):
+        """
+        Logs the response status line
+
+        Specify `log_level` (default: "INFO") to set the log level.
+        """
+
+        logger.write("Response status line: %s" % self.response.status, log_level)
+
     # json
 
     def should_be_valid_json(self, json_string):
