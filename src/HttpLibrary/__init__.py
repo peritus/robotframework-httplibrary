@@ -71,6 +71,7 @@ class HTTP:
     def _post_process_request(self):
 
         if self._response != None:
+            self.log_response_status('DEBUG')
             self.log_response_headers('DEBUG')
             self.log_response_body('DEBUG')
 
@@ -146,6 +147,7 @@ class HTTP:
         path = self._path_from_url_or_path(url)
 
         self._pre_process_request()
+        logger.debug("Performing %s request on http://%s%s" % (verb, self.app.host, url,))
         self._response = self._app.request(path, {}, self._request_headers,
                 method=verb.upper(),)
         self._post_process_request()
@@ -158,6 +160,7 @@ class HTTP:
         """
         path = self._path_from_url_or_path(url)
         self._pre_process_request()
+        logger.debug("Performing HEAD request on http://%s%s" % (self.app.host, url,))
         self._response = self.app.head(path, {}, self._request_headers)
         self._post_process_request()
 
@@ -169,6 +172,7 @@ class HTTP:
         """
         path = self._path_from_url_or_path(url)
         self._pre_process_request()
+        logger.debug("Performing GET request on http://%s%s" % (self.app.host, url))
         self._response = self.app.get(path, {}, self._request_headers)
         self._post_process_request()
 
@@ -182,6 +186,7 @@ class HTTP:
         kwargs = {}
         if 'Content-Type' in self._request_headers:
             kwargs['content_type'] = self._request_headers['Content-Type']
+        logger.debug("Performing POST request on http://%s%s" % (self.app.host, url))
         self._pre_process_request()
         self._response = self.app.post(path, self._request_body or {}, self._request_headers, **kwargs)
         self._post_process_request()
@@ -197,6 +202,7 @@ class HTTP:
         if 'Content-Type' in self._request_headers:
             kwargs['content_type'] = self._request_headers['Content-Type']
         self._pre_process_request()
+        logger.debug("Performing PUT request on http://%s%s" % (self.app.host, url))
         self._response = self.app.put(path, self._request_body or {}, self._request_headers, **kwargs)
         self._post_process_request()
 
@@ -208,6 +214,7 @@ class HTTP:
         """
         path = self._path_from_url_or_path(url)
         self._pre_process_request()
+        logger.debug("Performing DELETE request on %s" % url)
         self._response = self.app.delete(path, {}, self._request_headers)
         self._post_process_request()
 
