@@ -72,25 +72,28 @@ class HTTP:
             self.log_response_headers('DEBUG')
             self.log_response_body('DEBUG')
 
+        next_request_should = self._next_request_should
+
+        # prepare next request context, even if one of the following assertions
+        # fail
+        self._next_request_should = True
+        self._request_headers = {}
+        self._request_body = None
+
         # check flag set by "Next Request Should Succeed"
-        if self._next_request_should == True:
+        if next_request_should == True:
             assert int(self.response.status[0:3]) < 400, \
                'Request should have succeeded, but was "%s".' % \
                self.response.status
 
         # check flag set by "Next Request Should Not Succeed"
-        elif self._next_request_should == False:
+        elif next_request_should == False:
             assert int(self.response.status[0:3]) >= 400, \
                'Request should not have succeeded, but was "%s".' % \
                self.response.status
 
-        elif self._next_request_should:
-            self.response_status_code_should_equal(self._next_request_should)
-
-        # prepare next request context
-        self._next_request_should = True
-        self._request_headers = {}
-        self._request_body = None
+        elif next_request_should:
+            self.response_status_code_should_equal(next_request_should)
 
     @property
     def app(self):
