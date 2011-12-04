@@ -212,3 +212,15 @@ Set Basic Auth
     GET                                 /sesame
     Response Status Code Should Equal   200
     Response Body Should Contain        sesame street
+
+Request context is resetted correctly
+    Next Request Should Have Status Code  418 I'm a teaCUP
+    Run Keyword And Expect Error
+    ...  "418 I'm a teapot" does not start with "418 I'm a teaCUP", but should have.
+    ...  GET      /418
+
+    # so far so good, the next request should succeed because the condition in
+    # the previous lines have already been executed and should be reset for the
+    # following line:
+
+    GET  /200
