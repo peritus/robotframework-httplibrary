@@ -43,14 +43,14 @@ class HTTP:
                 self.app = None
 
             # the last request
-            self._response = None
+            self.response = None
 
             # requirements for the next request
             # None -> no requirements
             # True -> request should succeed
             # False -> request should not succeed
             # string -> response status code should startwith(string)
-            self._next_request_should = None
+            self.next_request_should = None
 
             # setup new http context
             self.post_process_request(None)
@@ -63,39 +63,39 @@ class HTTP:
             else:
                 logger.debug("No request headers set")
 
-            if self._request_body is None:
+            if self.request_body is None:
                 logger.debug("No request body set")
             else:
                 logger.debug("Request body:")
-                logger.debug(self._request_body)
+                logger.debug(self.request_body)
 
         def post_process_request(self, response):
-            self._response = response
+            self.response = response
 
             if response != None:
                 self._http.log_response_status('DEBUG')
                 self._http.log_response_headers('DEBUG')
                 self._http.log_response_body('DEBUG')
 
-            next_request_should = self._next_request_should
+            next_request_should = self.next_request_should
 
             # prepare next request context, even if one of the following assertions
             # fail
-            self._next_request_should = True
+            self.next_request_should = True
             self.request_headers = {}
-            self._request_body = None
+            self.request_body = None
 
             # check flag set by "Next Request Should Succeed"
             if next_request_should == True:
-                assert int(self._response.status[0:3]) < 400, \
+                assert int(self.response.status[0:3]) < 400, \
                    'Request should have succeeded, but was "%s".' % \
-                   self._response.status
+                   self.response.status
 
             # check flag set by "Next Request Should Not Succeed"
             elif next_request_should == False:
-                assert int(self._response.status[0:3]) >= 400, \
+                assert int(self.response.status[0:3]) >= 400, \
                    'Request should not have succeeded, but was "%s".' % \
-                   self._response.status
+                   self.response.status
 
             elif next_request_should:
                 self._http.response_status_code_should_equal(next_request_should)
@@ -119,9 +119,9 @@ class HTTP:
 
     @property
     def response(self):
-        if not self.context._response:
+        if not self.context.response:
             raise Exception('No request available, use e.g. GET to create one.')
-        return self.context._response
+        return self.context.response
 
     def _path_from_url_or_path(self, url_or_path):
 
@@ -223,7 +223,7 @@ class HTTP:
         logger.debug("Performing POST request on http://%s%s" % (self.app.host, url))
         self.context.pre_process_request()
         self.context.post_process_request(
-          self.app.post(path, self.context._request_body or {}, self.context.request_headers, **kwargs)
+          self.app.post(path, self.context.request_body or {}, self.context.request_headers, **kwargs)
         )
 
     def PUT(self, url):
@@ -239,7 +239,7 @@ class HTTP:
         self.context.pre_process_request()
         logger.debug("Performing PUT request on http://%s%s" % (self.app.host, url))
         self.context.post_process_request(
-          self.app.put(path, self.context._request_body or {}, self.context.request_headers, **kwargs)
+          self.app.put(path, self.context.request_body or {}, self.context.request_headers, **kwargs)
         )
 
     def DELETE(self, url):
@@ -267,34 +267,34 @@ class HTTP:
 
         logger.debug("Following response, last response's Location header was %s" % location)
 
-        self.context._response = self.response.follow()
+        self.context.response = self.response.follow()
 
 
-    def next_request_may_not_succeed(self, status_code=None):
+    def next_request_may_not_succeed(self):
         """
         Don't fail the next request if it's status code is >= 400
         """
-        self.context._next_request_should = None
+        self.context.next_request_should = None
 
-    def next_request_should_succeed(self, status_code=None):
+    def next_request_should_succeed(self):
         """
         Fails the next request if it's status code is >= 400. This is the
         standard behaviour (only use this keyword if you specified `Next
         Request Should Not Succeed` earlier.
         """
-        self.context._next_request_should = True
+        self.context.next_request_should = True
 
     def next_request_should_not_succeed(self):
         """
         Fails the next request if it's status code is < 400
         """
-        self.context._next_request_should = False
+        self.context.next_request_should = False
 
     def next_request_should_have_status_code(self, status_code=None):
         """
         Fails the next request if it's status code is different from `status_code`.
         """
-        self.context._next_request_should = status_code
+        self.context.next_request_should = status_code
 
     # status code
 
@@ -324,14 +324,14 @@ class HTTP:
         """
         Fails if the response does not have a header named `header_name`
         """
-        assert header_name in self.response.headers,\
+        assert header_name in self.response.headers, \
                'Response did not have "%s" header, but should have.' % header_name
 
     def response_should_not_have_header(self, header_name):
         """
         Fails if the response does has a header named `header_name`
         """
-        assert not header_name in self.response.headers,\
+        assert not header_name in self.response.headers, \
                'Response did have "%s" header, but should not have.' % header_name
 
     def get_response_header(self, header_name):
@@ -349,7 +349,7 @@ class HTTP:
         """
         self.response_should_have_header(header_name)
         actual = self.response.headers[header_name]
-        assert actual == expected,\
+        assert actual == expected, \
                'Response header "%s" should have been "%s" but was "%s".' % (
                     header_name, expected, actual)
 
@@ -360,7 +360,7 @@ class HTTP:
         """
         self.response_should_have_header(header_name)
         actual = self.response.headers[header_name]
-        assert actual != not_expected,\
+        assert actual != not_expected, \
                'Response header "%s" was "%s" but should not have been.' % (
                     header_name, actual)
 
@@ -412,7 +412,7 @@ class HTTP:
         | Response Should Succeed  |                                     |
         """
         logger.info('Request body set to "%s".' % body)
-        self.context._request_body = body.encode("utf-8")
+        self.context.request_body = body.encode("utf-8")
 
     def get_response_body(self):
         """
@@ -434,7 +434,7 @@ class HTTP:
         | Response Body Should Contain | version="1.0"    |
         | Response Body Should Contain | encoding="UTF-8" |
         """
-        assert should_contain in self.response.body,\
+        assert should_contain in self.response.body, \
                '"%s" should have contained "%s", but did not.' % (self.response.body, should_contain)
 
     def log_response_body(self, log_level='INFO'):
@@ -555,4 +555,4 @@ class HTTP:
 
         This is meant for debugging response body's with complex media types.
         """
-        self.context._response.showbrowser()
+        self.context.response.showbrowser()
