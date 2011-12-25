@@ -282,7 +282,7 @@ class HTTP:
         standard behaviour (only use this keyword if you specified `Next
         Request Should Not Succeed` earlier.
         """
-        self._next_request_should = True
+        self.context._next_request_should = True
 
     def next_request_should_not_succeed(self):
         """

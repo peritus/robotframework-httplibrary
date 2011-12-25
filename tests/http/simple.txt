@@ -33,6 +33,11 @@ GET Body
     GET      /200
     Response Body Should Contain  Everything is ok
 
+Should Succeed Should Not Should
+    Next Request Should Not Succeed
+    Next Request Should Succeed
+    GET      /200
+
 GET 302
     GET      /302
     Response Status Code Should Equal   302
