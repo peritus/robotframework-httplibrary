@@ -31,84 +31,97 @@ class HTTP:
     Pointer, go to http://tools.ietf.org/html/draft-pbryan-zyp-json-pointer-00.
     """
 
+    class Context(object):
+        def __init__(self, http, host=None):
+            # daddy
+            self._http = http
+
+            # the livetest app
+            if host:
+                self.app = livetest.TestApp(host)
+            else:
+                self.app = None
+
+            # the last request
+            self._response = None
+
+            # requirements for the next request
+            # None -> no requirements
+            # True -> request should succeed
+            # False -> request should not succeed
+            # string -> response status code should startwith(string)
+            self._next_request_should = None
+
+            # setup new http context
+            self.post_process_request(None)
+
+        def pre_process_request(self):
+            if len(self.request_headers.items()) > 0:
+                logger.debug("Request headers:")
+                for name, value in self.request_headers.items():
+                    logger.debug("%s: %s" % (name, value))
+            else:
+                logger.debug("No request headers set")
+
+            if self._request_body is None:
+                logger.debug("No request body set")
+            else:
+                logger.debug("Request body:")
+                logger.debug(self._request_body)
+
+        def post_process_request(self, response):
+            self._response = response
+
+            if response != None:
+                self._http.log_response_status('DEBUG')
+                self._http.log_response_headers('DEBUG')
+                self._http.log_response_body('DEBUG')
+
+            next_request_should = self._next_request_should
+
+            # prepare next request context, even if one of the following assertions
+            # fail
+            self._next_request_should = True
+            self.request_headers = {}
+            self._request_body = None
+
+            # check flag set by "Next Request Should Succeed"
+            if next_request_should == True:
+                assert int(self._response.status[0:3]) < 400, \
+                   'Request should have succeeded, but was "%s".' % \
+                   self._response.status
+
+            # check flag set by "Next Request Should Not Succeed"
+            elif next_request_should == False:
+                assert int(self._response.status[0:3]) >= 400, \
+                   'Request should not have succeeded, but was "%s".' % \
+                   self._response.status
+
+            elif next_request_should:
+                self._http.response_status_code_should_equal(next_request_should)
+
     ROBOT_LIBRARY_SCOPE = 'TEST SUITE'
 
     # internal
 
     def __init__(self):
+        self._contexts = [HTTP.Context(self)]
 
-        # the livetest http context
-        self._app = None
-
-        # the last request
-        self._response = None
-
-        # requirements for the next request
-        # None -> no requirements
-        # True -> request should succeed
-        # False -> request should not succeed
-        # string -> response status code should startwith(string)
-        self._next_request_should = None
-
-        # setup new http context
-        self._post_process_request()
-
-    def _pre_process_request(self):
-
-        if len(self._request_headers.items()) > 0:
-            logger.debug("Request headers:")
-            for name, value in self._request_headers.items():
-                logger.debug("%s: %s" % (name, value))
-        else:
-            logger.debug("No request headers set")
-
-        if self._request_body is None:
-            logger.debug("No request body set")
-        else:
-            logger.debug("Request body:")
-            logger.debug(self._request_body)
-
-    def _post_process_request(self):
-
-        if self._response != None:
-            self.log_response_status('DEBUG')
-            self.log_response_headers('DEBUG')
-            self.log_response_body('DEBUG')
-
-        next_request_should = self._next_request_should
-
-        # prepare next request context, even if one of the following assertions
-        # fail
-        self._next_request_should = True
-        self._request_headers = {}
-        self._request_body = None
-
-        # check flag set by "Next Request Should Succeed"
-        if next_request_should == True:
-            assert int(self.response.status[0:3]) < 400, \
-               'Request should have succeeded, but was "%s".' % \
-               self.response.status
-
-        # check flag set by "Next Request Should Not Succeed"
-        elif next_request_should == False:
-            assert int(self.response.status[0:3]) >= 400, \
-               'Request should not have succeeded, but was "%s".' % \
-               self.response.status
-
-        elif next_request_should:
-            self.response_status_code_should_equal(next_request_should)
+    @property
+    def context(self):
+        return self._contexts[-1]
 
     @property
     def app(self):
-        if not self._app:
+        if not self.context.app:
             raise Exception('Not connected to any HTTP Host. Use "Set HTTP Host" keyword first.')
-        return self._app
+        return self.context.app
 
     @property
     def response(self):
-        if not self._response:
+        if not self.context._response:
             raise Exception('No request available, use e.g. GET to create one.')
-        return self._response
+        return self.context._response
 
     def _path_from_url_or_path(self, url_or_path):
 
@@ -127,13 +140,31 @@ class HTTP:
 
     def set_http_host(self, host):
         """
+        (deprecated) Sets the HTTP host to use for future requests. You must call this
+        before issuing any HTTP requests.
+
+        `host` is the name of the host, optionally with port (e.g. 'google.com' or 'localhost:5984')
+        """
+        self.create_http_context(host)
+
+    def create_http_context(self, host=None):
+        """
         Sets the HTTP host to use for future requests. You must call this
         before issuing any HTTP requests.
 
         `host` is the name of the host, optionally with port (e.g. 'google.com' or 'localhost:5984')
         """
+        if host == None:
+            host = self.context.app.host
         logger.info("Host for next HTTP request set to '%s'" % host)
-        self._app = livetest.TestApp(host)
+        self._contexts.append(HTTP.Context(self, host))
+
+    def restore_http_context(self):
+        """
+        Restores HttpLibrary's state to the point before the last "Create Http
+        Context" call.
+        """
+        self._contexts.pop()
 
     # request
 
@@ -146,11 +177,12 @@ class HTTP:
         """
         path = self._path_from_url_or_path(url)
 
-        self._pre_process_request()
+        self.context.pre_process_request()
         logger.debug("Performing %s request on http://%s%s" % (verb, self.app.host, url,))
-        self._response = self._app.request(path, {}, self._request_headers,
-                method=verb.upper(),)
-        self._post_process_request()
+        self.context.post_process_request(
+            self.context.app.request(path, {}, self.context.request_headers,
+            method=verb.upper(),)
+        )
 
     def HEAD(self, url):
         """
@@ -159,10 +191,11 @@ class HTTP:
         `url` is the URL relative to the server root, e.g. '/_utils/config.html'
         """
         path = self._path_from_url_or_path(url)
-        self._pre_process_request()
+        self.context.pre_process_request()
         logger.debug("Performing HEAD request on http://%s%s" % (self.app.host, url,))
-        self._response = self.app.head(path, {}, self._request_headers)
-        self._post_process_request()
+        self.context.post_process_request(
+          self.app.head(path, {}, self.context.request_headers)
+        )
 
     def GET(self, url):
         """
@@ -171,10 +204,11 @@ class HTTP:
         `url` is the URL relative to the server root, e.g. '/_utils/config.html'
         """
         path = self._path_from_url_or_path(url)
-        self._pre_process_request()
+        self.context.pre_process_request()
         logger.debug("Performing GET request on http://%s%s" % (self.app.host, url))
-        self._response = self.app.get(path, {}, self._request_headers)
-        self._post_process_request()
+        self.context.post_process_request(
+          self.app.get(path, {}, self.context.request_headers)
+        )
 
     def POST(self, url):
         """
@@ -184,12 +218,13 @@ class HTTP:
         """
         path = self._path_from_url_or_path(url)
         kwargs = {}
-        if 'Content-Type' in self._request_headers:
-            kwargs['content_type'] = self._request_headers['Content-Type']
+        if 'Content-Type' in self.context.request_headers:
+            kwargs['content_type'] = self.context.request_headers['Content-Type']
         logger.debug("Performing POST request on http://%s%s" % (self.app.host, url))
-        self._pre_process_request()
-        self._response = self.app.post(path, self._request_body or {}, self._request_headers, **kwargs)
-        self._post_process_request()
+        self.context.pre_process_request()
+        self.context.post_process_request(
+          self.app.post(path, self.context._request_body or {}, self.context.request_headers, **kwargs)
+        )
 
     def PUT(self, url):
         """
@@ -199,12 +234,13 @@ class HTTP:
         """
         path = self._path_from_url_or_path(url)
         kwargs = {}
-        if 'Content-Type' in self._request_headers:
-            kwargs['content_type'] = self._request_headers['Content-Type']
-        self._pre_process_request()
+        if 'Content-Type' in self.context.request_headers:
+            kwargs['content_type'] = self.context.request_headers['Content-Type']
+        self.context.pre_process_request()
         logger.debug("Performing PUT request on http://%s%s" % (self.app.host, url))
-        self._response = self.app.put(path, self._request_body or {}, self._request_headers, **kwargs)
-        self._post_process_request()
+        self.context.post_process_request(
+          self.app.put(path, self.context._request_body or {}, self.context.request_headers, **kwargs)
+        )
 
     def DELETE(self, url):
         """
@@ -213,10 +249,11 @@ class HTTP:
         `url` is the URL relative to the server root, e.g. '/_utils/config.html'
         """
         path = self._path_from_url_or_path(url)
-        self._pre_process_request()
+        self.context.pre_process_request()
         logger.debug("Performing DELETE request on %s" % url)
-        self._response = self.app.delete(path, {}, self._request_headers)
-        self._post_process_request()
+        self.context.post_process_request(
+          self.app.delete(path, {}, self.context.request_headers)
+        )
 
     def follow_response(self):
         """
@@ -230,14 +267,14 @@ class HTTP:
 
         logger.debug("Following response, last response's Location header was %s" % location)
 
-        self._response = self.response.follow()
+        self.context._response = self.response.follow()
 
 
     def next_request_may_not_succeed(self, status_code=None):
         """
         Don't fail the next request if it's status code is >= 400
         """
-        self._next_request_should = None
+        self.context._next_request_should = None
 
     def next_request_should_succeed(self, status_code=None):
         """
@@ -251,13 +288,13 @@ class HTTP:
         """
         Fails the next request if it's status code is < 400
         """
-        self._next_request_should = False
+        self.context._next_request_should = False
 
     def next_request_should_have_status_code(self, status_code=None):
         """
         Fails the next request if it's status code is different from `status_code`.
         """
-        self._next_request_should = status_code
+        self.context._next_request_should = status_code
 
     # status code
 
@@ -347,7 +384,7 @@ class HTTP:
         `header_value` is the key of the header, e.g. `RobotFramework HttpLibrary (Mozilla/4.0)`
         """
         logger.info('Set request header "%s" to "%s"' % (header_name, header_value))
-        self._request_headers[header_name] = header_value
+        self.context.request_headers[header_name] = header_value
 
     def set_basic_auth(self, username, password):
         """
@@ -375,7 +412,7 @@ class HTTP:
         | Response Should Succeed  |                                     |
         """
         logger.info('Request body set to "%s".' % body)
-        self._request_body = body.encode("utf-8")
+        self.context._request_body = body.encode("utf-8")
 
     def get_response_body(self):
         """
@@ -518,4 +555,4 @@ class HTTP:
 
         This is meant for debugging response body's with complex media types.
         """
-        self._response.showbrowser()
+        self.context._response.showbrowser()
