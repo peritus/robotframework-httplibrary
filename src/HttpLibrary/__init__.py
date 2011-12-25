@@ -434,6 +434,8 @@ class HTTP:
         | Response Body Should Contain | version="1.0"    |
         | Response Body Should Contain | encoding="UTF-8" |
         """
+        logger.debug('Testing whether "%s" contains "%s".' % (self.response.body, should_contain))
+
         assert should_contain in self.response.body, \
                '"%s" should have contained "%s", but did not.' % (self.response.body, should_contain)
 
