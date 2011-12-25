@@ -1,0 +1,20 @@
+*** Settings ***
+
+Resource        ../../variables.txt
+Library         HttpLibrary.HTTP
+Suite Setup     Set HTTP Host     ${HOST}
+
+*** Test Cases ***
+
+Execute echo request
+    Prepare echo request
+
+    POST                          /echo
+
+    Response Body Should Contain  simplescope
+
+*** Keywords ***
+
+Prepare echo request
+    Set Request Body              simplescope
+    Set Request Header            Content-Type    text/plain
