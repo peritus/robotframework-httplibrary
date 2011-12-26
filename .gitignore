@@ -7,4 +7,3 @@ output.xml
 parts/
 report.html
 src/robotframework_httplibrary.egg-info/
-src/HttpLibrary/RELEASE-VERSION

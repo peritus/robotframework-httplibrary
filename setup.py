@@ -7,14 +7,12 @@ Programming Language :: Python
 Topic :: Software Development :: Testing
 """[1:-1]
 
-from version import get_git_version
-
 from os.path import join, dirname
 long_description=open(join(dirname(__file__), 'README.rst',)).read()
 
 setup(
   name             = 'robotframework-httplibrary',
-  version          = get_git_version().lstrip('v'),
+  version          = "0.2.1",
   description      = 'Robot Framework keywords for HTTP requests',
   long_description = long_description,
   author           = 'Filip Noetzel',
@@ -27,6 +25,5 @@ setup(
   classifiers      = CLASSIFIERS.splitlines(),
   package_dir      = {'' : 'src'},
   install_requires = ['robotframework', 'webtest', 'jsonpointer'],
-  packages         = ['HttpLibrary'],
-  include_package_data = True,
+  packages         = ['HttpLibrary']
 )

@@ -3,7 +3,6 @@ from robot.api import logger
 from base64 import b64encode
 from functools import wraps
 from urlparse import urlparse
-from os.path import join, dirname
 
 import livetest
 import json
@@ -31,9 +30,6 @@ class HTTP:
     The JSON related keywords use JSON Pointer. To learn more about JSON
     Pointer, go to http://tools.ietf.org/html/draft-pbryan-zyp-json-pointer-00.
     """
-
-    ROBOT_LIBRARY_SCOPE = 'TEST SUITE'
-    ROBOT_LIBRARY_VERSION = open(join(dirname(__file__), 'RELEASE-VERSION')).read().strip()
 
     class Context(object):
         def __init__(self, http, host=None):
@@ -103,6 +99,8 @@ class HTTP:
 
             elif next_request_should:
                 self._http.response_status_code_should_equal(next_request_should)
+
+    ROBOT_LIBRARY_SCOPE = 'TEST SUITE'
 
     # internal
 
