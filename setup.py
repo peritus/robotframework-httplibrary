@@ -27,5 +27,6 @@ setup(
   classifiers      = CLASSIFIERS.splitlines(),
   package_dir      = {'' : 'src'},
   install_requires = ['robotframework', 'webtest', 'jsonpointer'],
-  packages         = ['HttpLibrary']
+  packages         = ['HttpLibrary'],
+  include_package_data = True,
 )
