@@ -89,7 +89,8 @@ a {
 </head>
 <body>
 <h1>HttpLibrary.HTTP</h1>
-<b>Scope:</b> test case<br>
+<b>Version:</b> 0.3.0<br>
+<b>Scope:</b> test suite<br>
 <b>Named arguments: </b>
 supported
 
@@ -103,6 +104,8 @@ The JSON related keywords use JSON Pointer. To learn more about JSON Pointer, go
 
 <h2>Shortcuts</h2>
 <div class='shortcuts'>
+<a href="#Create Http Context" title="Sets the HTTP host to use for future requests. You must call this">Create&nbsp;Http&nbsp;Context</a>
+&nbsp;&middot;&nbsp;
 <a href="#DELETE" title="Issues a HTTP DELETE request.">DELETE</a>
 &nbsp;&middot;&nbsp;
 <a href="#Follow Response" title="Follows a HTTP redirect if the previous response status code was a 301 or 302.">Follow&nbsp;Response</a>
@@ -129,6 +132,8 @@ The JSON related keywords use JSON Pointer. To learn more about JSON Pointer, go
 &nbsp;&middot;&nbsp;
 <a href="#Log Response Headers" title="Logs the response headers, line by line.">Log&nbsp;Response&nbsp;Headers</a>
 &nbsp;&middot;&nbsp;
+<a href="#Log Response Status" title="Logs the response status line">Log&nbsp;Response&nbsp;Status</a>
+&nbsp;&middot;&nbsp;
 <a href="#Next Request May Not Succeed" title="Don't fail the next request if it's status code is &gt;= 400">Next&nbsp;Request&nbsp;May&nbsp;Not&nbsp;Succeed</a>
 &nbsp;&middot;&nbsp;
 <a href="#Next Request Should Have Status Code" title="Fails the next request if it's status code is different from `status_code`.">Next&nbsp;Request&nbsp;Should&nbsp;Have&nbsp;Status&nbsp;Code</a>
@@ -153,17 +158,15 @@ The JSON related keywords use JSON Pointer. To learn more about JSON Pointer, go
 &nbsp;&middot;&nbsp;
 <a href="#Response Should Not Have Header" title="Fails if the response does has a header named `header_name`">Response&nbsp;Should&nbsp;Not&nbsp;Have&nbsp;Header</a>
 &nbsp;&middot;&nbsp;
-<a href="#Response Should Not Succeed" title="*DEPRECATED*">Response&nbsp;Should&nbsp;Not&nbsp;Succeed</a>
-&nbsp;&middot;&nbsp;
-<a href="#Response Should Succeed" title="*DEPRECATED*">Response&nbsp;Should&nbsp;Succeed</a>
-&nbsp;&middot;&nbsp;
 <a href="#Response Status Code Should Equal" title="Fails if the response status code of the previous request was not the">Response&nbsp;Status&nbsp;Code&nbsp;Should&nbsp;Equal</a>
 &nbsp;&middot;&nbsp;
 <a href="#Response Status Code Should Not Equal" title="Fails if the response status code of the previous request is equal to">Response&nbsp;Status&nbsp;Code&nbsp;Should&nbsp;Not&nbsp;Equal</a>
 &nbsp;&middot;&nbsp;
+<a href="#Restore Http Context" title="Restores HttpLibrary's state to the point before the last &quot;Create Http">Restore&nbsp;Http&nbsp;Context</a>
+&nbsp;&middot;&nbsp;
 <a href="#Set Basic Auth" title="Set HTTP Basic Auth for next request.">Set&nbsp;Basic&nbsp;Auth</a>
 &nbsp;&middot;&nbsp;
-<a href="#Set Http Host" title="Sets the HTTP host to use for future requests. You must call this">Set&nbsp;Http&nbsp;Host</a>
+<a href="#Set Http Host" title="(deprecated) Sets the HTTP host to use for future requests. You must call this">Set&nbsp;Http&nbsp;Host</a>
 &nbsp;&middot;&nbsp;
 <a href="#Set Json Value" title="Set the target node of the JSON document `json_string` specified by">Set&nbsp;Json&nbsp;Value</a>
 &nbsp;&middot;&nbsp;
@@ -182,6 +185,13 @@ The JSON related keywords use JSON Pointer. To learn more about JSON Pointer, go
   <th class="kw">Keyword</th>
   <th class="arg">Arguments</th>
   <th class="doc">Documentation</th>
+</tr>
+<tr>
+  <td class="kw"><a name="Create Http Context"></a>Create Http Context</td>
+  <td class="arg">host=None</td>
+  <td class="doc">Sets the HTTP host to use for future requests. You must call this before issuing any HTTP requests.
+
+<span class="name">host</span> is the name of the host, optionally with port (e.g. 'google.com' or 'localhost:5984')</td>
 </tr>
 <tr>
   <td class="kw"><a name="DELETE"></a>DELETE</td>
@@ -328,8 +338,15 @@ Specify <span class="name">log_level</span> (default: "INFO") to set the log lev
 Specify <span class="name">log_level</span> (default: "INFO") to set the log level.</td>
 </tr>
 <tr>
+  <td class="kw"><a name="Log Response Status"></a>Log Response Status</td>
+  <td class="arg">log_level=INFO</td>
+  <td class="doc">Logs the response status line
+
+Specify <span class="name">log_level</span> (default: "INFO") to set the log level.</td>
+</tr>
+<tr>
   <td class="kw"><a name="Next Request May Not Succeed"></a>Next Request May Not Succeed</td>
-  <td class="arg">status_code=None</td>
+  <td class="arg"></td>
   <td class="doc">Don't fail the next request if it's status code is &gt;= 400</td>
 </tr>
 <tr>
@@ -344,7 +361,7 @@ Specify <span class="name">log_level</span> (default: "INFO") to set the log lev
 </tr>
 <tr>
   <td class="kw"><a name="Next Request Should Succeed"></a>Next Request Should Succeed</td>
-  <td class="arg">status_code=None</td>
+  <td class="arg"></td>
   <td class="doc">Fails the next request if it's status code is &gt;= 400. This is the standard behaviour (only use this keyword if you specified <a href="#Next Request Should Not Succeed" class="name">Next Request Should Not Succeed</a> earlier.</td>
 </tr>
 <tr>
@@ -422,16 +439,6 @@ Example:
   <td class="doc">Fails if the response does has a header named <span class="name">header_name</span></td>
 </tr>
 <tr>
-  <td class="kw"><a name="Response Should Not Succeed"></a>Response Should Not Succeed</td>
-  <td class="arg"></td>
-  <td class="doc"><b>DEPRECATED</b> Fails if the response status code of the previous request was &lt; 400</td>
-</tr>
-<tr>
-  <td class="kw"><a name="Response Should Succeed"></a>Response Should Succeed</td>
-  <td class="arg"></td>
-  <td class="doc"><b>DEPRECATED</b> Fails if the response status code of the previous request was &gt;= 400</td>
-</tr>
-<tr>
   <td class="kw"><a name="Response Status Code Should Equal"></a>Response Status Code Should Equal</td>
   <td class="arg">status_code</td>
   <td class="doc">Fails if the response status code of the previous request was not the specified one.
@@ -444,6 +451,11 @@ Example:
   <td class="doc">Fails if the response status code of the previous request is equal to the one specified.
 
 <span class="name">status_code</span> the status code to compare against.</td>
+</tr>
+<tr>
+  <td class="kw"><a name="Restore Http Context"></a>Restore Http Context</td>
+  <td class="arg"></td>
+  <td class="doc">Restores HttpLibrary's state to the point before the last "Create Http Context" call.</td>
 </tr>
 <tr>
   <td class="kw"><a name="Set Basic Auth"></a>Set Basic Auth</td>
@@ -459,7 +471,7 @@ See <a href="http://en.wikipedia.org/wiki/Basic_access_authentication">http://en
 <tr>
   <td class="kw"><a name="Set Http Host"></a>Set Http Host</td>
   <td class="arg">host</td>
-  <td class="doc">Sets the HTTP host to use for future requests. You must call this before issuing any HTTP requests.
+  <td class="doc">(deprecated) Sets the HTTP host to use for future requests. You must call this before issuing any HTTP requests.
 
 <span class="name">host</span> is the name of the host, optionally with port (e.g. 'google.com' or 'localhost:5984')</td>
 </tr>
@@ -536,9 +548,9 @@ This is meant for debugging response body's with complex media types.</td>
 </tr>
 </table>
 <p id="footer">
-Altogether 36 keywords.<br />
+Altogether 37 keywords.<br />
 Generated by <a href="http://code.google.com/p/robotframework/wiki/LibraryDocumentationTool">libdoc.py</a>
-on 2011-11-25 17:04:23.
+on 2011-12-26 12:32:46.
 </p>
 </body>
 </html>
