@@ -1,5 +1,5 @@
 
-.. image:: https://secure.travis-ci.org/peritus/robotframework-httplibrary.png
+.. image:: https://secure.travis-ci.org/peritus/robotframework-httplibrary.png?branch=master
   :target: http://travis-ci.org/peritus/robotframework-httplibrary
 
 robotframework-httplibrary
