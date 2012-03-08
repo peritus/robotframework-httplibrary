@@ -1,7 +1,6 @@
 language: python
 install: python bootstrap.py --distribute; ./bin/buildout versions:robotframework=$ROBOTFRAMEWORK_VERSION
 python:
-   - "2.5"
    - "2.6"
    - "2.7"
 env:
