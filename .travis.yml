@@ -5,7 +5,7 @@ python:
    - "2.7"
 env:
    - ROBOTFRAMEWORK_VERSION=2.6.3
-   - ROBOTFRAMEWORK_VERSION=2.7rc1
+   - ROBOTFRAMEWORK_VERSION=2.7.1
 script:
   - ./bin/robotframework --monitorwidth 65 tests/
 
