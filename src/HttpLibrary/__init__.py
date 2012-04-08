@@ -31,7 +31,7 @@ class HTTP:
     Pointer, go to http://tools.ietf.org/html/draft-pbryan-zyp-json-pointer-00.
     """
 
-    ROBOT_LIBRARY_VERSION = "0.3.0"
+    ROBOT_LIBRARY_VERSION = "0.3.1"
 
     class Context(object):
         def __init__(self, http, host=None):
