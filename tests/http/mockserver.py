@@ -62,6 +62,11 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 self.send_response(401, "Sesame closed!")
                 self.send_header('WWW-Authenticate', 'Basic realm="Secure Area"')
                 self.end_headers()
+        elif self.path == '/hostname':
+            self.send_response(200, 'OK')
+            self.end_headers()
+            self.wfile.write("***%s***" % self.headers['Host'])
+            self.finish()
         else:
             self.send_error(500)
 

@@ -221,3 +221,16 @@ Request context is resetted correctly
     # following line:
 
     GET  /200
+
+Name-based virtual hosting is supported
+
+    # This request will connect to localhost, but with the
+    # "Host" request header set to "www.example.com"
+    # See https://en.wikipedia.org/wiki/Virtual_hosting#Name-based
+
+    Set HTTP Host                 ${HOST}
+    Set Request Header            Host           www.example.com
+    GET                           /hostname
+
+    Response Body Should Contain  ***www.example.com***
+
