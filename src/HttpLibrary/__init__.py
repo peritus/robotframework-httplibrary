@@ -300,6 +300,20 @@ class HTTP:
 
     # status code
 
+    def get_response_status(self):
+        """
+        Returns the response status line (e.g. "200 OK" or "404 Not found")
+
+        Notice, this is not the response status code (e.g. 200), but the entire
+        first line of the response. To check for a status code, use the
+        following:
+
+        Example:
+        | ${status}=        | Get Response Status |           |
+        | Should Start With | 200                 | ${status} |
+        """
+        return self.response.status
+
     def response_status_code_should_equal(self, status_code):
         """
         Fails if the response status code of the previous request was not the
