@@ -234,3 +234,11 @@ Name-based virtual hosting is supported
 
     Response Body Should Contain  ***www.example.com***
 
+HEAD request with User Agent Header
+    Set Request Header             User-Agent             MYBROWSER
+    HEAD                           /
+    Response Header Should Equal   x-request-user-agent   MYBROWSER
+
+
+
+
