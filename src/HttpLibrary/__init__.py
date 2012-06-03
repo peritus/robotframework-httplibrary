@@ -353,9 +353,12 @@ class HTTP:
     def get_response_header(self, header_name):
         """
         Get the response header with the name `header_name`
+
+        If there are two headers with the same key, the return value of this
+        keyword is a list containing both values.
         """
         self.response_should_have_header(header_name)
-        return self.response.headers[header_name]
+        return self.response.headers.getall(header_name)
 
     def response_header_should_equal(self, header_name, expected):
         """

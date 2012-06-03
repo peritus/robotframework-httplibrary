@@ -68,6 +68,12 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write("***%s***" % self.headers['Host'])
             self.finish()
+        elif self.path == '/duplicate_header':
+            self.send_response(200, 'OK')
+            self.send_header('Duplicate', 'Yes')
+            self.send_header('Duplicate', 'Si!')
+            self.end_headers()
+            self.finish()
         else:
             self.send_error(500)
 

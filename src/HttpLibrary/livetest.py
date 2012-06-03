@@ -76,7 +76,11 @@ class TestApp(webtest.TestApp):
         res = webtest.TestResponse()
         res.status = '%s %s' % (webresp.status, webresp.reason)
         res.body = webresp.read()
-        res.headerlist = webresp.getheaders()
+        response_headers = []
+        for headername in dict(webresp.getheaders()).keys():
+            for headervalue in webresp.msg.getheaders(headername):
+                response_headers.append((headername, headervalue))
+        res.headerlist = response_headers
         res.errors = ''
         return res
 

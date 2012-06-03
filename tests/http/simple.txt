@@ -246,6 +246,11 @@ HEAD request with User Agent Header
     HEAD                           /
     Response Header Should Equal   x-request-user-agent   MYBROWSER
 
+Test Duplicate Headers
+    GET     /duplicate_header
 
-
+    ${x}=               Get Response Header   Duplicate
+    Length Should Be    ${x}        2
+    Should Be Equal     ${x[0]}     Yes
+    Should Be Equal     ${x[1]}     Si!
 
