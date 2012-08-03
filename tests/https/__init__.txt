@@ -1,0 +1,15 @@
+*** Settings ***
+Suite Setup       Start Mockserver
+Suite Teardown    Stop Mockserver
+Library           HttpLibrary.HTTP
+Library           OperatingSystem
+Resource          ../variables.txt    # Suite Setup    Start Mockserver    Suite Teardown    Stop Mockserver
+
+*** Keywords ***
+Start Mockserver
+    Start Process    tests/https/mockserver.py
+    Sleep    0.2
+
+Stop Mockserver
+    Create Http Context    ${HOST}    https
+    POST    /kill

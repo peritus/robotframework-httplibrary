@@ -15,7 +15,7 @@ Error if GET before connect
 Error if invalid URL
     [Setup]  No Operation
     Run Keyword And Expect Error
-    ...  "NEITHER_URL_NOR_PATH" needs to be in form of "/path" or "http://host/path"
+    ...  "NEITHER_URL_NOR_PATH" needs to be in form of "/path", "http://host/path" or "https://host/path"
     ...  GET   NEITHER_URL_NOR_PATH
 
 Simple GET

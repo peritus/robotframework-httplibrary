@@ -34,13 +34,13 @@ class HTTP:
     ROBOT_LIBRARY_VERSION = "0.3.2"
 
     class Context(object):
-        def __init__(self, http, host=None):
+        def __init__(self, http, scheme, host=None):
             # daddy
             self._http = http
 
             # the livetest app
             if host:
-                self.app = livetest.TestApp(host)
+                self.app = livetest.TestApp(host, scheme)
             else:
                 self.app = None
 
@@ -106,8 +106,8 @@ class HTTP:
 
     # internal
 
-    def __init__(self):
-        self._contexts = [HTTP.Context(self)]
+    def __init__(self, scheme='http'):
+        self._contexts = [HTTP.Context(self, scheme)]
 
     @property
     def context(self):
@@ -129,13 +129,18 @@ class HTTP:
 
         if url_or_path.startswith("/"):
             return url_or_path
+        
+        elif url_or_path.startswith("https"):
+            parsed_url = urlparse(url_or_path)
+            self.create_http_context(parsed_url.netloc, scheme='https')
+            return parsed_url.path
 
         elif url_or_path.startswith("http"):
             parsed_url = urlparse(url_or_path)
-            self.set_http_host(parsed_url.netloc)
+            self.create_http_context(parsed_url.netloc, scheme='http')
             return parsed_url.path
 
-        raise Exception('"%s" needs to be in form of "/path" or "http://host/path"'
+        raise Exception('"%s" needs to be in form of "/path", "http://host/path" or "https://host/path"'
                 % url_or_path)
 
     # setup
@@ -149,17 +154,20 @@ class HTTP:
         """
         self.create_http_context(host)
 
-    def create_http_context(self, host=None):
+    def create_http_context(self, host=None, scheme='http'):
         """
         Sets the HTTP host to use for future requests. You must call this
         before issuing any HTTP requests.
 
         `host` is the name of the host, optionally with port (e.g. 'google.com' or 'localhost:5984')
+        
+        'scheme' is the name of the scheme to be used, either 'http' or 'https'. The default is 'http'.
         """
         if host == None:
             host = self.context.app.host
         logger.info("Host for next HTTP request set to '%s'" % host)
-        self._contexts.append(HTTP.Context(self, host))
+        logger.info("Scheme for next HTTP request set to '%s'" % scheme)
+        self._contexts.append(HTTP.Context(self, scheme, host))
 
     def restore_http_context(self):
         """
