@@ -57,6 +57,7 @@ class TestApp(webtest.TestApp):
 
     def __init__(self, host, scheme='http', relative_to=None):
         self.host = host
+        self.scheme = scheme
         self.relative_to = relative_to
         self.conn = {}
         self._load_conn(scheme)
@@ -67,9 +68,9 @@ class TestApp(webtest.TestApp):
         "Convert WebOb Request to httplib request."
         headers = dict((name, val) for name, val in req.headers.iteritems())
         if req.scheme not in self.conn:
-            self._load_conn(req.scheme)
+            self._load_conn(self.scheme)
 
-        conn = self.conn[req.scheme]
+        conn = self.conn[self.scheme]
         conn.request(req.method, req.path_qs, req.body, headers)
 
         webresp = conn.getresponse()

@@ -1,0 +1,212 @@
+*** Settings ***
+Test Setup        Create HTTP Context    ${HOST}    https
+Resource          ../variables.txt
+Library           HttpLibrary.HTTP
+
+*** Test Cases ***
+Error if GET before connect
+    [Setup]    No Operation
+    Run Keyword And Expect Error    Not connected to any HTTP Host. Use "Set HTTP Host" keyword first.    GET    /
+
+Error if invalid URL
+    [Setup]    No Operation
+    Run Keyword And Expect Error    "NEITHER_URL_NOR_PATH" needs to be in form of "/path", "http://host/path" or "https://host/path"    GET    NEITHER_URL_NOR_PATH
+
+Simple GET
+    GET    /200
+
+Simple GET with complete host
+    [Setup]    No Operation
+    GET    https://${HOST}/200
+
+GET 200
+    GET    /200
+    Response Status Code Should Equal    200
+
+GET Body
+    GET    /200
+    Response Body Should Contain    Everything is ok
+
+Should Succeed Should Not Should
+    Next Request Should Not Succeed
+    Next Request Should Succeed
+    GET    /200
+
+GET 302
+    GET    /302
+    Response Status Code Should Equal    302
+
+GET 302 with follow
+    GET    /302
+    Follow Response
+    Response Status Code Should Equal    200
+
+GET 200 with follow
+    GET    /200_with_location_header
+    Run Keyword And Expect Error    You can only follow redirect responses (not 200 OK)    Follow Response
+
+Follow redirect response without location header
+    GET    /301_no_location_header
+    Run Keyword And Expect Error    Can not follow a response without a location header.    Follow Response
+
+GET 418
+    Next Request Should Not Succeed
+    GET    /418
+    Response Status Code Should Equal    418 I'm a teapot
+
+Implicit Next Request Should Succeed
+    Run Keyword And Expect Error    Request should have succeeded, but was "404 Not Found".    GET    /404
+
+Next Request May Not Succeed
+    Next Request May Not Succeed
+    GET    /404    # no error
+
+Explicit Next Request Should Succeed
+    Next Request Should Succeed
+    Run Keyword And Expect Error    Request should have succeeded, but was "404 Not Found".    GET    /404
+
+Next Request Should Have Status Code OK
+    Next Request Should Have Status Code    418
+    GET    /418    # no error, correct status code
+
+Next Request Should Have Status Code FAIL
+    Next Request Should Have Status Code    201
+    Run Keyword And Expect Error    "418 I'm a teapot" does not start with "201", but should have.    GET    /418
+
+Next Request Should Have Status Code w/ Status Line OK
+    Next Request Should Have Status Code    418 I'm a teapot
+    GET    /418    # no error, correct status code
+
+Next Request Should Have Status Code w/ Status Line FAIL
+    Next Request Should Have Status Code    418 I'm a teaCUP
+    Run Keyword And Expect Error    "418 I'm a teapot" does not start with "418 I'm a teaCUP", but should have.    GET    /418
+
+HTTP Request with custom HTTP verb should work
+    HTTP Request    PATCH    /patch
+    Response Body Should Contain    Got a patch request
+
+Response Should Have Header OK
+    GET    /302
+    Response Should Have Header    Location
+
+Response Should Have Header FAIL
+    GET    /200
+    Run Keyword And Expect Error    Response did not have "Krytzmyk" header, but should have.    Response Should Have Header    Krytzmyk
+
+Response Should Not Have Header OK
+    GET    /200
+    Response Should Not Have Header    Location
+
+Response Should Not Have Header FAIL
+    GET    /302
+    Run Keyword And Expect Error    Response did have "Location" header, but should not have.    Response Should Not Have Header    Location
+
+Response Header Should Equal OK
+    GET    /302
+    Response Header Should Equal    Location    /200
+
+Response Header Should Equal FAIL
+    GET    /302
+    Run Keyword And Expect Error    Response header "Location" should have been "http://some.other.host/" but was "/200".    Response Header Should Equal    Location    http://some.other.host/
+
+Response Header Should Not Equal OK
+    GET    /302
+    Response Header Should Not Equal    Location    http://and.another.host/
+
+Response Header Should Not Equal FAIL
+    GET    /302
+    Run Keyword And Expect Error    Response header "Location" was "/200" but should not have been.    Response Header Should Not Equal    Location    /200
+
+Simple HEAD request
+    HEAD    /head
+
+Log Response Headers
+    [Documentation]    LOG 2:1 Response headers:\nLOG 2:2 REGEXP: ^date: .+\nLOG 2:3 x-powered-by: PHP
+    HEAD    /head
+    Log Response Headers
+
+Simple DELETE request
+    DELETE    /method
+
+Simple POST request
+    POST    /echo
+
+POST with one word request body
+    Set Request Body    Tooot
+    Set Request Header    Content-Type    text/plain
+    POST    /echo
+    Response Body Should Contain    Tooot
+
+PUT with two word request body
+    Set Request Body    Tooot Tooooot
+    Set Request Header    Content-Type    text/plain
+    PUT    /echo
+    Response Body Should Contain    Tooot Tooooot
+
+Get Response Status
+    GET    /200
+    ${status}=    Get Response Status
+    Should Be Equal As Strings    ${status}    200 OK
+    Should Start With    ${status}    200
+
+Get Response Body
+    Set Request Body    1234567890
+    Set Request Header    Content-Type    text/plain
+    POST    /echo
+    ${body}=    Get Response Body
+    Should Contain    ${body}    1234567890
+
+Log Response Body
+    [Documentation]    LOG 4:1 Response body:\nLOG 4:2 Hallo!
+    Set Request Body    Hallo!
+    Set Request Header    Content-Type    text/plain
+    POST    /echo
+    Log Response Body
+
+Set Request Header
+    Set Request Header    If-Modified-Since    February
+    GET    /304
+    Response Status Code Should Equal    304
+
+Set Content-Type Request Header
+    Set Request Header    Content-Type    image/gif
+    POST    /content_type
+    Response Status Code Should Equal    200
+    Response Body Should Contain    image/gif
+
+Set Basic Auth
+    Next Request Should Not Succeed
+    GET    /sesame
+    Set Basic Auth    Aladdin    open sesame
+    GET    /sesame
+    Response Status Code Should Equal    200
+    Response Body Should Contain    sesame street
+
+Request context is resetted correctly
+    Next Request Should Have Status Code    418 I'm a teaCUP
+    Run Keyword And Expect Error    "418 I'm a teapot" does not start with "418 I'm a teaCUP", but should have.    GET    /418
+    # so far so good, the next request should succeed because the condition in
+    # the previous lines have already been executed and should be reset for the
+    # following line:
+    GET    /200
+
+Name-based virtual hosting is supported
+    # This request will connect to localhost, but with the
+    # "Host" request header set to "www.example.com"
+    # See https://en.wikipedia.org/wiki/Virtual_hosting#Name-based
+    Create Http Context    ${HOST}    https
+    Set Request Header    Host    www.example.com
+    GET    /hostname
+    Response Body Should Contain    ***www.example.com***
+
+HEAD request with User Agent Header
+    Set Request Header    User-Agent    MYBROWSER
+    HEAD    /
+    Response Header Should Equal    x-request-user-agent    MYBROWSER
+
+Test Duplicate Headers
+    GET    /duplicate_header
+    ${x}=    Get Response Header    Duplicate
+    Length Should Be    ${x}    2
+    Should Be Equal    ${x[0]}    Yes
+    Should Be Equal    ${x[1]}    Si!
