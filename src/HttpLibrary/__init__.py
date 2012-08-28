@@ -34,13 +34,13 @@ class HTTP:
     ROBOT_LIBRARY_VERSION = "0.3.2"
 
     class Context(object):
-        def __init__(self, http, host=None):
+        def __init__(self, http, host=None, scheme='http'):
             # daddy
             self._http = http
 
             # the livetest app
             if host:
-                self.app = livetest.TestApp(host)
+                self.app = livetest.TestApp(host, scheme=scheme)
             else:
                 self.app = None
 
@@ -140,16 +140,16 @@ class HTTP:
 
     # setup
 
-    def set_http_host(self, host):
+    def set_http_host(self, host, scheme='http'):
         """
         (deprecated) Sets the HTTP host to use for future requests. You must call this
         before issuing any HTTP requests.
 
         `host` is the name of the host, optionally with port (e.g. 'google.com' or 'localhost:5984')
         """
-        self.create_http_context(host)
+        self.create_http_context(host, scheme)
 
-    def create_http_context(self, host=None):
+    def create_http_context(self, host=None, scheme='http'):
         """
         Sets the HTTP host to use for future requests. You must call this
         before issuing any HTTP requests.
@@ -159,7 +159,7 @@ class HTTP:
         if host == None:
             host = self.context.app.host
         logger.info("Host for next HTTP request set to '%s'" % host)
-        self._contexts.append(HTTP.Context(self, host))
+        self._contexts.append(HTTP.Context(self, host, scheme))
 
     def restore_http_context(self):
         """
