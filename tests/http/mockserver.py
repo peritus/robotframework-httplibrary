@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
 import BaseHTTPServer
+import SimpleSecureHTTPServer
+import thread
 from sys import exit
+import os
 
 class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
@@ -102,7 +105,16 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
     do_PUT = do_POST
 
-print 'Starting server on http://localhost:36503/'
+class SecureWebRequestHandler(SimpleSecureHTTPServer.BaseSecureHTTPRequestHandler, WebRequestHandler):
+    # multiple inheritance handles all we need here
+    pass
+
+print 'Starting server on http://localhost:36503/ and https://localhost:36504/'
 
 server = BaseHTTPServer.HTTPServer(('localhost', 36503), WebRequestHandler)
+keypair = os.path.dirname(os.path.abspath(__file__))+'/mockserver_keypair.pem'
+
+secure_server = SimpleSecureHTTPServer.SecureHTTPServer(('localhost', 36504), SecureWebRequestHandler, keypair)
+
+thread.start_new_thread(lambda: secure_server.serve_forever(), ())
 server.serve_forever()
