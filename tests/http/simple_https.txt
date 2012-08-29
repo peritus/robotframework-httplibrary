@@ -1,0 +1,10 @@
+*** Settings ***
+
+Resource        ../variables.txt
+Library         HttpLibrary.HTTP
+Test Setup      Set HTTP Host     ${HOST_HTTPS}  https
+
+*** Test Cases ***
+
+Simple GET with HTTPS
+    GET      /200

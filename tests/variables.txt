@@ -1,4 +1,5 @@
 *** Variables ***
 
 ${HOST}         localhost:36503
+${HOST_HTTPS}	localhost:36504
 
