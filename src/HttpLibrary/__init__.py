@@ -37,6 +37,7 @@ class HTTP:
         def __init__(self, http, host=None):
             # daddy
             self._http = http
+            self._host = host
 
             # the livetest app
             if host:
@@ -85,6 +86,8 @@ class HTTP:
             # fail
             self.next_request_should = True
             self.request_headers = {}
+            if self._host != None:
+                self.request_headers['Host'] = self._host
             self.request_body = None
 
             # check flag set by "Next Request Should Succeed"
