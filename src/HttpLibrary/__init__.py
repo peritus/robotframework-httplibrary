@@ -495,13 +495,32 @@ class HTTP:
 
     def parse_json(self, json_string):
         """
-        Parses the JSON document `json_string` and returns a Python datastructure.
+        Parses the JSON document `json_string` and returns a data structure.
 
         Example:
         | ${result}=       | Parse Json  | [1, 2, 3] |
         | Length Should Be | ${result}   | 3         |
+
+        `json_string` is the string containg JSON that will be parsed
         """
         return load_json(json_string)
+
+    def stringify_json(self, data):
+        """
+        Converts the data structure to a string containing its JSON string representation
+
+        Example:
+        | ${data} =                   | Create List    |  1  2  3          |
+        | ${json_string}=             | Stringify JSON |  ${data}          |
+        | Should Be Equal As Strings  | ${json_string} |  ["1", "2", "3"]  |
+
+        `data` is the data structure to convert to json
+        """
+
+        try:
+            return json.dumps(data)
+        except ValueError, e:
+            raise ValueError("Could not stringify '%r' to JSON: %s" % (data, e))
 
     @_with_json
     def get_json_value(self, json_string, json_pointer):
