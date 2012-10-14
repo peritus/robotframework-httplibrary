@@ -15,6 +15,6 @@ Start Mockserver
     Sleep  0.2
 
 Stop Mockserver
-    Set HTTP Host  ${HOST}
+    Create HTTP Context    ${HOST}
     POST           /kill
 

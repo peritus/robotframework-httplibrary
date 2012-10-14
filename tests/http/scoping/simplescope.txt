@@ -2,7 +2,7 @@
 
 Resource        ../../variables.txt
 Library         HttpLibrary.HTTP
-Suite Setup     Set HTTP Host     ${HOST}
+Suite Setup     Create HTTP Context    ${HOST}
 
 *** Test Cases ***
 

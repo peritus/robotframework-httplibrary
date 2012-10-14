@@ -2,14 +2,14 @@
 
 Resource        ../variables.txt
 Library         HttpLibrary.HTTP
-Test Setup      Set HTTP Host     ${HOST}
+Test Setup      Create HTTP Context     ${HOST}
 
 *** Test Cases ***
 
 Error if GET before connect
     [Setup]  No Operation
     Run Keyword And Expect Error
-    ...  Not connected to any HTTP Host. Use "Set HTTP Host" keyword first.
+    ...  Not connected to any HTTP Host. Use "Create HTTP Context" keyword first.
     ...  GET   /
 
 Error if invalid URL
@@ -235,7 +235,7 @@ Name-based virtual hosting is supported
     # "Host" request header set to "www.example.com"
     # See https://en.wikipedia.org/wiki/Virtual_hosting#Name-based
 
-    Set HTTP Host                 ${HOST}
+    Create HTTP Context           ${HOST}
     Set Request Header            Host           www.example.com
     GET                           /hostname
 

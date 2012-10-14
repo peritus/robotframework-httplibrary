@@ -39,7 +39,7 @@ Library       HttpLibrary.HTTP
 ============  =================================  ===================================
 Example
 \             [Documentation]                    Follows a Redirect
-\             Set HTTP Host                      `httpstat.us <http://httpstat.us>`_
+\             Create HTTP Context                `httpstat.us <http://httpstat.us>`_
 \             GET                                /302
 \             Response Status Code Should Equal  302
 \             Follow Response

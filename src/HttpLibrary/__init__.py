@@ -119,7 +119,7 @@ class HTTP:
     @property
     def app(self):
         if not self.context.app:
-            raise Exception('Not connected to any HTTP Host. Use "Set HTTP Host" keyword first.')
+            raise Exception('Not connected to any HTTP Host. Use "Create HTTP Context" keyword first.')
         return self.context.app
 
     @property
@@ -145,10 +145,7 @@ class HTTP:
 
     def set_http_host(self, host):
         """
-        (deprecated) Sets the HTTP host to use for future requests. You must call this
-        before issuing any HTTP requests.
-
-        `host` is the name of the host, optionally with port (e.g. 'google.com' or 'localhost:5984')
+        *DEPRECATED* Use `Create HTTP Context` instead.
         """
         self.create_http_context(host)
 
