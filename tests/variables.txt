@@ -1,4 +1,0 @@
-*** Variables ***
-
-${HOST}         localhost:36503
-

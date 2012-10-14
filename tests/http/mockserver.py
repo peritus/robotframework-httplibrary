@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 import BaseHTTPServer
-from sys import exit
+import sys
+import os
+import ssl
 
 class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
@@ -96,13 +98,28 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             global server
             self.send_response(201, "Killing myself")
             server.socket.close()
-            exit(0)
+            sys.exit(0)
         else:
             self.send_error(500)
 
     do_PUT = do_POST
 
-print 'Starting server on http://localhost:36503/'
+PORT = int(sys.argv[1])
+server = BaseHTTPServer.HTTPServer(('localhost', PORT), WebRequestHandler)
+scheme = 'http'
 
-server = BaseHTTPServer.HTTPServer(('localhost', 36503), WebRequestHandler)
+if '--ssl' in sys.argv:
+    scheme = 'https'
+
+    cert = os.path.abspath(os.path.join(os.path.dirname(__file__), 'rfhttplibmockserver.pem'))
+
+    server.socket = ssl.wrap_socket(
+      server.socket,
+      certfile=cert,
+      keyfile=cert,
+      server_side=True,
+    )
+
+print 'Starting server on %s://localhost:%d/' % (scheme, PORT)
+
 server.serve_forever()

@@ -3,7 +3,7 @@
 Library         HttpLibrary.HTTP
 Library         OperatingSystem
 
-Resource        ../variables.txt
+Resource        variables.txt
 
 Suite Setup     Start Mockserver
 Suite Teardown  Stop Mockserver
@@ -11,10 +11,10 @@ Suite Teardown  Stop Mockserver
 *** Keywords ***
 
 Start Mockserver
-    Start Process  tests/http/mockserver.py
-    Sleep  0.2
+    Start Process   tests/http/mockserver.py ${PORT}
+    Sleep           1
 
 Stop Mockserver
-    Create HTTP Context    ${HOST}
-    POST           /kill
+    POST            http://${HOST}/kill
+    Sleep           1
 

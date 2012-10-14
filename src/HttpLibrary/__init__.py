@@ -34,14 +34,15 @@ class HTTP:
     ROBOT_LIBRARY_VERSION = "0.3.2"
 
     class Context(object):
-        def __init__(self, http, host=None):
+        def __init__(self, http, host=None, scheme='http'):
             # daddy
             self._http = http
             self._host = host
+            self._scheme = scheme
 
             # the livetest app
             if host:
-                self.app = livetest.TestApp(host)
+                self.app = livetest.TestApp(host, scheme=scheme)
             else:
                 self.app = None
 
@@ -135,7 +136,7 @@ class HTTP:
 
         elif url_or_path.startswith("http"):
             parsed_url = urlparse(url_or_path)
-            self.set_http_host(parsed_url.netloc)
+            self.create_http_context(parsed_url.netloc, parsed_url.scheme)
             return parsed_url.path
 
         raise Exception('"%s" needs to be in form of "/path" or "http://host/path"'
@@ -149,17 +150,22 @@ class HTTP:
         """
         self.create_http_context(host)
 
-    def create_http_context(self, host=None):
+    def create_http_context(self, host=None, scheme='http'):
         """
         Sets the HTTP host to use for future requests. You must call this
         before issuing any HTTP requests.
 
         `host` is the name of the host, optionally with port (e.g. 'google.com' or 'localhost:5984')
+        `scheme` the protocol scheme to use. Valid values are 'http', 'https'
         """
+
+        assert scheme in ('http', 'https'), "`scheme` parameter must be 'http' or 'https'"
+
         if host == None:
             host = self.context.app.host
         logger.info("Host for next HTTP request set to '%s'" % host)
-        self._contexts.append(HTTP.Context(self, host))
+        logger.info("Scheme for next HTTP request set to '%s'" % scheme)
+        self._contexts.append(HTTP.Context(self, host, scheme))
 
     def restore_http_context(self):
         """
@@ -180,7 +186,7 @@ class HTTP:
         path = self._path_from_url_or_path(url)
 
         self.context.pre_process_request()
-        logger.debug("Performing %s request on http://%s%s" % (verb, self.app.host, url,))
+        logger.debug("Performing %s request on %s://%s%s" % (verb, self.context._scheme, self.app.host, path,))
         self.context.post_process_request(
             self.context.app.request(path, {}, self.context.request_headers,
             method=verb.upper(),)
@@ -194,7 +200,7 @@ class HTTP:
         """
         path = self._path_from_url_or_path(url)
         self.context.pre_process_request()
-        logger.debug("Performing HEAD request on http://%s%s" % (self.app.host, url,))
+        logger.debug("Performing HEAD request on %s://%s%s" % (self.context._scheme, self.app.host, path,))
         self.context.post_process_request(
           self.app.head(path, self.context.request_headers)
         )
@@ -207,7 +213,7 @@ class HTTP:
         """
         path = self._path_from_url_or_path(url)
         self.context.pre_process_request()
-        logger.debug("Performing GET request on http://%s%s" % (self.app.host, url))
+        logger.debug("Performing GET request on %s://%s%s" % (self.context._scheme, self.app.host, path))
         self.context.post_process_request(
           self.app.get(path, {}, self.context.request_headers)
         )
@@ -222,7 +228,7 @@ class HTTP:
         kwargs = {}
         if 'Content-Type' in self.context.request_headers:
             kwargs['content_type'] = self.context.request_headers['Content-Type']
-        logger.debug("Performing POST request on http://%s%s" % (self.app.host, url))
+        logger.debug("Performing POST request on %s://%s%s" % (self.context._scheme, self.app.host, url))
         self.context.pre_process_request()
         self.context.post_process_request(
           self.app.post(path, self.context.request_body or {}, self.context.request_headers, **kwargs)
@@ -239,7 +245,7 @@ class HTTP:
         if 'Content-Type' in self.context.request_headers:
             kwargs['content_type'] = self.context.request_headers['Content-Type']
         self.context.pre_process_request()
-        logger.debug("Performing PUT request on http://%s%s" % (self.app.host, url))
+        logger.debug("Performing PUT request on %s://%s%s" % (self.context._scheme, self.app.host, url))
         self.context.post_process_request(
           self.app.put(path, self.context.request_body or {}, self.context.request_headers, **kwargs)
         )
@@ -252,7 +258,7 @@ class HTTP:
         """
         path = self._path_from_url_or_path(url)
         self.context.pre_process_request()
-        logger.debug("Performing DELETE request on %s" % url)
+        logger.debug("Performing DELETE request on %s://%s%s" % (self.context._scheme, self.app.host, url))
         self.context.post_process_request(
           self.app.delete(path, {}, self.context.request_headers)
         )
