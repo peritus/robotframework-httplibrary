@@ -77,7 +77,7 @@ Changelog
 **v0.3.3**
 
 - add HTTPS support
-- add 'Stringify JSON keyword'
+- add 'Stringify JSON' keyword
 - implicitly set correct 'Host' header
 
 License
