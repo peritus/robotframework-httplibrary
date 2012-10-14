@@ -60,7 +60,9 @@ class TestApp(webtest.TestApp):
         self.relative_to = relative_to
         self.conn = {}
         self._load_conn(scheme)
-        self.extra_environ = {}
+        self.extra_environ = {
+          'wsgi.url_scheme': scheme,
+        }
         self.reset()
 
     def _do_httplib_request(self, req):

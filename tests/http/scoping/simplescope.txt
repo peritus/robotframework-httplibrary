@@ -1,6 +1,6 @@
 *** Settings ***
 
-Resource        ../../variables.txt
+Resource        ../variables.txt
 Library         HttpLibrary.HTTP
 Suite Setup     Create HTTP Context    ${HOST}
 

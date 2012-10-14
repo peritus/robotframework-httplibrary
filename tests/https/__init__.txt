@@ -1,0 +1,20 @@
+*** Settings ***
+
+Library         HttpLibrary.HTTP
+Library         OperatingSystem
+
+Resource        variables.txt
+
+Suite Setup     Start Secure Mockserver
+Suite Teardown  Stop Secure Mockserver
+
+*** Keywords ***
+
+Start Secure Mockserver
+    Start Process          tests/http/mockserver.py ${PORT} --ssl
+    Sleep  1
+
+Stop Secure Mockserver
+    POST                   https://${HOST}/kill
+    Sleep  1
+
