@@ -11,7 +11,7 @@ Suite Teardown  Stop Mockserver
 *** Keywords ***
 
 Start Mockserver
-    Start Process  tests/http/mockserver.py
+    Start Process  bin/mockserver
     Sleep  0.2
 
 Stop Mockserver

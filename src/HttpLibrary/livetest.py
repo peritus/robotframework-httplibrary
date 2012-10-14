@@ -57,6 +57,7 @@ class TestApp(webtest.TestApp):
 
     def __init__(self, host, scheme='http', relative_to=None):
         self.host = host
+        self.scheme = scheme
         self.relative_to = relative_to
         self.conn = {}
         self._load_conn(scheme)
@@ -96,6 +97,9 @@ class TestApp(webtest.TestApp):
                 c[name] = value
             hc = '; '.join(['='.join([m.key, m.value]) for m in c.values()])
             req.headers['Cookie'] = hc
+
+        # Fix request scheme
+        req.scheme = self.scheme
 
         res = self._do_httplib_request(req)
         # Set these attributes for consistency with webtest.
