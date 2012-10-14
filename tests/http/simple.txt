@@ -229,6 +229,15 @@ Request context is resetted correctly
 
     GET  /200
 
+
+Host header is sent implicitly
+
+    Create HTTP Context           ${HOST}
+    GET                           /hostname
+
+    Response Body Should Contain  ***${HOST}***
+
+
 Name-based virtual hosting is supported
 
     # This request will connect to localhost, but with the
