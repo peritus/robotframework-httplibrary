@@ -71,6 +71,15 @@ If you want to hack on this library itself, this should get you started::
 I'm very happy about patches, pull-requests and API-discussions (as this is
 mostly a wrapper supposed to have a nice API)!
 
+Changelog
+---------
+
+**v0.3.3**
+
+- add HTTPS support
+- add 'Stringify JSON keyword'
+- implicitly set correct 'Host' header
+
 License
 -------
 `Beerware <http://en.wikipedia.org/wiki/Beerware>`_: If we meet some day, and
