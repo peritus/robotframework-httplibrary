@@ -74,6 +74,12 @@ mostly a wrapper supposed to have a nice API)!
 Changelog
 ---------
 
+**v0.3.4**
+
+- Add support for python-json-pointer >= 0.6 (if you experienced
+  "``AttributeError: 'module' object has no attribute 'set_pointer'``", you
+  should upgrade to this version).
+
 **v0.3.3**
 
 - add HTTPS support

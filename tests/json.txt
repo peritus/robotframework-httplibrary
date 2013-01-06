@@ -21,7 +21,7 @@ Get Json Value OK
 Get Json Value Fail
     Set Test Variable  ${obj}          {"foo":{"another prop":{"baz":"A string"}}}
     Run Keyword And Expect Error
-    ...  JsonPointerException: 'bar' not found in {u'baz': u'A string'}
+    ...  JsonPointerException: member 'bar' not found in {u'baz': u'A string'}
     ...  Get Json Value  ${obj}       /foo/another%20prop/bar
 
 Get Json Value Documentation
@@ -94,7 +94,7 @@ Json Value Should Be Fail
 Json Value Should Be Fail Invalid Pointer
     Set Test Variable        ${doc}  {"foo": {"bar": [4,5,6]}}
     Run Keyword And Expect Error
-    ...  JsonPointerException: 'baz' not found in {u'foo': {u'bar': [4, 5, 6]}}
+    ...  JsonPointerException: member 'baz' not found in {u'foo': {u'bar': [4, 5, 6]}}
     ...  Json Value Should Equal  ${doc}  /baz  [7,8,9]
 
 Stringify Documentation Example

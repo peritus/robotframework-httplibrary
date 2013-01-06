@@ -7,6 +7,7 @@ from urlparse import urlparse
 import livetest
 import json
 import jsonpointer
+import jsonpatch
 
 def load_json(json_string):
     try:
@@ -581,9 +582,11 @@ class HTTP:
         | ${result}=       | Set Json Value | {"foo": {"bar": [1,2,3]}} | /foo | 12 |
         | Should Be Equal  | ${result}      | {"foo": 12}               |      |    |
         """
-        value = load_json(json_value)
-        p = jsonpointer.set_pointer(json_string, json_pointer, value)
-        return json_string
+        return jsonpatch.apply_patch(json_string, [{
+          'op': 'add',
+          'path': json_pointer,
+          'value': load_json(json_value)
+        }])
 
     @_with_json
     def log_json(self, json_string, log_level='INFO'):
