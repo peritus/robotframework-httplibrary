@@ -1,4 +1,5 @@
 
+
 def run_cli(args):
     # abstracts away this change
     # https://code.google.com/p/robotframework/source/detail?r=ebc6fbb542e6
@@ -6,8 +7,8 @@ def run_cli(args):
 
     import robot
     try:
-       robot.run_cli(args)
+        robot.run_cli(args)
     except Exception, e:
-       print e
-       import robot.runner
-       robot.run_from_cli(args, robot.runner.__doc__)
+        print e
+        import robot.runner
+        robot.run_from_cli(args, robot.runner.__doc__)

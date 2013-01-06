@@ -5,12 +5,14 @@ import sys
 import os
 import ssl
 
+
 class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
     def do_HEAD(self):
         self.send_response(200, "No payment required")
         self.send_header('x-powered-by', 'PHP')
-        self.send_header('x-request-user-agent', self.headers.get('user-agent', '(unknown)'))
+        self.send_header('x-request-user-agent', self.headers.get(
+            'user-agent', '(unknown)'))
         self.end_headers()
 
     def do_DELETE(self):
@@ -63,7 +65,8 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 self.finish()
             else:
                 self.send_response(401, "Sesame closed!")
-                self.send_header('WWW-Authenticate', 'Basic realm="Secure Area"')
+                self.send_header(
+                    'WWW-Authenticate', 'Basic realm="Secure Area"')
                 self.end_headers()
         elif self.path == '/hostname':
             self.send_response(200, 'OK')
@@ -111,13 +114,14 @@ scheme = 'http'
 if '--ssl' in sys.argv:
     scheme = 'https'
 
-    cert = os.path.abspath(os.path.join(os.path.dirname(__file__), 'rfhttplibmockserver.pem'))
+    cert = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), 'rfhttplibmockserver.pem'))
 
     server.socket = ssl.wrap_socket(
-      server.socket,
-      certfile=cert,
-      keyfile=cert,
-      server_side=True,
+        server.socket,
+        certfile=cert,
+        keyfile=cert,
+        server_side=True,
     )
 
 print 'Starting server on %s://localhost:%d/' % (scheme, PORT)

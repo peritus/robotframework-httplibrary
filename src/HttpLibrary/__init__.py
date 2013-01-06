@@ -9,18 +9,21 @@ import json
 import jsonpointer
 import jsonpatch
 
+
 def load_json(json_string):
     try:
         return json.loads(json_string)
     except ValueError, e:
         raise ValueError("Could not parse '%s' as JSON: %s" % (json_string, e))
 
+
 def _with_json(f):
     @wraps(f)
     def wrapper(self, json_string, *args, **kwargs):
         return json.dumps(
-          f(self, load_json(json_string), *args, **kwargs))
+            f(self, load_json(json_string), *args, **kwargs))
     return wrapper
+
 
 class HTTP:
     """
@@ -95,17 +98,18 @@ class HTTP:
             # check flag set by "Next Request Should Succeed"
             if next_request_should == True:
                 assert int(self.response.status[0:3]) < 400, \
-                   'Request should have succeeded, but was "%s".' % \
-                   self.response.status
+                    'Request should have succeeded, but was "%s".' % \
+                    self.response.status
 
             # check flag set by "Next Request Should Not Succeed"
             elif next_request_should == False:
                 assert int(self.response.status[0:3]) >= 400, \
-                   'Request should not have succeeded, but was "%s".' % \
-                   self.response.status
+                    'Request should not have succeeded, but was "%s".' % \
+                    self.response.status
 
             elif next_request_should:
-                self._http.response_status_code_should_equal(next_request_should)
+                self._http.response_status_code_should_equal(
+                    next_request_should)
 
     ROBOT_LIBRARY_SCOPE = 'TEST SUITE'
 
@@ -127,7 +131,8 @@ class HTTP:
     @property
     def response(self):
         if not self.context.response:
-            raise Exception('No request available, use e.g. GET to create one.')
+            raise Exception(
+                'No request available, use e.g. GET to create one.')
         return self.context.response
 
     def _path_from_url_or_path(self, url_or_path):
@@ -141,7 +146,7 @@ class HTTP:
             return parsed_url.path
 
         raise Exception('"%s" needs to be in form of "/path" or "http://host/path"'
-                % url_or_path)
+                        % url_or_path)
 
     # setup
 
@@ -160,7 +165,8 @@ class HTTP:
         `scheme` the protocol scheme to use. Valid values are 'http', 'https'
         """
 
-        assert scheme in ('http', 'https'), "`scheme` parameter must be 'http' or 'https'"
+        assert scheme in (
+            'http', 'https'), "`scheme` parameter must be 'http' or 'https'"
 
         if host == None:
             host = self.context.app.host
@@ -187,10 +193,11 @@ class HTTP:
         path = self._path_from_url_or_path(url)
 
         self.context.pre_process_request()
-        logger.debug("Performing %s request on %s://%s%s" % (verb, self.context._scheme, self.app.host, path,))
+        logger.debug("Performing %s request on %s://%s%s" % (verb,
+                     self.context._scheme, self.app.host, path,))
         self.context.post_process_request(
             self.context.app.request(path, {}, self.context.request_headers,
-            method=verb.upper(),)
+                                     method=verb.upper(),)
         )
 
     def HEAD(self, url):
@@ -201,9 +208,10 @@ class HTTP:
         """
         path = self._path_from_url_or_path(url)
         self.context.pre_process_request()
-        logger.debug("Performing HEAD request on %s://%s%s" % (self.context._scheme, self.app.host, path,))
+        logger.debug("Performing HEAD request on %s://%s%s" % (
+            self.context._scheme, self.app.host, path,))
         self.context.post_process_request(
-          self.app.head(path, self.context.request_headers)
+            self.app.head(path, self.context.request_headers)
         )
 
     def GET(self, url):
@@ -214,9 +222,10 @@ class HTTP:
         """
         path = self._path_from_url_or_path(url)
         self.context.pre_process_request()
-        logger.debug("Performing GET request on %s://%s%s" % (self.context._scheme, self.app.host, path))
+        logger.debug("Performing GET request on %s://%s%s" % (
+            self.context._scheme, self.app.host, path))
         self.context.post_process_request(
-          self.app.get(path, {}, self.context.request_headers)
+            self.app.get(path, {}, self.context.request_headers)
         )
 
     def POST(self, url):
@@ -228,11 +237,14 @@ class HTTP:
         path = self._path_from_url_or_path(url)
         kwargs = {}
         if 'Content-Type' in self.context.request_headers:
-            kwargs['content_type'] = self.context.request_headers['Content-Type']
-        logger.debug("Performing POST request on %s://%s%s" % (self.context._scheme, self.app.host, url))
+            kwargs[
+                'content_type'] = self.context.request_headers['Content-Type']
+        logger.debug("Performing POST request on %s://%s%s" % (
+            self.context._scheme, self.app.host, url))
         self.context.pre_process_request()
         self.context.post_process_request(
-          self.app.post(path, self.context.request_body or {}, self.context.request_headers, **kwargs)
+            self.app.post(path, self.context.request_body or {},
+                          self.context.request_headers, **kwargs)
         )
 
     def PUT(self, url):
@@ -244,11 +256,14 @@ class HTTP:
         path = self._path_from_url_or_path(url)
         kwargs = {}
         if 'Content-Type' in self.context.request_headers:
-            kwargs['content_type'] = self.context.request_headers['Content-Type']
+            kwargs[
+                'content_type'] = self.context.request_headers['Content-Type']
         self.context.pre_process_request()
-        logger.debug("Performing PUT request on %s://%s%s" % (self.context._scheme, self.app.host, url))
+        logger.debug("Performing PUT request on %s://%s%s" % (
+            self.context._scheme, self.app.host, url))
         self.context.post_process_request(
-          self.app.put(path, self.context.request_body or {}, self.context.request_headers, **kwargs)
+            self.app.put(path, self.context.request_body or {},
+                         self.context.request_headers, **kwargs)
         )
 
     def DELETE(self, url):
@@ -259,9 +274,10 @@ class HTTP:
         """
         path = self._path_from_url_or_path(url)
         self.context.pre_process_request()
-        logger.debug("Performing DELETE request on %s://%s%s" % (self.context._scheme, self.app.host, url))
+        logger.debug("Performing DELETE request on %s://%s%s" % (
+            self.context._scheme, self.app.host, url))
         self.context.post_process_request(
-          self.app.delete(path, {}, self.context.request_headers)
+            self.app.delete(path, {}, self.context.request_headers)
         )
 
     def follow_response(self):
@@ -272,12 +288,12 @@ class HTTP:
 
         if location is None:
             self.log_response_headers('INFO')
-            raise Exception("Can not follow a response without a location header.")
+            raise Exception(
+                "Can not follow a response without a location header.")
 
         logger.debug("Following response, last response's Location header was %s" % location)
 
         self.context.response = self.response.follow()
-
 
     def next_request_may_not_succeed(self):
         """
@@ -329,7 +345,8 @@ class HTTP:
         `status_code` the status code to compare against.
         """
         assert self.response.status.startswith(status_code), \
-               '"%s" does not start with "%s", but should have.' % (self.response.status, status_code)
+            '"%s" does not start with "%s", but should have.' % (
+                self.response.status, status_code)
 
     def response_status_code_should_not_equal(self, status_code):
         """
@@ -339,7 +356,8 @@ class HTTP:
         `status_code` the status code to compare against.
         """
         assert not self.response.status.startswith(status_code), \
-               '"%s" starts with "%s", but should not.' % (self.response.status, status_code)
+            '"%s" starts with "%s", but should not.' % (
+                self.response.status, status_code)
 
     # response headers
 
@@ -348,14 +366,14 @@ class HTTP:
         Fails if the response does not have a header named `header_name`
         """
         assert header_name in self.response.headers, \
-               'Response did not have "%s" header, but should have.' % header_name
+            'Response did not have "%s" header, but should have.' % header_name
 
     def response_should_not_have_header(self, header_name):
         """
         Fails if the response does has a header named `header_name`
         """
         assert not header_name in self.response.headers, \
-               'Response did have "%s" header, but should not have.' % header_name
+            'Response did have "%s" header, but should not have.' % header_name
 
     def get_response_header(self, header_name):
         """
@@ -376,8 +394,8 @@ class HTTP:
         self.response_should_have_header(header_name)
         actual = self.response.headers[header_name]
         assert actual == expected, \
-               'Response header "%s" should have been "%s" but was "%s".' % (
-                    header_name, expected, actual)
+            'Response header "%s" should have been "%s" but was "%s".' % (
+            header_name, expected, actual)
 
     def response_header_should_not_equal(self, header_name, not_expected):
         """
@@ -387,8 +405,8 @@ class HTTP:
         self.response_should_have_header(header_name)
         actual = self.response.headers[header_name]
         assert actual != not_expected, \
-               'Response header "%s" was "%s" but should not have been.' % (
-                    header_name, actual)
+            'Response header "%s" was "%s" but should not have been.' % (
+            header_name, actual)
 
     def log_response_headers(self, log_level='INFO'):
         """
@@ -409,7 +427,8 @@ class HTTP:
         `header_name` is the name of the header, e.g. `User-Agent`
         `header_value` is the key of the header, e.g. `RobotFramework HttpLibrary (Mozilla/4.0)`
         """
-        logger.info('Set request header "%s" to "%s"' % (header_name, header_value))
+        logger.info(
+            'Set request header "%s" to "%s"' % (header_name, header_value))
         self.context.request_headers[header_name] = header_value
 
     def set_basic_auth(self, username, password):
@@ -424,7 +443,8 @@ class HTTP:
         """
         credentials = "%s:%s" % (username, password)
         logger.info('Set basic auth to "%s"' % credentials)
-        self.set_request_header("Authorization", "Basic %s" % b64encode(credentials))
+        self.set_request_header(
+            "Authorization", "Basic %s" % b64encode(credentials))
 
     # payload
 
@@ -460,10 +480,12 @@ class HTTP:
         | Response Body Should Contain | version="1.0"    |
         | Response Body Should Contain | encoding="UTF-8" |
         """
-        logger.debug('Testing whether "%s" contains "%s".' % (self.response.body, should_contain))
+        logger.debug('Testing whether "%s" contains "%s".' % (
+            self.response.body, should_contain))
 
         assert should_contain in self.response.body, \
-               '"%s" should have contained "%s", but did not.' % (self.response.body, should_contain)
+            '"%s" should have contained "%s", but did not.' % (
+                self.response.body, should_contain)
 
     def log_response_body(self, log_level='INFO'):
         """
@@ -484,7 +506,8 @@ class HTTP:
         Specify `log_level` (default: "INFO") to set the log level.
         """
 
-        logger.write("Response status line: %s" % self.response.status, log_level)
+        logger.write(
+            "Response status line: %s" % self.response.status, log_level)
 
     # json
 
@@ -524,7 +547,8 @@ class HTTP:
         try:
             return json.dumps(data)
         except ValueError, e:
-            raise ValueError("Could not stringify '%r' to JSON: %s" % (data, e))
+            raise ValueError(
+                "Could not stringify '%r' to JSON: %s" % (data, e))
 
     @_with_json
     def get_json_value(self, json_string, json_pointer):
@@ -550,8 +574,8 @@ class HTTP:
         got = self.get_json_value(json_string, json_pointer)
 
         assert got == expected_value, \
-               'JSON value "%s" does not equal "%s", but should have.' % (got, expected_value)
-
+            'JSON value "%s" does not equal "%s", but should have.' % (
+                got, expected_value)
 
     def json_value_should_not_equal(self, json_string, json_pointer, expected_value):
         """
@@ -571,7 +595,6 @@ class HTTP:
 
         logger.debug("%s." % message)
 
-
     @_with_json
     def set_json_value(self, json_string, json_pointer, json_value):
         """
@@ -583,10 +606,10 @@ class HTTP:
         | Should Be Equal  | ${result}      | {"foo": 12}               |      |    |
         """
         return jsonpatch.apply_patch(json_string, [{
-          'op': 'add',
-          'path': json_pointer,
-          'value': load_json(json_value)
-        }])
+                                                   'op': 'add',
+                                                   'path': json_pointer,
+                                                   'value': load_json(json_value)
+                                                   }])
 
     @_with_json
     def log_json(self, json_string, log_level='INFO'):

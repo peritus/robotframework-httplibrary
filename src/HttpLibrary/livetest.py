@@ -61,7 +61,7 @@ class TestApp(webtest.TestApp):
         self.conn = {}
         self._load_conn(scheme)
         self.extra_environ = {
-          'wsgi.url_scheme': scheme,
+            'wsgi.url_scheme': scheme,
         }
         self.reset()
 
