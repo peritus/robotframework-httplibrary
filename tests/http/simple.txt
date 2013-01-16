@@ -263,3 +263,26 @@ Test Duplicate Headers
     Should Be Equal     ${x[0]}     Yes
     Should Be Equal     ${x[1]}     Si!
 
+Mockserver sets cookies
+    GET     /set_cookie
+    Response Header Should Equal   set-cookie  cookie_monster=happy
+
+No cookies should work
+    GET     /verify_cookie
+    Response Body Should Contain  Cookie Monster is sad
+
+Cookies Should Work
+    GET     /set_cookie
+    GET     /verify_cookie
+
+    Response Body Should Contain  Cookie Monster is happy
+
+New HTTP Context should create a new cookie jar
+    GET     /set_cookie
+
+    Create HTTP Context     ${HOST}
+
+    GET     /verify_cookie
+
+    Response Body Should Contain  Cookie Monster is sad
+

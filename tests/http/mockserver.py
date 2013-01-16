@@ -79,6 +79,21 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_header('Duplicate', 'Si!')
             self.end_headers()
             self.finish()
+        elif self.path == '/set_cookie':
+            self.send_response(200, 'OK')
+            self.send_header('Set-Cookie', 'cookie_monster=happy')
+            self.wfile.write("The cookie has been set.")
+            self.end_headers()
+            self.finish()
+        elif self.path == '/verify_cookie':
+            self.send_response(200, 'OK')
+            self.end_headers()
+            self.wfile.write("<h1>Cookie verification page</h1>")
+            if 'cookie_monster=happy' in self.headers.get("Cookie", ""):
+                self.wfile.write("Cookie Monster is happy.")
+            else:
+                self.wfile.write("Cookie Monster is sad.")
+            self.finish()
         else:
             self.send_error(500)
 
