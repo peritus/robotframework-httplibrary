@@ -35,7 +35,7 @@ class HTTP:
     Pointer, go to http://tools.ietf.org/html/draft-pbryan-zyp-json-pointer-00.
     """
 
-    ROBOT_LIBRARY_VERSION = "0.3.4"
+    ROBOT_LIBRARY_VERSION = "0.4.0"
 
     class Context(object):
         def __init__(self, http, host=None, scheme='http'):
@@ -154,7 +154,7 @@ class HTTP:
         """
         *DEPRECATED* Use `Create HTTP Context` instead.
         """
-        self.create_http_context(host)
+        assert False, "Use the keyword 'Create HTTP Context' instead, this keyword is deprecated."
 
     def create_http_context(self, host=None, scheme='http'):
         """

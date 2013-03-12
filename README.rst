@@ -74,6 +74,11 @@ mostly a wrapper supposed to have a nice API)!
 Changelog
 ---------
 
+**v0.4.0**
+
+- Compatible with Webtest > 2.0
+- hard-deprecate 'Set HTTP Host', will be removed soon.
+
 **v0.3.4**
 
 - Add support for python-json-pointer >= 0.6 (if you experienced
