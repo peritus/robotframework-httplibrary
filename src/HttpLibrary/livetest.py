@@ -43,9 +43,59 @@ import webtest
 import httplib
 import urlparse
 from Cookie import BaseCookie, CookieError
+from six.moves import http_cookiejar
 
 conn_classes = {'http': httplib.HTTPConnection,
                 'https': httplib.HTTPSConnection}
+
+
+class RequestCookieAdapter(object):
+    """
+    this class merely provides the methods required for a
+    cookielib.CookieJar to work on a webob.Request
+
+    potential for yak shaving...very high
+    """
+    def __init__(self, request):
+        self._request = request
+
+    def is_unverifiable(self):
+        return True  # sure? Why not?
+
+    @property
+    def unverifiable(self):  # NOQA
+        # This is undocumented method that Python 3 cookielib uses
+        return True
+
+    def get_full_url(self):
+        return self._request.url
+
+    def get_origin_req_host(self):
+        return self._request.host
+
+    def add_unredirected_header(self, key, header):
+        self._request.headers[key] = header
+
+    def has_header(self, key):
+        return key in self._request.headers
+
+
+class ResponseCookieAdapter(object):
+    """
+    cookielib.CookieJar to work on a webob.Response
+    """
+    def __init__(self, response):
+        self._response = response
+
+    def info(self):
+        return self
+
+    def getheaders(self, header):
+        return self._response.headers.getall(header)
+
+    def get_all(self, headers, default):  # NOQA
+        # This is undocumented method that Python 3 cookielib uses
+        return self._response.headers.getall(headers)
 
 
 class TestApp(webtest.TestApp):
@@ -63,6 +113,7 @@ class TestApp(webtest.TestApp):
         self.extra_environ = {
             'wsgi.url_scheme': scheme,
         }
+        self.cookiejar = http_cookiejar.CookieJar()
         self.reset()
 
     def _do_httplib_request(self, req):
@@ -109,15 +160,10 @@ class TestApp(webtest.TestApp):
             self._check_errors(res)
         res.cookies_set = {}
 
-        for header in res.headers.getall('set-cookie'):
-            try:
-                c = BaseCookie(header)
-            except CookieError, e:
-                raise CookieError(
-                    "Could not parse cookie header %r: %s" % (header, e))
-            for key, morsel in c.items():
-                self.cookies[key] = morsel.value
-                res.cookies_set[key] = morsel.value
+        # merge cookies back in
+        self.cookiejar.extract_cookies(ResponseCookieAdapter(res),
+                                       RequestCookieAdapter(req))
+
         return res
 
 
