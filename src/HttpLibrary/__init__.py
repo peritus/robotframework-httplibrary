@@ -125,7 +125,8 @@ class HTTP:
     @property
     def app(self):
         if not self.context.app:
-            raise Exception('Not connected to any HTTP Host. Use "Create HTTP Context" keyword first.')
+            raise Exception(
+                'Not connected to any HTTP Host. Use "Create HTTP Context" keyword first.')
         return self.context.app
 
     @property
@@ -291,7 +292,8 @@ class HTTP:
             raise Exception(
                 "Can not follow a response without a location header.")
 
-        logger.debug("Following response, last response's Location header was %s" % location)
+        logger.debug(
+            "Following response, last response's Location header was %s" % location)
 
         self.context.response = self.response.follow()
 
