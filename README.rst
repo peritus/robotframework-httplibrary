@@ -74,6 +74,11 @@ mostly a wrapper supposed to have a nice API)!
 Changelog
 ---------
 
+**v0.4.1**
+
+- Tested with Robot Framework 2.8rc1
+- Uses jsonpointer 1.0, jsonpatch 1.0
+
 **v0.4.0**
 
 - Compatible with Webtest > 2.0
