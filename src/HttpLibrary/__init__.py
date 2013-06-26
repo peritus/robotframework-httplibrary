@@ -21,7 +21,7 @@ def _with_json(f):
     @wraps(f)
     def wrapper(self, json_string, *args, **kwargs):
         return json.dumps(
-            f(self, load_json(json_string), *args, **kwargs))
+            f(self, load_json(json_string), *args, **kwargs), ensure_ascii=False)
     return wrapper
 
 

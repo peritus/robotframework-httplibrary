@@ -109,3 +109,7 @@ Stringify Complex Object
 
     Should Be Equal As Strings  ${json_string}   {"a": "1", "b": "12", "names": ["First Name", "Family Name", "Email"]}
 
+Get Json Value In Chinese OK
+    Set Test Variable  ${chinese}       "中"
+    ${result}=  Get Json Value  {"foo":${chinese}}   /foo
+    Should Be Equal    ${result}       ${chinese}
