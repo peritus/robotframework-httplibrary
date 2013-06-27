@@ -547,7 +547,7 @@ class HTTP:
         """
 
         try:
-            return json.dumps(data)
+            return json.dumps(data, ensure_ascii=False)
         except ValueError, e:
             raise ValueError(
                 "Could not stringify '%r' to JSON: %s" % (data, e))
@@ -618,7 +618,7 @@ class HTTP:
         """
         Logs a pretty printed version of the JSON document `json_string`.
         """
-        for line in json.dumps(json_string, indent=2).split('\n'):
+        for line in json.dumps(json_string, indent=2, ensure_ascii=False).split('\n'):
             logger.write(line, log_level)
 
     # debug
