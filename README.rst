@@ -74,6 +74,11 @@ mostly a wrapper supposed to have a nice API)!
 Changelog
 ---------
 
+**v0.4.2**
+
+- Don't enforce ASCII when converting to JSON (so chinese characters are
+  printed as such and not escaped like \uXXXX). Thanks Terry Yin!
+
 **v0.4.1**
 
 - Tested with Robot Framework 2.8rc1
