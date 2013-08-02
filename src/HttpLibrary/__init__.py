@@ -3,6 +3,7 @@ from robot.api import logger
 from base64 import b64encode
 from functools import wraps
 from urlparse import urlparse
+from webtest import utils
 
 import livetest
 import json
@@ -278,7 +279,7 @@ class HTTP:
         logger.debug("Performing DELETE request on %s://%s%s" % (
             self.context._scheme, self.app.host, url))
         self.context.post_process_request(
-            self.app.delete(path, {}, self.context.request_headers)
+            self.app.delete(path, utils.NoDefault, self.context.request_headers)
         )
 
     def follow_response(self):
