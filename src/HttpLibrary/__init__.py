@@ -3,6 +3,7 @@ from robot.api import logger
 from base64 import b64encode
 from functools import wraps
 from urlparse import urlparse
+from webtest import utils
 
 import livetest
 import json
@@ -278,7 +279,7 @@ class HTTP:
         logger.debug("Performing DELETE request on %s://%s%s" % (
             self.context._scheme, self.app.host, url))
         self.context.post_process_request(
-            self.app.delete(path, {}, self.context.request_headers)
+            self.app.delete(path, utils.NoDefault, self.context.request_headers)
         )
 
     def follow_response(self):
@@ -488,6 +489,22 @@ class HTTP:
         assert should_contain in self.response.body, \
             '"%s" should have contained "%s", but did not.' % (
                 self.response.body, should_contain)
+
+    def response_body_should_not_contain(self, should_not_contain):
+        """
+        Fails if the response body does contain `should_not_contain`
+
+        Example:
+        | GET                              | /foo.xml         |
+        | Response Body Should Not Contain | 404              |
+        | Response Body Should Not Contain | ERROR            |
+        """
+        logger.debug('Testing whether "%s" does not contain "%s".' % (
+            self.response.body, should_not_contain))
+
+        assert should_not_contain not in self.response.body, \
+            '"%s" should not have contained "%s", but it did.' % (
+                self.response.body, should_not_contain)
 
     def log_response_body(self, log_level='INFO'):
         """
