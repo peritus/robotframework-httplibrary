@@ -490,6 +490,22 @@ class HTTP:
             '"%s" should have contained "%s", but did not.' % (
                 self.response.body, should_contain)
 
+    def response_body_should_not_contain(self, should_not_contain):
+        """
+        Fails if the response body does contain `should_not_contain`
+
+        Example:
+        | GET                              | /foo.xml         |
+        | Response Body Should Not Contain | 404              |
+        | Response Body Should Not Contain | ERROR            |
+        """
+        logger.debug('Testing whether "%s" does not contain "%s".' % (
+            self.response.body, should_not_contain))
+
+        assert should_not_contain not in self.response.body, \
+            '"%s" should not have contained "%s", but it did.' % (
+                self.response.body, should_not_contain)
+
     def log_response_body(self, log_level='INFO'):
         """
         Logs the response body.
