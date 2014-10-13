@@ -138,6 +138,9 @@ class HTTP:
 
     def _path_from_url_or_path(self, url_or_path):
 
+        if url_or_path.startswith("\"") and url_or_path.endswith("\""):
+            url_or_path = url_or_path[1:-1]
+
         if url_or_path.startswith("/"):
             return url_or_path
 
