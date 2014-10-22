@@ -303,6 +303,20 @@ class HTTP:
             self.app.delete(path, {}, self.context.request_headers)
         )
 
+    def OPTIONS(self, url):
+        """
+        Issues a HTTP OPTIONS request.
+
+        `url` is the URL relative to the server root, e.g. '/_utils/config.html'
+        """
+        path = self._path_from_url_or_path(url)
+        self.context.pre_process_request()
+        logger.debug("Performing OPTIONS request on %s://%s%s" % (
+            self.context._scheme, self.app.host, path,))
+        self.context.post_process_request(
+            self.app.options(path, self.context.request_headers)
+        )
+
     def follow_response(self):
         """
         Follows a HTTP redirect if the previous response status code was a 301 or 302.
