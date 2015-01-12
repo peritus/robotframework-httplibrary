@@ -180,6 +180,10 @@ PATCH with two word request body
     PATCH                         /echo
     Response Body Should Contain  Tooot Tooooot
 
+Simple OPTIONS request
+    OPTIONS                       /options
+    Response Body Should Contain  Got an OPTIONS request
+
 Get Response Status
     GET                          /200
     ${status}=                   Get Response Status
