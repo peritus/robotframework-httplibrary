@@ -471,7 +471,7 @@ class HTTP:
         | ${body}=            | Get Response Body |                                      |
         | Should Start With   | ${body}           | <?xml version="1.0" encoding="UTF-8" |
         """
-        return self.response.body
+        return self.response.body.decode("utf-8")
 
     def response_body_should_contain(self, should_contain):
         """
