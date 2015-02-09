@@ -431,7 +431,7 @@ class HTTP:
         """
         logger.info(
             'Set request header "%s" to "%s"' % (header_name, header_value))
-        self.context.request_headers[header_name] = header_value
+        self.context.request_headers[str(header_name)] = header_value
 
     def set_basic_auth(self, username, password):
         """
