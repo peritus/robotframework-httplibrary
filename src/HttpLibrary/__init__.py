@@ -431,7 +431,7 @@ class HTTP:
         """
         logger.info(
             'Set request header "%s" to "%s"' % (header_name, header_value))
-        self.context.request_headers[header_name] = header_value
+        self.context.request_headers[str(header_name)] = header_value
 
     def set_basic_auth(self, username, password):
         """
@@ -471,7 +471,7 @@ class HTTP:
         | ${body}=            | Get Response Body |                                      |
         | Should Start With   | ${body}           | <?xml version="1.0" encoding="UTF-8" |
         """
-        return self.response.body
+        return self.response.body.decode("utf-8")
 
     def response_body_should_contain(self, should_contain):
         """
@@ -483,11 +483,11 @@ class HTTP:
         | Response Body Should Contain | encoding="UTF-8" |
         """
         logger.debug('Testing whether "%s" contains "%s".' % (
-            self.response.body, should_contain))
+            self.get_response_body(), should_contain))
 
-        assert should_contain in self.response.body, \
+        assert should_contain in self.get_response_body(), \
             '"%s" should have contained "%s", but did not.' % (
-                self.response.body, should_contain)
+                self.get_response_body(), should_contain)
 
     def log_response_body(self, log_level='INFO'):
         """
@@ -495,9 +495,9 @@ class HTTP:
 
         Specify `log_level` (default: "INFO") to set the log level.
         """
-        if self.response.body:
+        if self.get_response_body():
             logger.write("Response body:", log_level)
-            logger.write(self.response.body, log_level)
+            logger.write(self.get_response_body(), log_level)
         else:
             logger.debug("No response body received", log_level)
 
