@@ -40,9 +40,18 @@ __version__ = '0.5'
 
 import sys
 import webtest
-import httplib
-import urlparse
-from Cookie import BaseCookie, CookieError
+try:
+    import httplib
+except ImportError:
+    import http.client as httplib
+try:
+    import urlparse
+except ImportError:
+    import urllib.parse as urlparse
+try:
+    from Cookie import BaseCookie, CookieError
+except ImportError:
+    from http.cookies import BaseCookie, CookieError
 from six.moves import http_cookiejar
 
 conn_classes = {'http': httplib.HTTPConnection,
@@ -118,7 +127,7 @@ class TestApp(webtest.TestApp):
 
     def _do_httplib_request(self, req):
         "Convert WebOb Request to httplib request."
-        headers = dict((name, val) for name, val in req.headers.iteritems())
+        headers = dict((name, val) for name, val in req.headers.items())
         if req.scheme not in self.conn:
             self._load_conn(req.scheme)
 
@@ -130,7 +139,7 @@ class TestApp(webtest.TestApp):
         res.status = '%s %s' % (webresp.status, webresp.reason)
         res.body = webresp.read()
         response_headers = []
-        for headername in dict(webresp.getheaders()).keys():
+        for headername in list(dict(webresp.getheaders()).keys()):
             for headervalue in webresp.msg.getheaders(headername):
                 response_headers.append((headername, headervalue))
         res.headerlist = response_headers
@@ -145,9 +154,9 @@ class TestApp(webtest.TestApp):
         headers = {}
         if self.cookies:
             c = BaseCookie()
-            for name, value in self.cookies.items():
+            for name, value in list(self.cookies.items()):
                 c[name] = value
-            hc = '; '.join(['='.join([m.key, m.value]) for m in c.values()])
+            hc = '; '.join(['='.join([m.key, m.value]) for m in list(c.values())])
             req.headers['Cookie'] = hc
 
         res = self._do_httplib_request(req)

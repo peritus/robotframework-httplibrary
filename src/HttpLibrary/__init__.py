@@ -2,9 +2,12 @@ from robot.api import logger
 
 from base64 import b64encode
 from functools import wraps
-from urlparse import urlparse
+try:
+    from urlparse import urlparse
+except ImportError:
+    from urllib.parse import urlparse
 
-import livetest
+from . import livetest
 import json
 import jsonpointer
 import jsonpatch
@@ -13,7 +16,7 @@ import jsonpatch
 def load_json(json_string):
     try:
         return json.loads(json_string)
-    except ValueError, e:
+    except ValueError as e:
         raise ValueError("Could not parse '%s' as JSON: %s" % (json_string, e))
 
 
@@ -64,9 +67,10 @@ class HTTP:
             self.post_process_request(None)
 
         def pre_process_request(self):
-            if len(self.request_headers.items()) > 0:
+            request_header_items = list(self.request_headers.items())
+            if len(request_header_items) > 0:
                 logger.debug("Request headers:")
-                for name, value in self.request_headers.items():
+                for name, value in request_header_items:
                     logger.debug("%s: %s" % (name, value))
             else:
                 logger.debug("No request headers set")
@@ -417,7 +421,7 @@ class HTTP:
         Specify `log_level` (default: "INFO") to set the log level.
         """
         logger.write("Response headers:", log_level)
-        for name, value in self.response.headers.items():
+        for name, value in list(self.response.headers.items()):
             logger.write("%s: %s" % (name, value), log_level)
 
     # request headers
@@ -548,7 +552,7 @@ class HTTP:
 
         try:
             return json.dumps(data, ensure_ascii=False)
-        except ValueError, e:
+        except ValueError as e:
             raise ValueError(
                 "Could not stringify '%r' to JSON: %s" % (data, e))
 
