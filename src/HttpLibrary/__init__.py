@@ -410,6 +410,20 @@ class HTTP:
             'Response header "%s" was "%s" but should not have been.' % (
             header_name, actual)
 
+    def response_header_should_contain(self, header_name, should_contain):
+        """
+        Fails if the value of response header `header_name` does not contain
+        `should_contain`. Also fails if the last response does not have a
+        `header_name` header.
+        """
+        self.response_should_have_header(header_name)
+        actual = self.response.headers[header_name]
+        logger.debug('Testing whether "%s" contains "%s".' % (
+            actual, should_contain))
+         assert should_contain in actual, \
+            'Response header "%s" s value of "%s" should have contained "%s", but did not.' % (
+                header_name, actual, should_contain)    
+
     def log_response_headers(self, log_level='INFO'):
         """
         Logs the response headers, line by line.
