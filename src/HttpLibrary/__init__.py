@@ -565,6 +565,23 @@ class HTTP:
         except ValueError, e:
             raise ValueError(
                 "Could not stringify '%r' to JSON: %s" % (data, e))
+    
+    def minify_json(self, data):
+        """
+        Converts JSON string to a minified JSON String
+
+        Example:
+        | ${data} =                   | Get Response Body|
+        | ${json_string}=             | Minify JSON      |  ${data}  |
+
+        `data` is the json string to convert to json
+        """
+
+        try:
+            return json.dumps(data, separators=(',',':'))
+        except ValueError, e:
+            raise ValueError(
+                "Could not minify '%r' to JSON: %s" % (data, e))
 
     @_with_json
     def get_json_value(self, json_string, json_pointer):
