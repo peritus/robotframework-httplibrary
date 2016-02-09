@@ -104,7 +104,7 @@ Stringify Documentation Example
 
 Stringify Complex Object
     ${names} =       Create List         First Name     Family Name    Email
-    ${data} =        Create Dictionary   names  ${names}   a  1   b  12
+    ${data} =        Create Dictionary   a=1    b=12    names=${names}
     ${json_string}=  Stringify JSON      ${data}
 
     Should Be Equal As Strings  ${json_string}   {"a": "1", "b": "12", "names": ["First Name", "Family Name", "Email"]}
