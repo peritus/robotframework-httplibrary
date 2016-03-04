@@ -118,3 +118,4 @@ Get Json Value In Chinese OK
     Set Test Variable  ${chinese}       "中"
     ${result}=  Get Json Value  {"foo":${chinese}}   /foo
     Should Be Equal    ${result}       ${chinese}
+    
