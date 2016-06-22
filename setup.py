@@ -17,7 +17,7 @@ setup(
     long_description=long_description,
     author='Filip Noetzel',
     author_email='filip+rfhttplibrary@j03.de',
-    url='https://github.com/vikulin/robotframework-httplibrary',
+    url='https://github.com/peritus/robotframework-httplibrary',
     license='Beerware',
     keywords='robotframework testing test automation web http webtest',
     platforms='any',
