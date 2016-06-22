@@ -35,7 +35,7 @@ class HTTP:
     Pointer, go to http://tools.ietf.org/html/draft-pbryan-zyp-json-pointer-00.
     """
 
-    ROBOT_LIBRARY_VERSION = "0.4.2"
+    ROBOT_LIBRARY_VERSION = "0.4.3"
 
     class Context(object):
         def __init__(self, http, host=None, scheme='http'):
@@ -279,6 +279,20 @@ class HTTP:
             self.context._scheme, self.app.host, url))
         self.context.post_process_request(
             self.app.delete(path, {}, self.context.request_headers)
+        )
+
+    def OPTIONS(self, url):
+        """
+        Issues a HTTP OPTIONS request.
+
+        `url` is the URL relative to the server root, e.g. '/_utils/config.html'
+        """
+        path = self._path_from_url_or_path(url)
+        self.context.pre_process_request()
+        logger.debug("Performing OPTIONS request on %s://%s%s" % (
+            self.context._scheme, self.app.host, path))
+        self.context.post_process_request(
+            self.app.options(path, self.context.request_headers)
         )
 
     def follow_response(self):
