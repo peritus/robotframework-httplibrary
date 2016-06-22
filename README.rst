@@ -76,6 +76,11 @@ Changelog
 
 **v0.4.2**
 
+- Fix: Added explicit OPTIONS method
+  https://github.com/peritus/robotframework-httplibrary/issues/30
+
+**v0.4.2**
+
 - Don't enforce ASCII when converting to JSON (so chinese characters are
   printed as such and not escaped like \uXXXX). Thanks Terry Yin!
 
