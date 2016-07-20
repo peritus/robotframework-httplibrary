@@ -74,7 +74,11 @@ mostly a wrapper supposed to have a nice API)!
 Changelog
 ---------
 
-**v0.4.2**
+**v0.4.4**
+- Fix: Set Json Value keyword.
+  https://github.com/vikulin/robotframework-httplibrary/pull/1
+
+**v0.4.3**
 
 - Fix: Added explicit OPTIONS method
   https://github.com/peritus/robotframework-httplibrary/issues/30
