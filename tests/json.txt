@@ -45,6 +45,11 @@ Set Json Value
     ${result}=         Set Json Value  ${obj}          /baz   9
     Should Be Equal    ${result}       {"foo": "bar", "baz": 9}
 
+Delete Json Value
+    Set Test Variable  ${obj}          {"foo":"bar"}
+    ${result}=         Delete Json Value  ${obj}          /foo
+    Should Be Equal    ${result}       {}
+
 Set Complex Json Value
     Set Test Variable  ${obj}          {}
     ${result}=         Set Json Value  ${obj}          /baz   ["12", "13", [{"bar": "biz"}]]
