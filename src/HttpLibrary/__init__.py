@@ -614,6 +614,21 @@ class HTTP:
                                                    }])
 
     @_with_json
+    def delete_json_value(self, json_string, json_pointer, json_value):
+        """
+        Delete the target node of the JSON document `json_string` specified by
+        JSON Pointer `json_pointer`.
+
+        Example:
+        | ${result}=       | Delete Json Value | {"foo": {"bar": [1,2,3]}} | /foo/bar |
+        | Should Be Equal  | ${result}      | {"foo": {}}               |      |
+        """
+        return jsonpatch.apply_patch(json_string, [{
+                                                   'op': 'remove',
+                                                   'path': json_pointer,
+                                                   }])
+
+    @_with_json
     def log_json(self, json_string, log_level='INFO'):
         """
         Logs a pretty printed version of the JSON document `json_string`.
