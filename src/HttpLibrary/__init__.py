@@ -533,7 +533,16 @@ class HTTP:
 
     # json
 
-    def should_be_valid_json(self, json_string):
+    def should_be_valid_json(self, json_data):
+        """
+        Attempts to parse `json_data` as JSON. Fails, if `json_data` is invalid JSON.
+
+        Example:
+        | Should Be Valid Json | {"foo": "bar"} |
+        """
+        self.parse_json(json.dumps(json_data, ensure_ascii=False))
+
+    def should_be_valid_json_string(self, json_string):
         """
         Attempts to parse `json_string` as JSON. Fails, if `json_string` is invalid JSON.
 
