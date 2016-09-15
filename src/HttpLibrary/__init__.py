@@ -575,9 +575,9 @@ class HTTP:
         | Should Be Equal  | ${result}        | [1, 2, 3]                 |          |
         """
         if stringify:
-            return json.dumps(jsonpointer.resolve_pointer(load_json(json_string)), ensure_ascii=False)
+            return json.dumps(jsonpointer.resolve_pointer(load_json(json_string), json_pointer), ensure_ascii=False)
         else:
-            return jsonpointer.resolve_pointer(load_json(json_string))
+            return jsonpointer.resolve_pointer(load_json(json_string), json_pointer)
 
     def json_value_should_equal(self, json_string, json_pointer, expected_value):
         """
