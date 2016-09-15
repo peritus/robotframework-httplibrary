@@ -24,6 +24,12 @@ def _with_json(f):
             f(self, load_json(json_string), *args, **kwargs), ensure_ascii=False)
     return wrapper
 
+def _with_native_json(f):
+    @wraps(f)
+    def wrapper(self, json_string, *args, **kwargs):
+        return f(self, load_json(json_string), *args, **kwargs)
+    return wrapper
+
 
 class HTTP:
     """
@@ -566,7 +572,7 @@ class HTTP:
             raise ValueError(
                 "Could not stringify '%r' to JSON: %s" % (data, e))
 
-    @_with_json
+    @_with_native_json
     def get_json_value(self, json_string, json_pointer):
         """
         Get the target node of the JSON document `json_string` specified by `json_pointer`.

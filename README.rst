@@ -74,8 +74,11 @@ mostly a wrapper supposed to have a nice API)!
 Changelog
 ---------
 
+**v0.4.5**
+- Fix: Keep original data type returned by 'Get Json Value' keyword
+
 **v0.4.4**
-- Fix: Set Json Value keyword.
+- Fix: 'Set Json Value' keyword.
   https://github.com/vikulin/robotframework-httplibrary/pull/1
 
 **v0.4.3**
