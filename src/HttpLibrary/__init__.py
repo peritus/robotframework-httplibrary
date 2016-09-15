@@ -24,12 +24,6 @@ def _with_json(f):
             f(self, load_json(json_string), *args, **kwargs), ensure_ascii=False)
     return wrapper
 
-def _with_native_json(f):
-    @wraps(f)
-    def wrapper(self, json_string, *args, **kwargs):
-        return f(self, load_json(json_string), *args, **kwargs)
-    return wrapper
-
 
 class HTTP:
     """
@@ -533,16 +527,7 @@ class HTTP:
 
     # json
 
-    def should_be_valid_json(self, json_data):
-        """
-        Attempts to parse `json_data` as JSON. Fails, if `json_data` is invalid JSON.
-
-        Example:
-        | Should Be Valid Json | {"foo": "bar"} |
-        """
-        self.parse_json(json.dumps(json_data, ensure_ascii=False))
-
-    def should_be_valid_json_string(self, json_string):
+    def should_be_valid_json(self, json_string):
         """
         Attempts to parse `json_string` as JSON. Fails, if `json_string` is invalid JSON.
 
@@ -581,8 +566,7 @@ class HTTP:
             raise ValueError(
                 "Could not stringify '%r' to JSON: %s" % (data, e))
 
-    @_with_native_json
-    def get_json_value(self, json_string, json_pointer):
+    def get_json_value(self, json_string, json_pointer, stringify=True):
         """
         Get the target node of the JSON document `json_string` specified by `json_pointer`.
 
@@ -590,7 +574,10 @@ class HTTP:
         | ${result}=       | Get Json Value   | {"foo": {"bar": [1,2,3]}} | /foo/bar |
         | Should Be Equal  | ${result}        | [1, 2, 3]                 |          |
         """
-        return jsonpointer.resolve_pointer(json_string, json_pointer)
+        if stringify:
+            return json.dumps(jsonpointer.resolve_pointer(load_json(json_string)), ensure_ascii=False)
+        else:
+            return jsonpointer.resolve_pointer(load_json(json_string))
 
     def json_value_should_equal(self, json_string, json_pointer, expected_value):
         """
