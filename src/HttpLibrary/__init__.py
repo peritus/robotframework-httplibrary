@@ -35,7 +35,7 @@ class HTTP:
     Pointer, go to http://tools.ietf.org/html/draft-pbryan-zyp-json-pointer-00.
     """
 
-    ROBOT_LIBRARY_VERSION = "0.4.5"
+    ROBOT_LIBRARY_VERSION = "0.4.6"
 
     class Context(object):
         def __init__(self, http, host=None, scheme='http'):
@@ -569,7 +569,7 @@ class HTTP:
     def get_json_value(self, json_string, json_pointer, stringify=True):
         """
         Get the target node of the JSON document `json_string` specified by `json_pointer`.
-
+        `stringify` specifies whether JSON data should be transformed to string before assertion.
         Example:
         | ${result}=       | Get Json Value   | {"foo": {"bar": [1,2,3]}} | /foo/bar |
         | Should Be Equal  | ${result}        | [1, 2, 3]                 |          |
@@ -579,33 +579,33 @@ class HTTP:
         else:
             return jsonpointer.resolve_pointer(load_json(json_string), json_pointer)
 
-    def json_value_should_equal(self, json_string, json_pointer, expected_value):
+    def json_value_should_equal(self, json_string, json_pointer, expected_value, stringify=True):
         """
         Fails if the value of the target node of the JSON document
         `json_string` specified by JSON Pointer `json_pointer` is not `expected_value`.
+        `stringify` specifies whether JSON data should be transformed to string before assertion.
 
         Example:
         | Set Test Variable       | ${doc}  | {"foo": {"bar": [1,2,3]}} |             |
         | Json Value Should Equal | ${doc}  | /foo/bar                  | "[1, 2, 3]" |
         """
-
-        got = self.get_json_value(json_string, json_pointer)
+        got = self.get_json_value(json_string, json_pointer, stringify)
 
         assert got == expected_value, \
             'JSON value "%s" does not equal "%s", but should have.' % (
                 got, expected_value)
 
-    def json_value_should_not_equal(self, json_string, json_pointer, expected_value):
+    def json_value_should_not_equal(self, json_string, json_pointer, expected_value, stringify=True):
         """
         Fails if the value of the target node of the JSON document
         `json_string` specified by JSON Pointer `json_pointer` is `expected_value`.
+        `stringify` specifies whether JSON data should be transformed to string before assertion.
 
         Example:
         | Set Test Variable           | ${doc}  | {"foo": {"bar": [1,2,3]}} |             |
         | Json Value Should Not Equal | ${doc}  | /foo/bar                  | "[1, 2, 3]" |
         """
-
-        got = self.get_json_value(json_string, json_pointer)
+        got = self.get_json_value(json_string, json_pointer, stringify)
 
         message = 'JSON value "%s" does not equal "%s"' % (got, expected_value)
 

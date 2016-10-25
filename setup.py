@@ -12,12 +12,12 @@ long_description = open(join(dirname(__file__), 'README.rst',)).read()
 
 setup(
     name='robotframework-httplibrary',
-    version="0.4.5",
+    version="0.4.6",
     description='Robot Framework keywords for HTTP requests',
     long_description=long_description,
-    author='Filip Noetzel',
-    author_email='filip+rfhttplibrary@j03.de',
-    url='https://github.com/peritus/robotframework-httplibrary',
+    author='Vadym Vikulin',
+    author_email='vadym.vikulin@gmail.com',
+    url='https://github.com/vikulin/robotframework-httplibrary',
     license='Beerware',
     keywords='robotframework testing test automation web http webtest',
     platforms='any',

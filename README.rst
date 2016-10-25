@@ -74,6 +74,9 @@ mostly a wrapper supposed to have a nice API)!
 Changelog
 ---------
 
+**v0.4.6**
+- Improvement: Added stringify parameter to json_value_should_equal and json_value_should_not_equal methods
+
 **v0.4.5**
 - Fix: Keep original data type returned by 'Get Json Value' keyword
 
