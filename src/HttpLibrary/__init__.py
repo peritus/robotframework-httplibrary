@@ -237,9 +237,7 @@ class HTTP:
         """
         path = self._path_from_url_or_path(url)
         kwargs = {}
-        if 'Content-Type' in self.context.request_headers:
-            kwargs[
-                'content_type'] = self.context.request_headers['Content-Type']
+        
         logger.debug("Performing POST request on %s://%s%s" % (
             self.context._scheme, self.app.host, url))
         self.context.pre_process_request()
