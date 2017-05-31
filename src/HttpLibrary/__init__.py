@@ -278,7 +278,8 @@ class HTTP:
         logger.debug("Performing DELETE request on %s://%s%s" % (
             self.context._scheme, self.app.host, url))
         self.context.post_process_request(
-            self.app.delete(path, {}, self.context.request_headers)
+            self.app.delete(path, self.context.request_body or {},
+                            self.context.request_headers)
         )
 
     def follow_response(self):
