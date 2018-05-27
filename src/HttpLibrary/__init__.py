@@ -201,6 +201,25 @@ class HTTP:
                                      method=verb.upper(),)
         )
 
+    def PATCH(self, url):
+        """
+        Issues an HTTP PATCH request.
+
+        `url` is the URL relative to the server root, e.g. '/_utils/config.html'
+        """
+        path = self._path_from_url_or_path(url)
+        kwargs = {}
+        if 'Content-Type' in self.context.request_headers:
+            kwargs[
+                'content_type'] = self.context.request_headers['Content-Type']
+        self.context.pre_process_request()
+        logger.debug("Performing PATCH request on %s://%s%s" % (
+            self.context._scheme, self.app.host, url))
+        self.context.post_process_request(
+            self.app.patch(path, self.context.request_body or {},
+                         self.context.request_headers, **kwargs)
+        )
+
     def HEAD(self, url):
         """
         Issues a HTTP HEAD request.
