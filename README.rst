@@ -74,6 +74,9 @@ mostly a wrapper supposed to have a nice API)!
 Changelog
 ---------
 
+**v0.4.7**
+- Improvement: Added PATCH HTTP method
+
 **v0.4.6**
 - Improvement: Added stringify parameter to json_value_should_equal and json_value_should_not_equal methods
 

@@ -12,7 +12,7 @@ long_description = open(join(dirname(__file__), 'README.rst',)).read()
 
 setup(
     name='robotframework-httplibrary',
-    version="0.4.6",
+    version="0.4.7",
     description='Robot Framework keywords for HTTP requests',
     long_description=long_description,
     author='Vadym Vikulin',

@@ -35,7 +35,7 @@ class HTTP:
     Pointer, go to http://tools.ietf.org/html/draft-pbryan-zyp-json-pointer-00.
     """
 
-    ROBOT_LIBRARY_VERSION = "0.4.6"
+    ROBOT_LIBRARY_VERSION = "0.4.7"
 
     class Context(object):
         def __init__(self, http, host=None, scheme='http'):
@@ -294,6 +294,24 @@ class HTTP:
         self.context.post_process_request(
             self.app.options(path, self.context.request_headers)
         )
+
+    def PATCH(self, url):
+        """
+        Issues a HTTP PATCH request.
+
+        `url` is the URL relative to the server root, e.g. '/_utils/config.html'
+        """
+        path = self._path_from_url_or_path(url)
+        kwargs = {}
+        if 'Content-Type' in self.context.request_headers:
+            kwargs[
+                'content_type'] = self.context.request_headers['Content-Type']
+        self.context.pre_process_request()
+        logger.debug("Performing PATCH request on %s://%s%s" % (
+            self.context._scheme, self.app.host, url))
+        self.context.post_process_request(
+            self.app.patch(path, self.context.request_body or {},
+                         self.context.request_headers, **kwargs)
 
     def follow_response(self):
         """
