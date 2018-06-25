@@ -312,6 +312,7 @@ class HTTP:
         self.context.post_process_request(
             self.app.patch(path, self.context.request_body or {},
                          self.context.request_headers, **kwargs)
+        )
 
     def follow_response(self):
         """
