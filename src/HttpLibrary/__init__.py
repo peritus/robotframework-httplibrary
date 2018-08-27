@@ -621,7 +621,16 @@ class HTTP:
         for line in json.dumps(json_string, indent=2, ensure_ascii=False).split('\n'):
             logger.write(line, log_level)
 
-    # debug
+    @_with_json
+    def remove_json_key(self, json_string, json_pointer):
+        """
+        Remove the target key of the JSON document `json_string` specified by
+        JSON Pointer `json_pointer` to `json_value`.
+
+        Example:
+        | ${result}=       | Remove Json Key | {"foo": {"bar": [1,2,3]}} | /foo/bar |
+        """
+        return jsonpatch.apply_patch(json_string, [{'op': 'remove','path': json_pointer}])
 
     def show_response_body_in_browser(self):
         """
