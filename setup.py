@@ -4,6 +4,8 @@ from distutils.core import setup
 
 CLASSIFIERS = """
 Programming Language :: Python
+Programming Language :: Python 2.7
+Programming Language :: Python 3.6
 Topic :: Software Development :: Testing
 """[1:-1]
 
