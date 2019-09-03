@@ -391,7 +391,7 @@ class HTTP(object):
         """
         self.response_should_have_header(header_name)
         result = []
-        if sys.version_info[0] < 3:
+        if self.get_major_python_version() < 3:
             result = self.response.headers.getall(header_name)
         else:
             for header_val in self.response.headers.getall(header_name)[0].split(","):
@@ -648,7 +648,7 @@ class HTTP(object):
         """
         self.context.response.showbrowser()
 
-    def get_python_version(self):
+    def get_major_python_version(self):
         """
         returns the current python version
         """

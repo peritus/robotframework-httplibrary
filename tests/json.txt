@@ -9,7 +9,7 @@ Should Be Valid Json OK
     Should Be Valid JSON  {"foo": "bar"}
 
 Should Be Valid Json FAIL
-    ${python_ver}=   Get Python Version
+    ${python_ver}=   Get Major Python Version
     Run Keyword If  '${python_ver}' == '3'
     ...           Run Keyword And Expect Error
     ...               ValueError: Could not parse '-oh 748903' as JSON: Expecting value: line 1 column 1 (char 0)
@@ -26,7 +26,7 @@ Get Json Value OK
 
 Get Json Value Fail
     Set Test Variable  ${obj}          {"foo":{"another prop":{"baz":"A string"}}}
-    ${python_ver}=   Get Python Version
+    ${python_ver}=    Get Major Python Version
     Run Keyword If  '${python_ver}' == '3'
     ...           Run Keyword And Expect Error
     ...               EQUALS: JsonPointerException: member 'bar' not found in {'baz': 'A string'}
@@ -105,7 +105,7 @@ Json Value Should Be Fail
 
 Json Value Should Be Fail Invalid Pointer
     Set Test Variable        ${doc}  {"foo": {"bar": [4,5,6]}}
-    ${python_ver}=   Get Python Version
+    ${python_ver}=   Get Major Python Version
     Run Keyword If  '${python_ver}' == '3'
     ...           Run Keyword And Expect Error
     ...               EQUALS: JsonPointerException: member 'baz' not found in {'foo': {'bar': [4, 5, 6]}}

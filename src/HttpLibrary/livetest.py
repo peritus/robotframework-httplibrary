@@ -169,7 +169,7 @@ class TestApp(webtest.TestApp):
             c = BaseCookie()
             for name, value in self.cookies.items():
                 c[name] = value
-            hc = '; '.join(['='.join([m.key, m.value]) for m in list(c.values())])
+            hc = '; '.join(['='.join([key, value]) for key, value in c.items()])
             req.headers['Cookie'] = hc
 
         res = self._do_httplib_request(req)

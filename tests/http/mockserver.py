@@ -139,8 +139,8 @@ if '--ssl' in sys.argv:
         os.path.join(os.path.dirname(__file__), 'rfhttplibmockserver.pem'))
 
     server.socket = ssl.wrap_socket(server.socket,
-                                    certfile = cert,
-                                    server_side = True)
+                                    certfile=cert,
+                                    server_side=True)
 
 print('Starting server on %s://localhost:%d/' % (scheme, PORT))
 
