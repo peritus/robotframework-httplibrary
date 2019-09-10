@@ -74,6 +74,13 @@ mostly a wrapper supposed to have a nice API)!
 Changelog
 ---------
 
+**v1.0.0**
+
+- Upgraded dependent robotframework library version to 3.1.2(latest).
+- Migrated source code to support both python 2 and python 3.
+- Unit tests updated accordingly.
+- Integrated tox test automation tool to test on multiple python environments.
+
 **v0.4.2**
 
 - Don't enforce ASCII when converting to JSON (so chinese characters are
