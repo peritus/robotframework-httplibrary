@@ -74,7 +74,7 @@ mostly a wrapper supposed to have a nice API)!
 Changelog
 ---------
 
-**v0.5.0**
+**v1.0.0**
 
 - Upgraded dependent robotframework library version to 3.1.2(latest).
 - Migrated source code to support both python 2 and python 3.
