@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 from future import standard_library
 standard_library.install_aliases()
-from builtins import object
+from builtins import object, str
 from robot.api import logger
 
 from base64 import b64encode
@@ -486,8 +486,14 @@ class HTTP(object):
         | Should Start With   | ${body}           | <?xml version="1.0" encoding="UTF-8" |
         """
         response_body = self.response.body
+
+        # In python2 response comes as str, which satisfies below bytes condition too and fails at decode call.
+        if isinstance(response_body, str):
+            return response_body
+
         if isinstance(response_body, bytes):
-            response_body = response_body.decode()
+            response_body = response_body.decode('utf-8', 'replace')
+
         return response_body
 
     def response_body_should_contain(self, should_contain):
@@ -499,12 +505,13 @@ class HTTP(object):
         | Response Body Should Contain | version="1.0"    |
         | Response Body Should Contain | encoding="UTF-8" |
         """
-        logger.debug('Testing whether "%s" contains "%s".' % (
-            self.response.body, should_contain))
 
         response = self.response.body
         if isinstance(response, bytes):
-            response = response.decode("utf-8")
+            response = response.decode("utf-8", "replace")
+
+        logger.debug('Testing whether "%s" contains "%s".' % (response, should_contain))
+
         assert should_contain in response, \
             '"%s" should have contained "%s", but did not.' % (
                 self.response.body, should_contain)

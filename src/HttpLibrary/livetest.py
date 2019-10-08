@@ -41,14 +41,13 @@ from builtins import object
 __author__ = 'storborg@mit.edu'
 __version__ = '0.5'
 
-import sys, os
+import sys
 import webtest
 import ssl
 import http.client
 import urllib.parse
 from http.cookies import BaseCookie, CookieError
 from six.moves import http_cookiejar
-from robot.api import logger
 
 
 conn_classes = {'http': http.client.HTTPConnection,

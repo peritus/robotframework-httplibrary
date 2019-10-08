@@ -168,11 +168,23 @@ POST with one word request body
     POST                          /echo
     Response Body Should Contain  Tooot
 
+POST with extended ascii chars request body
+    Set Request Body              ToootÄß
+    Set Request Header            Content-Type    text/plain
+    POST                          /echo
+    Response Body Should Contain  ToootÄß
+
 PUT with two word request body
     Set Request Body              Tooot Tooooot
     Set Request Header            Content-Type    text/plain
     PUT                           /echo
     Response Body Should Contain  Tooot Tooooot
+
+PUT with two word extended ascii chars request body
+    Set Request Body              ToootÖÜ ToooootÄß
+    Set Request Header            Content-Type    text/plain
+    PUT                           /echo
+    Response Body Should Contain  ToootÖÜ ToooootÄß
 
 Get Response Status
     GET                          /200
