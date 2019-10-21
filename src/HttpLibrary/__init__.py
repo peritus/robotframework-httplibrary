@@ -516,6 +516,15 @@ class HTTP(object):
             '"%s" should have contained "%s", but did not.' % (
                 self.response.body, should_contain)
 
+    def json_data_body_should_contain(self,should_contain):
+
+        response = load_json(self.response.body)['data']
+        should_contain_json = load_json(should_contain)
+        assert should_contain_json in response, \
+            '"%s" should have contained "%s", but did not.' % (
+                response, should_contain_json)
+
+
     def log_response_body(self, log_level='INFO'):
         """
         Logs the response body.

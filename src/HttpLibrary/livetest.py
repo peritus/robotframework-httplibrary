@@ -35,6 +35,7 @@ Test stuff in the response:
 
 """
 
+from __future__ import unicode_literals
 from future import standard_library
 standard_library.install_aliases()
 from builtins import object
@@ -130,7 +131,12 @@ class TestApp(webtest.TestApp):
 
     def _do_httplib_request(self, req):
         "Convert WebOb Request to httplib request."
-        headers = dict((name, val) for name, val in req.headers.items())
+        headers = {}
+
+        for name, val in req.headers.items():
+            if sys.version_info[0]==2 and isinstance(name, unicode):
+                name = str(name)
+            headers[name] = val
         if req.scheme not in self.conn:
             self._load_conn(req.scheme)
 
