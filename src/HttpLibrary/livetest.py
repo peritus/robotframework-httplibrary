@@ -134,7 +134,7 @@ class TestApp(webtest.TestApp):
         headers = {}
 
         for name, val in req.headers.items():
-            if sys.version_info[0]==2 and isinstance(name, unicode):
+            if sys.version_info[0] == 2 and isinstance(name, unicode):
                 name = str(name)
             headers[name] = val
         if req.scheme not in self.conn:
