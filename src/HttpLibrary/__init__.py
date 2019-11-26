@@ -6,7 +6,7 @@ from robot.api import logger
 
 from base64 import b64encode
 from functools import wraps
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 
 import sys
 from . import livetest
@@ -329,6 +329,27 @@ class HTTP(object):
         self.context.next_request_should = status_code
 
     # status code
+    def should_contain_query_params(self, url, expected):
+
+        expected_params = json.loads(expected)
+
+        parsed_url = urlparse(url, allow_fragments=True)
+        query = parsed_url.query
+        fragments = parsed_url.fragment
+        if sys.version_info[0] == 2:
+            query = unicode(query)
+            fragments = unicode(fragments)
+        parsed_arguments = parse_qs(query)
+        parsed_arguments.update(parse_qs(fragments))
+
+        assert set(parsed_arguments.keys()) == set(expected_params.keys())
+
+        for p in  list(expected_params):
+            if expected_params[p] == '':
+                del expected_params[p]
+                del parsed_arguments[p]
+
+        assert parsed_arguments == expected_params
 
     def get_response_status(self):
         """
