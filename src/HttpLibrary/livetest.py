@@ -35,18 +35,24 @@ Test stuff in the response:
 
 """
 
+from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 __author__ = 'storborg@mit.edu'
 __version__ = '0.5'
 
 import sys
 import webtest
-import httplib
-import urlparse
-from Cookie import BaseCookie, CookieError
+import ssl
+import http.client
+import urllib.parse
+from http.cookies import BaseCookie, CookieError
 from six.moves import http_cookiejar
 
-conn_classes = {'http': httplib.HTTPConnection,
-                'https': httplib.HTTPSConnection}
+
+conn_classes = {'http': http.client.HTTPConnection,
+                'https': http.client.HTTPSConnection}
 
 
 class RequestCookieAdapter(object):
@@ -68,7 +74,10 @@ class RequestCookieAdapter(object):
         return True
 
     def get_full_url(self):
-        return self._request.url
+        return self._request.path_qs
+
+    def get_header(self, header):
+        return self._request.headers.getall(header)
 
     def get_origin_req_host(self):
         return self._request.host
@@ -101,7 +110,11 @@ class ResponseCookieAdapter(object):
 class TestApp(webtest.TestApp):
     def _load_conn(self, scheme):
         if scheme in conn_classes:
-            self.conn[scheme] = conn_classes[scheme](self.host)
+            if scheme == 'https':
+                # <TODO> find a better way to handle ssl context
+                self.conn[scheme] = conn_classes[scheme](self.host, context=ssl._create_unverified_context())
+            else:
+                self.conn[scheme] = conn_classes[scheme](self.host)
         else:
             raise ValueError("Scheme '%s' is not supported." % scheme)
 
@@ -118,21 +131,35 @@ class TestApp(webtest.TestApp):
 
     def _do_httplib_request(self, req):
         "Convert WebOb Request to httplib request."
-        headers = dict((name, val) for name, val in req.headers.iteritems())
+        headers = {}
+
+        for name, val in req.headers.items():
+            if sys.version_info[0] == 2 and isinstance(name, unicode):
+                name = str(name)
+            headers[name] = val
         if req.scheme not in self.conn:
             self._load_conn(req.scheme)
 
         conn = self.conn[req.scheme]
         conn.request(req.method, req.path_qs, req.body, headers)
 
+        if req.path_qs == '/kill':
+            res = http.client.HTTPResponse(conn.sock)
+            res.status_int = 200
+            return res
+
         webresp = conn.getresponse()
         res = webtest.TestResponse()
         res.status = '%s %s' % (webresp.status, webresp.reason)
         res.body = webresp.read()
         response_headers = []
-        for headername in dict(webresp.getheaders()).keys():
-            for headervalue in webresp.msg.getheaders(headername):
-                response_headers.append((headername, headervalue))
+        if sys.version_info[0] < 3:
+            for headername in list(dict(webresp.getheaders()).keys()):
+                for headervalue in webresp.msg.getheaders(headername):
+                    response_headers.append((headername, headervalue))
+        else:
+            for headername in list(dict(webresp.getheaders()).keys()):
+                response_headers.append((headername, webresp.getheader(headername)))
         res.headerlist = response_headers
         res.errors = ''
         return res
@@ -147,10 +174,13 @@ class TestApp(webtest.TestApp):
             c = BaseCookie()
             for name, value in self.cookies.items():
                 c[name] = value
-            hc = '; '.join(['='.join([m.key, m.value]) for m in c.values()])
+            hc = '; '.join(['='.join([key, value]) for key, value in c.items()])
             req.headers['Cookie'] = hc
 
         res = self._do_httplib_request(req)
+        if req.path_qs == '/kill' and res.status_int == 200:
+            return res
+
         # Set these attributes for consistency with webtest.
         res.request = req
         res.test_app = self
@@ -160,9 +190,10 @@ class TestApp(webtest.TestApp):
             self._check_errors(res)
         res.cookies_set = {}
 
-        # merge cookies back in
-        self.cookiejar.extract_cookies(ResponseCookieAdapter(res),
-                                       RequestCookieAdapter(req))
+        if self.cookies:
+            # merge cookies back in
+            self.cookiejar.extract_cookies(ResponseCookieAdapter(res),
+                                           RequestCookieAdapter(req))
 
         return res
 
@@ -172,11 +203,11 @@ def goto(self, href, method='get', **args):
     Monkeypatch the TestResponse.goto method so that it doesn't wipe out the
     scheme and host.
     """
-    scheme, host, path, query, fragment = urlparse.urlsplit(href)
+    scheme, host, path, query, fragment = urllib.parse.urlsplit(href)
     # We
     fragment = ''
-    href = urlparse.urlunsplit((scheme, host, path, query, fragment))
-    href = urlparse.urljoin(self.request.url, href)
+    href = urllib.parse.urlunsplit((scheme, host, path, query, fragment))
+    href = urllib.parse.urljoin(self.request.url, href)
     method = method.lower()
     assert method in ('get', 'post'), (
         'Only "get" or "post" are allowed for method (you gave %r)'

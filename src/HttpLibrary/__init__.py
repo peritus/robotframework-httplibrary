@@ -1,10 +1,15 @@
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object, str
 from robot.api import logger
 
 from base64 import b64encode
 from functools import wraps
-from urlparse import urlparse
+from urllib.parse import urlparse, parse_qs
 
-import livetest
+import sys
+from . import livetest
 import json
 import jsonpointer
 import jsonpatch
@@ -13,7 +18,7 @@ import jsonpatch
 def load_json(json_string):
     try:
         return json.loads(json_string)
-    except ValueError, e:
+    except ValueError as e:
         raise ValueError("Could not parse '%s' as JSON: %s" % (json_string, e))
 
 
@@ -25,7 +30,7 @@ def _with_json(f):
     return wrapper
 
 
-class HTTP:
+class HTTP(object):
     """
     HttpLibrary for Robot Framework
 
@@ -35,7 +40,7 @@ class HTTP:
     Pointer, go to http://tools.ietf.org/html/draft-pbryan-zyp-json-pointer-00.
     """
 
-    ROBOT_LIBRARY_VERSION = "0.4.2"
+    ROBOT_LIBRARY_VERSION = "1.1.0"
 
     class Context(object):
         def __init__(self, http, host=None, scheme='http'):
@@ -64,7 +69,7 @@ class HTTP:
             self.post_process_request(None)
 
         def pre_process_request(self):
-            if len(self.request_headers.items()) > 0:
+            if len(list(self.request_headers.items())) > 0:
                 logger.debug("Request headers:")
                 for name, value in self.request_headers.items():
                     logger.debug("%s: %s" % (name, value))
@@ -243,10 +248,10 @@ class HTTP:
         logger.debug("Performing POST request on %s://%s%s" % (
             self.context._scheme, self.app.host, url))
         self.context.pre_process_request()
-        self.context.post_process_request(
-            self.app.post(path, self.context.request_body or {},
-                          self.context.request_headers, **kwargs)
-        )
+        response = self.app.post(path, self.context.request_body or {}, self.context.request_headers, **kwargs)
+        if path == '/kill' and response.status_int == 200:
+            return
+        self.context.post_process_request(response)
 
     def PUT(self, url):
         """
@@ -324,6 +329,27 @@ class HTTP:
         self.context.next_request_should = status_code
 
     # status code
+    def should_contain_query_params(self, url, expected):
+
+        expected_params = json.loads(expected)
+
+        parsed_url = urlparse(url, allow_fragments=True)
+        query = parsed_url.query
+        fragments = parsed_url.fragment
+        if sys.version_info[0] == 2:
+            query = unicode(query)
+            fragments = unicode(fragments)
+        parsed_arguments = parse_qs(query)
+        parsed_arguments.update(parse_qs(fragments))
+
+        assert set(parsed_arguments.keys()) == set(expected_params.keys())
+
+        for p in  list(expected_params):
+            if expected_params[p] == '':
+                del expected_params[p]
+                del parsed_arguments[p]
+
+        assert parsed_arguments == expected_params
 
     def get_response_status(self):
         """
@@ -385,7 +411,14 @@ class HTTP:
         keyword is a list containing both values.
         """
         self.response_should_have_header(header_name)
-        return self.response.headers.getall(header_name)
+        result = []
+        if self.get_major_python_version() < 3:
+            result = self.response.headers.getall(header_name)
+        else:
+            for header_val in self.response.headers.getall(header_name)[0].split(","):
+                result.append(header_val.strip())
+
+        return result
 
     def response_header_should_equal(self, header_name, expected):
         """
@@ -445,6 +478,8 @@ class HTTP:
         """
         credentials = "%s:%s" % (username, password)
         logger.info('Set basic auth to "%s"' % credentials)
+        if isinstance(credentials, str):
+            credentials = credentials.encode()
         self.set_request_header(
             "Authorization", "Basic %s" % b64encode(credentials))
 
@@ -471,7 +506,16 @@ class HTTP:
         | ${body}=            | Get Response Body |                                      |
         | Should Start With   | ${body}           | <?xml version="1.0" encoding="UTF-8" |
         """
-        return self.response.body
+        response_body = self.response.body
+
+        # In python2 response comes as str, which satisfies below bytes condition too and fails at decode call.
+        if isinstance(response_body, str):
+            return response_body
+
+        if isinstance(response_body, bytes):
+            response_body = response_body.decode('utf-8', 'replace')
+
+        return response_body
 
     def response_body_should_contain(self, should_contain):
         """
@@ -482,10 +526,14 @@ class HTTP:
         | Response Body Should Contain | version="1.0"    |
         | Response Body Should Contain | encoding="UTF-8" |
         """
-        logger.debug('Testing whether "%s" contains "%s".' % (
-            self.response.body, should_contain))
 
-        assert should_contain in self.response.body, \
+        response = self.response.body
+        if isinstance(response, bytes):
+            response = response.decode("utf-8", "replace")
+
+        logger.debug('Testing whether "%s" contains "%s".' % (response, should_contain))
+
+        assert should_contain in response, \
             '"%s" should have contained "%s", but did not.' % (
                 self.response.body, should_contain)
 
@@ -548,7 +596,7 @@ class HTTP:
 
         try:
             return json.dumps(data, ensure_ascii=False)
-        except ValueError, e:
+        except ValueError as e:
             raise ValueError(
                 "Could not stringify '%r' to JSON: %s" % (data, e))
 
@@ -630,3 +678,21 @@ class HTTP:
         This is meant for debugging response body's with complex media types.
         """
         self.context.response.showbrowser()
+
+    def get_major_python_version(self):
+        """
+        returns the current python version
+        """
+        return sys.version_info[0]
+
+    def log_message(self, message, log_level='INFO'):
+        """
+        Logs the message.
+
+        Specify `log_level` (default: "INFO") to set the log level.
+        """
+        if message:
+            logger.write("Message :", log_level)
+            logger.write(message, log_level)
+        else:
+            logger.debug("No message received", log_level)

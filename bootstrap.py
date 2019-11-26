@@ -20,7 +20,7 @@ use the -c option to specify an alternate configuration file.
 $Id: bootstrap.py 102545 2009-08-06 14:49:47Z chrisw $
 """
 
-import os, shutil, sys, tempfile, urllib2
+import os, shutil, sys, tempfile
 from optparse import OptionParser
 
 tmpeggs = tempfile.mkdtemp()
@@ -32,7 +32,7 @@ parser = OptionParser()
 parser.add_option("-v", "--version", dest="version",
                           help="use a specific zc.buildout version")
 parser.add_option("-d", "--distribute",
-                   action="store_true", dest="distribute", default=True,
+                   action="store_true", dest="distribute", default=False,
                    help="Use Disribute rather than Setuptools.")
 
 options, args = parser.parse_args()
@@ -49,18 +49,10 @@ to_reload = False
 try:
     import pkg_resources
     if not hasattr(pkg_resources, '_distribute'):
-        to_reload = True
+        to_reload = False
         raise ImportError
 except ImportError:
     ez = {}
-    if USE_DISTRIBUTE:
-        exec urllib2.urlopen('http://python-distribute.org/distribute_setup.py'
-                         ).read() in ez
-        ez['use_setuptools'](to_dir=tmpeggs, download_delay=0, no_fake=True)
-    else:
-        exec urllib2.urlopen('http://peak.telecommunity.com/dist/ez_setup.py'
-                             ).read() in ez
-        ez['use_setuptools'](to_dir=tmpeggs, download_delay=0)
 
     if to_reload:
         reload(pkg_resources)
