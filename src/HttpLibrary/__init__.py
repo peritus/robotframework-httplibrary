@@ -331,19 +331,21 @@ class HTTP(object):
     def should_contain_url_params(self, url, expected):
         """
         Compares query parameters of the url.
-        Note: if some params are dynamic, just add the key in 'expected' with empty value to check their existence
+        Note: Each value of the key in expected to be a list because its valid param to pass list in query params
+              if some query params are dynamic, just add the key in 'expected' with empty value to check their existence
         Example:
-        | Should Contain Url Params           | 'url' | {"status":200,'code':""}
+        | Should Contain Url Params           | 'url' | {"status":[200],'code':""}
         """
         self.__url_qs_fragment_helper(url, expected, False)
 
     def should_contain_url_fragments(self, url, expected):
         """
         Compares fragments of the url.
-        Note: if some fragments are dynamic, just add the key in 'expected' with empty value to check their existence
+        Note: Each value of the key in expected to be a list because its valid param to pass list in fragments
+              if some fragments are dynamic, just add the key in 'expected' with empty value to check their existence
 
         Example:
-        | Should Contain Url Fragments        | 'url' | {"status":200,'code':""}
+        | Should Contain Url Fragments        | 'url' | {"status":[200],'code':""}
         """
         self.__url_qs_fragment_helper(url, expected, True)
 

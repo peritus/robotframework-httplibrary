@@ -298,3 +298,14 @@ New HTTP Context should create a new cookie jar
 
     Response Body Should Contain  Cookie Monster is sad
 
+Comparing url fragments should succeed
+    Should Contain Url Fragments   http://www.google.com/search#q=helloworld   {"q":["helloworld"]}
+
+Comparing url params should succeed
+    Should Contain Url Params   http://www.google.com/search?q=helloworld   {"q":["helloworld"]}
+
+Comparing urls with dynamic fragment should succeed
+    Should Contain Url Fragments   http://www.google.com/search#q=helloworld&code=123zxcqwe   {"q":["helloworld"],"code":""}
+
+Comparing urls with dynamic params should succeed
+    Should Contain Url Params   http://www.google.com/search?q=helloworld&code=123zxcqwe   {"q":["helloworld"],"code":""}
