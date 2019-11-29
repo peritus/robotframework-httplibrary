@@ -6,7 +6,7 @@ from robot.api import logger
 
 from base64 import b64encode
 from functools import wraps
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 
 import sys
 from . import livetest
@@ -328,7 +328,46 @@ class HTTP(object):
         """
         self.context.next_request_should = status_code
 
-    # status code
+    def should_contain_url_params(self, url, expected):
+        """
+        Compares query parameters of the url.
+        Note: if some params are dynamic, just add the key in 'expected' with empty value to check their existence
+        Example:
+        | Should Contain Url Params           | 'url' | {"status":200,'code':""}
+        """
+        self.__url_qs_fragment_helper(url, expected, False)
+
+    def should_contain_url_fragments(self, url, expected):
+        """
+        Compares fragments of the url.
+        Note: if some fragments are dynamic, just add the key in 'expected' with empty value to check their existence
+
+        Example:
+        | Should Contain Url Fragments        | 'url' | {"status":200,'code':""}
+        """
+        self.__url_qs_fragment_helper(url, expected, True)
+
+    def __url_qs_fragment_helper(self, url, expected_params, check_fragments):
+        expected_params = json.loads(expected_params)
+        parsed_url = urlparse(url, allow_fragments=check_fragments)
+        query = parsed_url.query
+        if check_fragments:
+            query = parsed_url.fragment
+
+        if sys.version_info[0] == 2:
+            query = unicode(query)
+        parsed_arguments = parse_qs(query)
+
+        assert set(parsed_arguments.keys()) == set(expected_params.keys())
+
+        # We remove the dynamic params because we don't know the expected value
+        # Empty value in expected indicates its dynamic, so we remove it from both expected and actual
+        for p in list(expected_params):
+            if expected_params[p] == '':
+                del expected_params[p]
+                del parsed_arguments[p]
+
+        assert parsed_arguments == expected_params
 
     def get_response_status(self):
         """
