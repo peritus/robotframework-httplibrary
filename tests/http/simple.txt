@@ -305,7 +305,13 @@ Comparing url params should succeed
     Should Contain Url Params   http://www.google.com/search?q=helloworld   {"q":["helloworld"]}
 
 Comparing urls with dynamic fragment should succeed
-    Should Contain Url Fragments   http://www.google.com/search#q=helloworld&code=123zxcqwe   {"q":["helloworld"],"code":""}
+    Should Contain Url Fragments   http://www.google.com/search#q=helloworld&code=123zxcqwe   {"q":["helloworld"],"code":null}
 
 Comparing urls with dynamic params should succeed
-    Should Contain Url Params   http://www.google.com/search?q=helloworld&code=123zxcqwe   {"q":["helloworld"],"code":""}
+    Should Contain Url Params   http://www.google.com/search?q=helloworld&code=123zxcqwe   {"q":["helloworld"],"code":null}
+
+Comparing urls with empty fragment should succeed
+    Should Contain Url Fragments   http://www.google.com/search#q=helloworld&code   {"q":["helloworld"],"code":[""]}
+
+Comparing urls with empty params should succeed
+    Should Contain Url Params   http://www.google.com/search?q=helloworld&code   {"q":["helloworld"],"code":[""]}

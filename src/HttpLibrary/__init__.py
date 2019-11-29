@@ -332,9 +332,9 @@ class HTTP(object):
         """
         Compares query parameters of the url.
         Note: Each value of the key in expected to be a list because its valid param to pass list in query params
-              if some query params are dynamic, just add the key in 'expected' with empty value to check their existence
+              if some query params are dynamic, just add the key in 'expected' with null value to check their existence
         Example:
-        | Should Contain Url Params           | 'url' | {"status":[200],'code':""}
+        | Should Contain Url Params           | 'url' | {"status":[200],'code':null}
         """
         self.__url_qs_fragment_helper(url, expected, False)
 
@@ -342,10 +342,10 @@ class HTTP(object):
         """
         Compares fragments of the url.
         Note: Each value of the key in expected to be a list because its valid param to pass list in fragments
-              if some fragments are dynamic, just add the key in 'expected' with empty value to check their existence
+              if some fragments are dynamic, just add the key in 'expected' with null value to check their existence
 
         Example:
-        | Should Contain Url Fragments        | 'url' | {"status":[200],'code':""}
+        | Should Contain Url Fragments        | 'url' | {"status":[200],'code':null}
         """
         self.__url_qs_fragment_helper(url, expected, True)
 
@@ -358,14 +358,14 @@ class HTTP(object):
 
         if sys.version_info[0] == 2:
             query = unicode(query)
-        parsed_arguments = parse_qs(query)
+        parsed_arguments = parse_qs(query, keep_blank_values=True)
 
         assert set(parsed_arguments.keys()) == set(expected_params.keys())
 
         # We remove the dynamic params because we don't know the expected value
-        # Empty value in expected indicates its dynamic, so we remove it from both expected and actual
+        # 'None' value in expected indicates its dynamic, so we remove it from both expected and actual
         for p in list(expected_params):
-            if expected_params[p] == '':
+            if expected_params[p] is None:
                 del expected_params[p]
                 del parsed_arguments[p]
 
