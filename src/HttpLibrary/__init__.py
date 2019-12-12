@@ -201,7 +201,8 @@ class HTTP:
         logger.debug("Performing %s request on %s://%s%s" % (verb,
                      self.context._scheme, self.app.host, path,))
         self.context.post_process_request(
-            self.context.app.request(path, {}, self.context.request_headers,
+            self.context.app.request(path, {},
+                                     headers=self.context.request_headers,
                                      method=verb.upper(),)
         )
 
