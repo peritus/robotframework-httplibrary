@@ -74,6 +74,24 @@ mostly a wrapper supposed to have a nice API)!
 Changelog
 ---------
 
+**v0.4.7**
+- Improvement: Added PATCH HTTP method
+
+**v0.4.6**
+- Improvement: Added stringify parameter to json_value_should_equal and json_value_should_not_equal methods
+
+**v0.4.5**
+- Fix: Keep original data type returned by 'Get Json Value' keyword
+
+**v0.4.4**
+- Fix: 'Set Json Value' keyword.
+  https://github.com/vikulin/robotframework-httplibrary/pull/1
+
+**v0.4.3**
+
+- Fix: Added explicit OPTIONS method
+  https://github.com/peritus/robotframework-httplibrary/issues/30
+
 **v0.4.2**
 
 - Don't enforce ASCII when converting to JSON (so chinese characters are

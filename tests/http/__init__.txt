@@ -2,6 +2,7 @@
 
 Library         HttpLibrary.HTTP
 Library         OperatingSystem
+Library         Process
 
 Resource        variables.txt
 
@@ -11,7 +12,7 @@ Suite Teardown  Stop Mockserver
 *** Keywords ***
 
 Start Mockserver
-    Start Process   tests/http/mockserver.py ${PORT}
+    Start Process   tests/http/mockserver.py    ${PORT}
     Sleep           1
 
 Stop Mockserver

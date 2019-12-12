@@ -102,8 +102,8 @@ Next Request Should Have Status Code w/ Status Line FAIL
     ...  GET      /418
 
 HTTP Request with custom HTTP verb should work
-    HTTP Request  PATCH  /patch
-    Response Body Should Contain  Got a patch request
+    HTTP Request  OPTIONS  /options
+    Response Body Should Contain  Got an OPTIONS request
 
 Response Should Have Header OK
     GET      /302
@@ -168,11 +168,38 @@ POST with one word request body
     POST                          /echo
     Response Body Should Contain  Tooot
 
+POST with Unicode request body
+    [Documentation]     Unicode in response body must not break 'should contain'
+    [Tags]  unicode
+    Set Request Body              Tschüss Süße
+    Set Request Header            Content-Type    text/plain
+    POST                          /echo
+    Response Body Should Contain  Tschüss Süße
+
+POST with Unicode request body and Accept Header
+    [Documentation]     Request body and headers must allow to be concatenated
+    [Tags]  unicode
+    Set Request Body              Tschüss Süße
+    Set Request Header            Accept          application/json
+    Set Request Header            Content-Type    text/plain
+    POST                          /echo
+    Response Body Should Contain  Tschüss Süße
+
 PUT with two word request body
     Set Request Body              Tooot Tooooot
     Set Request Header            Content-Type    text/plain
     PUT                           /echo
     Response Body Should Contain  Tooot Tooooot
+
+PATCH with two word request body
+    Set Request Body              Tooot Tooooot
+    Set Request Header            Content-Type    text/plain
+    PATCH                         /echo
+    Response Body Should Contain  Tooot Tooooot
+
+Simple OPTIONS request
+    OPTIONS                       /options
+    Response Body Should Contain  Got an OPTIONS request
 
 Get Response Status
     GET                          /200

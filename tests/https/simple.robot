@@ -18,4 +18,3 @@ Full-URL GET to https://encrypted.google.com/
 Simple GET to https://encrypted.google.com/
     Create HTTP Context  encrypted.google.com   https
     GET      /
-

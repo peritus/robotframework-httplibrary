@@ -2,9 +2,10 @@ from robot.api import logger
 
 from base64 import b64encode
 from functools import wraps
-from urlparse import urlparse
+from urllib.parse import urlparse
+from webtest import utils
 
-import livetest
+from . import livetest
 import json
 import jsonpointer
 import jsonpatch
@@ -13,7 +14,7 @@ import jsonpatch
 def load_json(json_string):
     try:
         return json.loads(json_string)
-    except ValueError, e:
+    except ValueError as e:
         raise ValueError("Could not parse '%s' as JSON: %s" % (json_string, e))
 
 
@@ -35,7 +36,7 @@ class HTTP:
     Pointer, go to http://tools.ietf.org/html/draft-pbryan-zyp-json-pointer-00.
     """
 
-    ROBOT_LIBRARY_VERSION = "0.4.2"
+    ROBOT_LIBRARY_VERSION = "0.4.7"
 
     class Context(object):
         def __init__(self, http, host=None, scheme='http'):
@@ -64,9 +65,9 @@ class HTTP:
             self.post_process_request(None)
 
         def pre_process_request(self):
-            if len(self.request_headers.items()) > 0:
+            if len(list(self.request_headers.items())) > 0:
                 logger.debug("Request headers:")
-                for name, value in self.request_headers.items():
+                for name, value in list(self.request_headers.items()):
                     logger.debug("%s: %s" % (name, value))
             else:
                 logger.debug("No request headers set")
@@ -138,6 +139,9 @@ class HTTP:
 
     def _path_from_url_or_path(self, url_or_path):
 
+        if url_or_path.startswith("\"") and url_or_path.endswith("\""):
+            url_or_path = url_or_path[1:-1]
+
         if url_or_path.startswith("/"):
             return url_or_path
 
@@ -197,7 +201,8 @@ class HTTP:
         logger.debug("Performing %s request on %s://%s%s" % (verb,
                      self.context._scheme, self.app.host, path,))
         self.context.post_process_request(
-            self.context.app.request(path, {}, self.context.request_headers,
+            self.context.app.request(path, {},
+                                     headers=self.context.request_headers,
                                      method=verb.upper(),)
         )
 
@@ -267,6 +272,25 @@ class HTTP:
                          self.context.request_headers, **kwargs)
         )
 
+    def PATCH(self, url):
+        """
+        Issues an HTTP PATCH request.
+
+        `url` is the URL relative to the server root, e.g. '/_utils/config.html'
+        """
+        path = self._path_from_url_or_path(url)
+        kwargs = {}
+        if 'Content-Type' in self.context.request_headers:
+            kwargs[
+                'content_type'] = self.context.request_headers['Content-Type']
+        self.context.pre_process_request()
+        logger.debug("Performing PATCH request on %s://%s%s" % (
+            self.context._scheme, self.app.host, url))
+        self.context.post_process_request(
+            self.app.patch(path, self.context.request_body or {},
+                         self.context.request_headers, **kwargs)
+        )
+
     def DELETE(self, url):
         """
         Issues a HTTP DELETE request.
@@ -278,7 +302,54 @@ class HTTP:
         logger.debug("Performing DELETE request on %s://%s%s" % (
             self.context._scheme, self.app.host, url))
         self.context.post_process_request(
-            self.app.delete(path, {}, self.context.request_headers)
+            self.app.delete(path, utils.NoDefault, self.context.request_headers)
+        )
+
+    def OPTIONS(self, url):
+        """
+        Issues a HTTP OPTIONS request.
+
+        `url` is the URL relative to the server root, e.g. '/_utils/config.html'
+        """
+        path = self._path_from_url_or_path(url)
+        self.context.pre_process_request()
+        logger.debug("Performing OPTIONS request on %s://%s%s" % (
+            self.context._scheme, self.app.host, path,))
+        self.context.post_process_request(
+            self.app.options(path, self.context.request_headers)
+        )
+
+    def OPTIONS(self, url):
+        """
+        Issues a HTTP OPTIONS request.
+
+        `url` is the URL relative to the server root, e.g. '/_utils/config.html'
+        """
+        path = self._path_from_url_or_path(url)
+        self.context.pre_process_request()
+        logger.debug("Performing OPTIONS request on %s://%s%s" % (
+            self.context._scheme, self.app.host, path))
+        self.context.post_process_request(
+            self.app.options(path, self.context.request_headers)
+        )
+
+    def PATCH(self, url):
+        """
+        Issues a HTTP PATCH request.
+
+        `url` is the URL relative to the server root, e.g. '/_utils/config.html'
+        """
+        path = self._path_from_url_or_path(url)
+        kwargs = {}
+        if 'Content-Type' in self.context.request_headers:
+            kwargs[
+                'content_type'] = self.context.request_headers['Content-Type']
+        self.context.pre_process_request()
+        logger.debug("Performing PATCH request on %s://%s%s" % (
+            self.context._scheme, self.app.host, url))
+        self.context.post_process_request(
+            self.app.patch(path, self.context.request_body or {},
+                         self.context.request_headers, **kwargs)
         )
 
     def follow_response(self):
@@ -417,7 +488,7 @@ class HTTP:
         Specify `log_level` (default: "INFO") to set the log level.
         """
         logger.write("Response headers:", log_level)
-        for name, value in self.response.headers.items():
+        for name, value in list(self.response.headers.items()):
             logger.write("%s: %s" % (name, value), log_level)
 
     # request headers
@@ -431,7 +502,7 @@ class HTTP:
         """
         logger.info(
             'Set request header "%s" to "%s"' % (header_name, header_value))
-        self.context.request_headers[header_name] = header_value
+        self.context.request_headers[str(header_name)] = header_value
 
     def set_basic_auth(self, username, password):
         """
@@ -471,7 +542,7 @@ class HTTP:
         | ${body}=            | Get Response Body |                                      |
         | Should Start With   | ${body}           | <?xml version="1.0" encoding="UTF-8" |
         """
-        return self.response.body
+        return self.response.body.decode("utf-8")
 
     def response_body_should_contain(self, should_contain):
         """
@@ -483,11 +554,27 @@ class HTTP:
         | Response Body Should Contain | encoding="UTF-8" |
         """
         logger.debug('Testing whether "%s" contains "%s".' % (
-            self.response.body, should_contain))
+            self.get_response_body(), should_contain))
 
-        assert should_contain in self.response.body, \
+        assert should_contain in self.get_response_body(), \
             '"%s" should have contained "%s", but did not.' % (
-                self.response.body, should_contain)
+                self.get_response_body(), should_contain)
+
+    def response_body_should_not_contain(self, should_not_contain):
+        """
+        Fails if the response body does contain `should_not_contain`
+
+        Example:
+        | GET                              | /foo.xml         |
+        | Response Body Should Not Contain | 404              |
+        | Response Body Should Not Contain | ERROR            |
+        """
+        logger.debug('Testing whether "%s" does not contain "%s".' % (
+            self.response.body, should_not_contain))
+
+        assert should_not_contain not in self.response.body, \
+            '"%s" should not have contained "%s", but it did.' % (
+                self.response.body, should_not_contain)
 
     def log_response_body(self, log_level='INFO'):
         """
@@ -495,9 +582,9 @@ class HTTP:
 
         Specify `log_level` (default: "INFO") to set the log level.
         """
-        if self.response.body:
+        if self.get_response_body():
             logger.write("Response body:", log_level)
-            logger.write(self.response.body, log_level)
+            logger.write(self.get_response_body(), log_level)
         else:
             logger.debug("No response body received", log_level)
 
@@ -548,48 +635,50 @@ class HTTP:
 
         try:
             return json.dumps(data, ensure_ascii=False)
-        except ValueError, e:
+        except ValueError as e:
             raise ValueError(
                 "Could not stringify '%r' to JSON: %s" % (data, e))
 
-    @_with_json
-    def get_json_value(self, json_string, json_pointer):
+    def get_json_value(self, json_string, json_pointer, stringify=True):
         """
         Get the target node of the JSON document `json_string` specified by `json_pointer`.
-
+        `stringify` specifies whether JSON data should be transformed to string before assertion.
         Example:
         | ${result}=       | Get Json Value   | {"foo": {"bar": [1,2,3]}} | /foo/bar |
         | Should Be Equal  | ${result}        | [1, 2, 3]                 |          |
         """
-        return jsonpointer.resolve_pointer(json_string, json_pointer)
+        if stringify:
+            return json.dumps(jsonpointer.resolve_pointer(load_json(json_string), json_pointer), ensure_ascii=False)
+        else:
+            return jsonpointer.resolve_pointer(load_json(json_string), json_pointer)
 
-    def json_value_should_equal(self, json_string, json_pointer, expected_value):
+    def json_value_should_equal(self, json_string, json_pointer, expected_value, stringify=True):
         """
         Fails if the value of the target node of the JSON document
         `json_string` specified by JSON Pointer `json_pointer` is not `expected_value`.
+        `stringify` specifies whether JSON data should be transformed to string before assertion.
 
         Example:
         | Set Test Variable       | ${doc}  | {"foo": {"bar": [1,2,3]}} |             |
         | Json Value Should Equal | ${doc}  | /foo/bar                  | "[1, 2, 3]" |
         """
-
-        got = self.get_json_value(json_string, json_pointer)
+        got = self.get_json_value(json_string, json_pointer, stringify)
 
         assert got == expected_value, \
             'JSON value "%s" does not equal "%s", but should have.' % (
                 got, expected_value)
 
-    def json_value_should_not_equal(self, json_string, json_pointer, expected_value):
+    def json_value_should_not_equal(self, json_string, json_pointer, expected_value, stringify=True):
         """
         Fails if the value of the target node of the JSON document
         `json_string` specified by JSON Pointer `json_pointer` is `expected_value`.
+        `stringify` specifies whether JSON data should be transformed to string before assertion.
 
         Example:
         | Set Test Variable           | ${doc}  | {"foo": {"bar": [1,2,3]}} |             |
         | Json Value Should Not Equal | ${doc}  | /foo/bar                  | "[1, 2, 3]" |
         """
-
-        got = self.get_json_value(json_string, json_pointer)
+        got = self.get_json_value(json_string, json_pointer, stringify)
 
         message = 'JSON value "%s" does not equal "%s"' % (got, expected_value)
 
@@ -607,10 +696,18 @@ class HTTP:
         | ${result}=       | Set Json Value | {"foo": {"bar": [1,2,3]}} | /foo | 12 |
         | Should Be Equal  | ${result}      | {"foo": 12}               |      |    |
         """
+        try:
+            loaded_json = load_json(json_value)
+        except ValueError as e:
+            if isinstance(json_value, str):
+                loaded_json = json_value
+            else:
+                raise ValueError("Could not parse '%s' as JSON: %s" % (json_value, e))
+
         return jsonpatch.apply_patch(json_string, [{
                                                    'op': 'add',
                                                    'path': json_pointer,
-                                                   'value': load_json(json_value)
+                                                   'value': loaded_json
                                                    }])
 
     @_with_json
@@ -621,7 +718,16 @@ class HTTP:
         for line in json.dumps(json_string, indent=2, ensure_ascii=False).split('\n'):
             logger.write(line, log_level)
 
-    # debug
+    @_with_json
+    def remove_json_key(self, json_string, json_pointer):
+        """
+        Remove the target key of the JSON document `json_string` specified by
+        JSON Pointer `json_pointer` to `json_value`.
+
+        Example:
+        | ${result}=       | Remove Json Key | {"foo": {"bar": [1,2,3]}} | /foo/bar |
+        """
+        return jsonpatch.apply_patch(json_string, [{'op': 'remove','path': json_pointer}])
 
     def show_response_body_in_browser(self):
         """
