@@ -22,9 +22,32 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.finish()
 
     def do_PATCH(self):
-        self.send_response(200, "Patch request ok")
+        if self.path == '/echo':
+            data = self.rfile.read(int(self.headers['Content-Length']))
+            self.rfile.close()
+            self.send_response(200, "OK")
+            self.send_header('Content-Type', 'text/plain; charset=utf-8')
+            self.end_headers()
+            self.wfile.write(data)
+            self.finish()
+        elif self.path == '/content_type':
+            self.send_response(200, "OK")
+            self.wfile.write(self.rfile.read)
+            self.end_headers()
+            self.wfile.write(self.headers['Content-Type'])
+            self.finish()
+        elif self.path == '/kill':
+            global server
+            self.send_response(201, "Killing myself")
+            server.socket.close()
+            sys.exit(0)
+        else:
+            self.send_error(500)
+
+    def do_OPTIONS(self):
+        self.send_response(200, "Options request ok")
         self.end_headers()
-        self.wfile.write("Got a patch request")
+        self.wfile.write("Got an OPTIONS request")
         self.finish()
 
     def do_GET(self):

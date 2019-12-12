@@ -102,8 +102,8 @@ Next Request Should Have Status Code w/ Status Line FAIL
     ...  GET      /418
 
 HTTP Request with custom HTTP verb should work
-    HTTP Request  PATCH  /patch
-    Response Body Should Contain  Got a patch request
+    HTTP Request  OPTIONS  /options
+    Response Body Should Contain  Got an OPTIONS request
 
 Response Should Have Header OK
     GET      /302
@@ -173,6 +173,16 @@ PUT with two word request body
     Set Request Header            Content-Type    text/plain
     PUT                           /echo
     Response Body Should Contain  Tooot Tooooot
+
+PATCH with two word request body
+    Set Request Body              Tooot Tooooot
+    Set Request Header            Content-Type    text/plain
+    PATCH                         /echo
+    Response Body Should Contain  Tooot Tooooot
+
+Simple OPTIONS request
+    OPTIONS                       /options
+    Response Body Should Contain  Got an OPTIONS request
 
 Get Response Status
     GET                          /200
