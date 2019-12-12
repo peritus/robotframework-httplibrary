@@ -73,7 +73,7 @@ parser.add_option("--setuptools-to-dir",
 
 options, args = parser.parse_args()
 if options.version:
-    print("bootstrap.py version %s" % __version__)
+    print(("bootstrap.py version %s" % __version__))
     sys.exit(0)
 
 
@@ -83,7 +83,7 @@ if options.version:
 try:
     from urllib.request import urlopen
 except ImportError:
-    from urllib2 import urlopen
+    from urllib.request import urlopen
 
 ez = {}
 if os.path.exists('ez_setup.py'):

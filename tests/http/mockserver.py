@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-import BaseHTTPServer
+import http.server
 import sys
 import os
 import ssl
 
 
-class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+class WebRequestHandler(http.server.BaseHTTPRequestHandler):
 
     def do_HEAD(self):
         self.send_response(200, "No payment required")
@@ -146,7 +146,7 @@ class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     do_PUT = do_POST
 
 PORT = int(sys.argv[1])
-server = BaseHTTPServer.HTTPServer(('localhost', PORT), WebRequestHandler)
+server = http.server.HTTPServer(('localhost', PORT), WebRequestHandler)
 scheme = 'http'
 
 if '--ssl' in sys.argv:
@@ -162,6 +162,6 @@ if '--ssl' in sys.argv:
         server_side=True,
     )
 
-print 'Starting server on %s://localhost:%d/' % (scheme, PORT)
+print('Starting server on %s://localhost:%d/' % (scheme, PORT))
 
 server.serve_forever()
