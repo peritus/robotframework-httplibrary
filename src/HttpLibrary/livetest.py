@@ -159,7 +159,16 @@ class TestApp(webtest.TestApp):
                     response_headers.append((headername, headervalue))
         else:
             for headername in list(dict(webresp.getheaders()).keys()):
-                response_headers.append((headername, webresp.getheader(headername)))
+                # this hack is to handle the set-cookie header which contains `,` in it.
+                # since python httplib concatenate header values with `,` separator, when there are multiple values
+                # for the same key
+                if headername == 'Set-Cookie':
+                    cookies_list = []
+                    for item in webresp.headers.get_all('Set-Cookie'):
+                        cookies_list.append(item.replace(',', ''))
+                    response_headers.append((headername, ', '.join(cookies_list)))
+                else:
+                    response_headers.append((headername, webresp.getheader(headername)))
         res.headerlist = response_headers
         res.errors = ''
         return res
