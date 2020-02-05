@@ -431,12 +431,14 @@ class HTTP(object):
         keyword is a list containing both values.
         """
         self.response_should_have_header(header_name)
-        result = []
-        if self.get_major_python_version() < 3:
-            result = self.response.headers.getall(header_name)
+
+        # if there are multiple headers with same name, we need to return as a list
+        if header_name == 'Set-Cookie': # Need to be specific, as we dont know any other headers like this
+            cookie_str = self.response.headers.getall(header_name)[0]
+            cookies_list = cookie_str.split('auth_tkt')
+            result = ['auth_tkt' + x.strip().rstrip(',') for x in cookies_list if x]
         else:
-            for header_val in self.response.headers.getall(header_name)[0].split(","):
-                result.append(header_val.strip())
+            result = self.response.headers.getall(header_name)
 
         return result
 
