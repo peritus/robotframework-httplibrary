@@ -435,12 +435,12 @@ class HTTP(object):
         # if there are multiple headers with same name, we need to return as a list
         if header_name == 'Set-Cookie': # Need to be specific, as we dont know any other headers like this
             cookie_str = self.response.headers.getall(header_name)[0]
-            cookies_list = cookie_str.split('auth_tkt')
-            result = ['auth_tkt' + x.strip().rstrip(',') for x in cookies_list if x]
-        else:
-            result = self.response.headers.getall(header_name)
+            if 'auth_tkt' in cookie_str:
+                cookies_list = cookie_str.split('auth_tkt')
+                result = ['auth_tkt' + x.strip().rstrip(',') for x in cookies_list if x]
+                return result
 
-        return result
+        return self.response.headers.getall(header_name)
 
     def response_header_should_equal(self, header_name, expected):
         """
