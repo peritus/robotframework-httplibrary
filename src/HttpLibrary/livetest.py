@@ -153,8 +153,12 @@ class TestApp(webtest.TestApp):
         res.status = '%s %s' % (webresp.status, webresp.reason)
         res.body = webresp.read()
         response_headers = []
-        for headername in list(dict(webresp.getheaders()).keys()):
-            response_headers.append((headername, webresp.getheader(headername)))
+        if sys.version_info.major == 2:
+            for headername in dict(webresp.getheaders()).keys():
+                for headervalue in webresp.msg.getheaders(headername):
+                    response_headers.append((headername, headervalue))
+        else:
+            response_headers = webresp.getheaders()
         res.headerlist = response_headers
         res.errors = ''
         return res
