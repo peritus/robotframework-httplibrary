@@ -522,12 +522,8 @@ class HTTP(object):
         """
         response_body = self.response.body
 
-        # In python2 response comes as str, which satisfies below bytes condition too and fails at decode call.
-        if isinstance(response_body, str):
-            return response_body
-
-        if isinstance(response_body, bytes):
-            response_body = response_body.decode('utf-8', 'replace')
+        if not isinstance(response_body, str):
+            response_body = response_body.decode('utf-8')
 
         return response_body
 
@@ -542,8 +538,8 @@ class HTTP(object):
         """
 
         response = self.response.body
-        if isinstance(response, bytes):
-            response = response.decode("utf-8", "replace")
+        if not isinstance(response, str):
+            response = response.decode("utf-8")
 
         logger.debug('Testing whether "%s" contains "%s".' % (response, should_contain))
 
