@@ -217,7 +217,7 @@ class HTTP(object):
         logger.debug("Performing HEAD request on %s://%s%s" % (
             self.context._scheme, self.app.host, path,))
         self.context.post_process_request(
-            self.app.head(path, self.context.request_headers)
+            self.app.head(path, {}, self.context.request_headers)
         )
 
     def GET(self, url):
