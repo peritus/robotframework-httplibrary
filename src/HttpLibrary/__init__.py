@@ -1,10 +1,15 @@
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object, str
 from robot.api import logger
 
 from base64 import b64encode
 from functools import wraps
-from urlparse import urlparse
+from urllib.parse import urlparse, parse_qs
 
-import livetest
+import sys
+from . import livetest
 import json
 import jsonpointer
 import jsonpatch
@@ -13,7 +18,7 @@ import jsonpatch
 def load_json(json_string):
     try:
         return json.loads(json_string)
-    except ValueError, e:
+    except ValueError as e:
         raise ValueError("Could not parse '%s' as JSON: %s" % (json_string, e))
 
 
@@ -25,7 +30,7 @@ def _with_json(f):
     return wrapper
 
 
-class HTTP:
+class HTTP(object):
     """
     HttpLibrary for Robot Framework
 
@@ -35,7 +40,7 @@ class HTTP:
     Pointer, go to http://tools.ietf.org/html/draft-pbryan-zyp-json-pointer-00.
     """
 
-    ROBOT_LIBRARY_VERSION = "0.4.2"
+    ROBOT_LIBRARY_VERSION = "1.1.5"
 
     class Context(object):
         def __init__(self, http, host=None, scheme='http'):
@@ -64,7 +69,7 @@ class HTTP:
             self.post_process_request(None)
 
         def pre_process_request(self):
-            if len(self.request_headers.items()) > 0:
+            if len(list(self.request_headers.items())) > 0:
                 logger.debug("Request headers:")
                 for name, value in self.request_headers.items():
                     logger.debug("%s: %s" % (name, value))
@@ -212,7 +217,7 @@ class HTTP:
         logger.debug("Performing HEAD request on %s://%s%s" % (
             self.context._scheme, self.app.host, path,))
         self.context.post_process_request(
-            self.app.head(path, self.context.request_headers)
+            self.app.head(path, {}, self.context.request_headers)
         )
 
     def GET(self, url):
@@ -243,10 +248,10 @@ class HTTP:
         logger.debug("Performing POST request on %s://%s%s" % (
             self.context._scheme, self.app.host, url))
         self.context.pre_process_request()
-        self.context.post_process_request(
-            self.app.post(path, self.context.request_body or {},
-                          self.context.request_headers, **kwargs)
-        )
+        response = self.app.post(path, self.context.request_body or {}, self.context.request_headers, **kwargs)
+        if path == '/kill' and response.status_int == 200:
+            return
+        self.context.post_process_request(response)
 
     def PUT(self, url):
         """
@@ -323,7 +328,48 @@ class HTTP:
         """
         self.context.next_request_should = status_code
 
-    # status code
+    def should_contain_url_params(self, url, expected):
+        """
+        Compares query parameters of the url.
+        Note: Each value of the key in expected to be a list because its valid param to pass list in query params
+              if some query params are dynamic, just add the key in 'expected' with null value to check their existence
+        Example:
+        | Should Contain Url Params           | 'url' | {"status":[200],'code':null}
+        """
+        self.__url_qs_fragment_helper(url, expected, False)
+
+    def should_contain_url_fragments(self, url, expected):
+        """
+        Compares fragments of the url.
+        Note: Each value of the key in expected to be a list because its valid param to pass list in fragments
+              if some fragments are dynamic, just add the key in 'expected' with null value to check their existence
+
+        Example:
+        | Should Contain Url Fragments        | 'url' | {"status":[200],'code':null}
+        """
+        self.__url_qs_fragment_helper(url, expected, True)
+
+    def __url_qs_fragment_helper(self, url, expected_params, check_fragments):
+        expected_params = json.loads(expected_params)
+        parsed_url = urlparse(url, allow_fragments=check_fragments)
+        query = parsed_url.query
+        if check_fragments:
+            query = parsed_url.fragment
+
+        if sys.version_info[0] == 2:
+            query = unicode(query)
+        parsed_arguments = parse_qs(query, keep_blank_values=True)
+
+        assert set(parsed_arguments.keys()) == set(expected_params.keys())
+
+        # We remove the dynamic params because we don't know the expected value
+        # 'None' value in expected indicates its dynamic, so we remove it from both expected and actual
+        for p in list(expected_params):
+            if expected_params[p] is None:
+                del expected_params[p]
+                del parsed_arguments[p]
+
+        assert parsed_arguments == expected_params
 
     def get_response_status(self):
         """
@@ -385,6 +431,7 @@ class HTTP:
         keyword is a list containing both values.
         """
         self.response_should_have_header(header_name)
+
         return self.response.headers.getall(header_name)
 
     def response_header_should_equal(self, header_name, expected):
@@ -445,6 +492,8 @@ class HTTP:
         """
         credentials = "%s:%s" % (username, password)
         logger.info('Set basic auth to "%s"' % credentials)
+        if isinstance(credentials, str):
+            credentials = credentials.encode()
         self.set_request_header(
             "Authorization", "Basic %s" % b64encode(credentials))
 
@@ -462,7 +511,7 @@ class HTTP:
         logger.info('Request body set to "%s".' % body)
         self.context.request_body = body.encode("utf-8")
 
-    def get_response_body(self):
+    def get_response_body(self, decode=True):
         """
         Get the response body.
 
@@ -471,7 +520,12 @@ class HTTP:
         | ${body}=            | Get Response Body |                                      |
         | Should Start With   | ${body}           | <?xml version="1.0" encoding="UTF-8" |
         """
-        return self.response.body
+        response_body = self.response.body
+
+        if decode and not isinstance(response_body, str):
+            response_body = response_body.decode('utf-8')
+
+        return response_body
 
     def response_body_should_contain(self, should_contain):
         """
@@ -482,10 +536,14 @@ class HTTP:
         | Response Body Should Contain | version="1.0"    |
         | Response Body Should Contain | encoding="UTF-8" |
         """
-        logger.debug('Testing whether "%s" contains "%s".' % (
-            self.response.body, should_contain))
 
-        assert should_contain in self.response.body, \
+        response = self.response.body
+        if not isinstance(response, str):
+            response = response.decode("utf-8")
+
+        logger.debug('Testing whether "%s" contains "%s".' % (response, should_contain))
+
+        assert should_contain in response, \
             '"%s" should have contained "%s", but did not.' % (
                 self.response.body, should_contain)
 
@@ -548,7 +606,7 @@ class HTTP:
 
         try:
             return json.dumps(data, ensure_ascii=False)
-        except ValueError, e:
+        except ValueError as e:
             raise ValueError(
                 "Could not stringify '%r' to JSON: %s" % (data, e))
 
@@ -630,3 +688,21 @@ class HTTP:
         This is meant for debugging response body's with complex media types.
         """
         self.context.response.showbrowser()
+
+    def get_major_python_version(self):
+        """
+        returns the current python version
+        """
+        return sys.version_info[0]
+
+    def log_message(self, message, log_level='INFO'):
+        """
+        Logs the message.
+
+        Specify `log_level` (default: "INFO") to set the log level.
+        """
+        if message:
+            logger.write("Message :", log_level)
+            logger.write(message, log_level)
+        else:
+            logger.debug("No message received", log_level)
