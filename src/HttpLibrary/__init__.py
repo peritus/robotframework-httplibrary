@@ -511,7 +511,7 @@ class HTTP(object):
         logger.info('Request body set to "%s".' % body)
         self.context.request_body = body.encode("utf-8")
 
-    def get_response_body(self):
+    def get_response_body(self, decode=True):
         """
         Get the response body.
 
@@ -522,7 +522,7 @@ class HTTP(object):
         """
         response_body = self.response.body
 
-        if not isinstance(response_body, str):
+        if decode and not isinstance(response_body, str):
             response_body = response_body.decode('utf-8')
 
         return response_body
