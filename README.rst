@@ -22,8 +22,8 @@ You can install robotframework-httplibrary via `pip
 Usage
 -----
 API documentation can be found at
-`http://peritus.github.com/robotframework-httplibrary/
-<http://peritus.github.com/robotframework-httplibrary/>`_, here is an example
+`http://peritus.github.io/robotframework-httplibrary/
+<http://peritus.github.io/robotframework-httplibrary/>`_, here is an example
 on how to use it:
 
 ============  ================
@@ -46,10 +46,10 @@ Example
 \             Response Body Should Contain       generating different HTTP codes
 ============  =================================  ===================================
 
-You can view a `report <http://peritus.github.com/robotframework-httplibrary/report.html>`_ and a `log <http://peritus.github.com/robotframework-httplibrary/log.html>`_ of this test executed that looks like this:
+You can view a `report <http://peritus.github.io/robotframework-httplibrary/report.html>`_ and a `log <http://peritus.github.io/robotframework-httplibrary/log.html>`_ of this test executed that looks like this:
 
-.. image:: http://peritus.github.com/robotframework-httplibrary/rfhttplib_example_test_execution.png
-  :target: http://peritus.github.com/robotframework-httplibrary/log.html
+.. image:: http://peritus.github.io/robotframework-httplibrary/rfhttplib_example_test_execution.png
+  :target: http://peritus.github.io/robotframework-httplibrary/log.html
 
 Compatibility
 -------------
